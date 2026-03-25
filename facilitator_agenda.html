@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global Forwarding Workshop — Agenda</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #ffffff;
+  --bg2: #f7f6f2;
+  --bg3: #f0efe9;
+  --border: rgba(0,0,0,0.1);
+  --border2: rgba(0,0,0,0.18);
+  --border3: rgba(0,0,0,0.06);
+  --text: #1a1a18;
+  --text2: #5f5e5a;
+  --text3: #8b8a85;
+
+  --purple: #534AB7; --purple-l: #EEEDFE; --purple-d: #3C3489;
+  --teal: #0F6E56;   --teal-l: #E1F5EE;   --teal-d: #085041;
+  --amber: #854F0B;  --amber-l: #FAEEDA;  --amber-d: #633806;
+  --blue: #185FA5;   --blue-l: #E6F1FB;   --blue-d: #0C447C;
+  --gray-l: #F1EFE8; --gray-d: #444441;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14140f;
+    --bg2: #1c1c16;
+    --bg3: #232319;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --border3: rgba(255,255,255,0.04);
+    --text: #e8e6de;
+    --text2: #9c9a92;
+    --text3: #5f5e5a;
+
+    --purple-l: #26215C; --purple-d: #CECBF6;
+    --teal-l: #04342C;   --teal-d: #9FE1CB;
+    --amber-l: #412402;  --amber-d: #FAC775;
+    --blue-l: #042C53;   --blue-d: #B5D4F4;
+    --gray-l: #2C2C2A;   --gray-d: #D3D1C7;
+  }
+}
+
+body {
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 2rem 1.5rem;
+}
+
+.container { max-width: 780px; margin: 0 auto; }
+
+.header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 0.5px solid var(--border2);
+}
+.header-eyebrow {
+  font-size: 11px; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--text3); margin-bottom: 6px;
+}
+.header-title { font-size: 22px; font-weight: 500; color: var(--text); }
+.header-sub   { font-size: 14px; color: var(--text2); margin-top: 4px; }
+
+.day-block { margin-bottom: 2rem; }
+
+.day-hdr {
+  font-size: 13px; font-weight: 600; color: var(--text);
+  margin-bottom: 1rem; padding-bottom: .5rem;
+  border-bottom: 1.5px solid var(--border2);
+}
+
+.session { display: flex; gap: 12px; margin-bottom: 8px; align-items: flex-start; }
+
+.time {
+  font-size: 12px; color: var(--text3); min-width: 96px;
+  padding-top: 3px; font-variant-numeric: tabular-nums; flex-shrink: 0;
+}
+
+.card {
+  flex: 1; border-radius: 8px; padding: 10px 14px; border: 0.5px solid;
+}
+
+.card-title { font-size: 14px; font-weight: 500; margin-bottom: 2px; }
+.card-sub   { font-size: 12px; line-height: 1.5; }
+.card-tags  { margin-top: 5px; display: flex; gap: 5px; flex-wrap: wrap; }
+
+.tag {
+  font-size: 11px; font-weight: 500; padding: 1px 7px;
+  border-radius: 10px; display: inline-block;
+}
+
+/* Card colour variants */
+.c-purple { background: var(--purple-l); border-color: #AFA9EC; }
+.c-purple .card-title { color: var(--purple-d); }
+.c-purple .card-sub   { color: var(--purple); }
+
+.c-teal { background: var(--teal-l); border-color: #5DCAA5; }
+.c-teal .card-title { color: var(--teal-d); }
+.c-teal .card-sub   { color: var(--teal); }
+
+.c-amber { background: var(--amber-l); border-color: #EF9F27; }
+.c-amber .card-title { color: var(--amber-d); }
+.c-amber .card-sub   { color: var(--amber); }
+
+.c-blue { background: var(--blue-l); border-color: #85B7EB; }
+.c-blue .card-title { color: var(--blue-d); }
+.c-blue .card-sub   { color: var(--blue); }
+
+.c-gray { background: var(--gray-l); border-color: var(--border2); }
+.c-gray .card-title { color: var(--gray-d); }
+.c-gray .card-sub   { color: var(--text3); }
+
+/* Tag colour variants */
+.tag-director    { background: #EEEDFE; color: #3C3489; }
+.tag-working     { background: #E1F5EE; color: #085041; }
+.tag-decision    { background: #FAEEDA; color: #633806; }
+.tag-plenary     { background: #E6F1FB; color: #0C447C; }
+.tag-admin       { background: var(--bg3); color: var(--text2); }
+
+@media (prefers-color-scheme: dark) {
+  .c-purple { background: #26215C; border-color: #534AB7; }
+  .c-purple .card-title { color: #CECBF6; }
+  .c-purple .card-sub   { color: #AFA9EC; }
+  .c-teal { background: #04342C; border-color: #1D9E75; }
+  .c-teal .card-title { color: #9FE1CB; }
+  .c-teal .card-sub   { color: #5DCAA5; }
+  .c-amber { background: #412402; border-color: #BA7517; }
+  .c-amber .card-title { color: #FAC775; }
+  .c-amber .card-sub   { color: #EF9F27; }
+  .c-blue { background: #042C53; border-color: #185FA5; }
+  .c-blue .card-title { color: #B5D4F4; }
+  .c-blue .card-sub   { color: #85B7EB; }
+  .c-gray { background: #2C2C2A; border-color: #5F5E5A; }
+  .c-gray .card-title { color: #D3D1C7; }
+  .c-gray .card-sub   { color: #888780; }
+  .tag-director { background: #3C3489; color: #CECBF6; }
+  .tag-working  { background: #085041; color: #9FE1CB; }
+  .tag-decision { background: #633806; color: #FAC775; }
+  .tag-plenary  { background: #0C447C; color: #B5D4F4; }
+  .tag-admin    { background: #232319; color: #5f5e5a; }
+}
+
+@media (max-width: 520px) {
+  .time { min-width: 72px; font-size: 11px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="header-eyebrow">GDB Logistics · Global Forwarding Workshop</div>
+    <div class="header-title">Workshop agenda</div>
+    <div class="header-sub">2-day session · FR · DE · NL · ~10 attendees</div>
+  </div>
+
+  <!-- Day 1 -->
+  <div class="day-block">
+    <div class="day-hdr">Day 1 — Align &amp; propose</div>
+
+    <div class="session">
+      <div class="time">09:00 – 09:30</div>
+      <div class="card c-purple">
+        <div class="card-title">Opening &amp; framing</div>
+        <div class="card-sub">Director sets the mandate. Objectives, rules of engagement, and parking lot mechanism introduced.</div>
+        <div class="card-tags">
+          <span class="tag tag-director">Director</span>
+          <span class="tag tag-plenary">Plenary</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="session">
+      <div class="time">09:30 – 10:15</div>
+      <div class="card c-blue">
+        <div class="card-title">MF &amp; process primer</div>
+        <div class="card-sub">Shared mental model of task group logic, automation overlay, and the API vs manual split. TG1 used as a worked example.</div>
+        <div class="card-tags">
+          <span class="tag tag-plenary">Plenary</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="session">
+      <div class="time">10:15 – 10:30</div>
+      <div class="card c-gray">
+        <div class="card-title">Break</div>
+      </div>
+    </div>
+
+    <div class="session">
+      <div class="time">10:30 – 12:30</div>
+      <div class="card c-teal">
+        <div class="card-title">Operational stages 1–4 — walkthrough &amp; validation</div>
+        <div class="card-sub">Booking intake, shipment data, document verification, customs. Present proposal per stage, confirm task list, surface country deltas, log open items.</div>
+        <div class="card-tags">
+          <span class="tag tag-working">Working session</span>
+          <span class="tag tag-decision">Decisions</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="session">
+      <div class="time">12:30 – 13:30</div>
+      <div class="card c-gray">
+        <div class="card-title">Lunch</div>
+      </div>
+    </div>
+
+    <div class="session">
+      <div class="time">13:30 – 15:30</div>
+      <div class="card c-teal">
+        <div class="card-title">Operational stages 5–9 — walkthrough &amp; validation</div>
+        <div class="card-sub">Arrival monitoring, carrier release, delivery planning, operational handling, financial handling. Same format as morning. Country delta log updated live.</div>
+        <div class="card-tags">
+          <span class="tag tag-working">Working session</span>
+          <span class="tag tag-decision">Decisions</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="session">
+      <div class="time">15:30 – 15:45</div>
+      <div class="card c-gray">
+        <div class="card-title">Break</div>
+      </div>
+    </div>
+
+    <div class="session">
+      <div class="time">15:45 – 17:00</div>
+      <div class="card c-amber">
+        <div class="card-title">Open items &amp; parking lot — first pass</div>
+        <div class="card-sub">Categorise every parking lot item: resolve now, assign owner and deadline, or escalate to director. End day 1 with a clean list.</div>
+        <div class="card-tags">
+          <span class="tag tag-decision">Decisions</span>
+          <span class="tag tag-director">Director</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="session">
+      <div class="time">17:00 – 17:30</div>
+      <div class="card c-purple">
+        <div class="card-title">Day 1 recap</div>
+        <div class="card-sub">Summary of what is agreed, what is open, and what is on the agenda for day 2. Director closes with directional guidance.</div>
+        <div class="card-tags">
+          <span class="tag tag-plenary">Plenary</span>
+          <span class="tag tag-director">Director</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 2 -->
+  <div class="day-block">
+    <div class="day-hdr">Day 2 — Resolve, finalise &amp; plan</div>
+
+    <div class="session">
+      <div class="time">09:00 – 09:15</div>
+      <div class="card c-gray">
+        <div class="card-title">Day 2 kickoff</div>
+        <div class="card-sub">Recap open items from day 1. Confirm the day's sequence and who owns what.</div>
+        <div class="card-tags">
+          <span class="tag tag-plenary">Plenary</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="session">
+      <div class="time">09:15 – 11:00</div>
+      <div class="card c-amber">
+        <div class="card-title">Open items resolution</div>
+        <div class="card-sub">Structured resolution of remaining items: seaway bill placement, complete shipment data documents section, contract number whitelist, agent update change visibility, recurring task audit logging.</div>
+        <div class="card-tags">
+          <span class="tag tag-working">Working session</span>
+          <span class="tag tag-decision">Decisions</span>
+          <span class="tag tag-director">Director</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="session">
+      <div class="time">11:00 – 11:15</div>
+      <div class="card c-gray">
+        <div class="card-title">Break</div>
+      </div>
+    </div>
+
+    <div class="session">
+      <div class="time">11:15 – 12:15</div>
+      <div class="card c-teal">
+        <div class="card-title">Country exception log — sign-off</div>
+        <div class="card-sub">Present the complete exception log. Each country confirms their exceptions. Director formally approves.</div>
+        <div class="card-tags">
+          <span class="tag tag-decision">Decisions</span>
+          <span class="tag tag-director">Director</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="session">
+      <div class="time">12:15 – 13:15</div>
+      <div class="card c-gray">
+        <div class="card-title">Lunch</div>
+      </div>
+    </div>
+
+    <div class="session">
+      <div class="time">13:15 – 14:30</div>
+      <div class="card c-blue">
+        <div class="card-title">Implementation planning</div>
+        <div class="card-sub">Translate the agreed stage structure into a delivery plan: MF configuration scope, sequencing anchored to NL June go-live, owners, and key milestones.</div>
+        <div class="card-tags">
+          <span class="tag tag-working">Working session</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="session">
+      <div class="time">14:30 – 14:45</div>
+      <div class="card c-gray">
+        <div class="card-title">Break</div>
+      </div>
+    </div>
+
+    <div class="session">
+      <div class="time">14:45 – 15:45</div>
+      <div class="card c-purple">
+        <div class="card-title">Final review &amp; sign-off</div>
+        <div class="card-sub">Present the full agreed output: global stage structure, country exception log, implementation plan, parked items with owners. Director formally closes and signs off.</div>
+        <div class="card-tags">
+          <span class="tag tag-plenary">Plenary</span>
+          <span class="tag tag-director">Director</span>
+          <span class="tag tag-decision">Sign-off</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="session">
+      <div class="time">15:45 – 16:00</div>
+      <div class="card c-gray">
+        <div class="card-title">Close &amp; next steps</div>
+        <div class="card-sub">Confirm post-workshop actions, owners, and deadlines. Agree how outputs will be distributed.</div>
+        <div class="card-tags">
+          <span class="tag tag-plenary">Plenary</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
