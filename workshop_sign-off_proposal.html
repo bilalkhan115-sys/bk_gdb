@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global Forwarding Workshop — Executive Agenda</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #ffffff;
+  --bg2: #f7f6f2;
+  --bg3: #f0efe9;
+  --border: rgba(0,0,0,0.1);
+  --border2: rgba(0,0,0,0.18);
+  --border3: rgba(0,0,0,0.06);
+  --text: #1a1a18;
+  --text2: #5f5e5a;
+  --text3: #8b8a85;
+  --purple: #534AB7;
+  --amber: #854F0B; --amber-l: #FAEEDA; --amber-b: #EF9F27; --amber-d: #633806;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14140f;
+    --bg2: #1c1c16;
+    --bg3: #232319;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --border3: rgba(255,255,255,0.04);
+    --text: #e8e6de;
+    --text2: #9c9a92;
+    --text3: #5f5e5a;
+    --amber-l: #412402; --amber-b: #854F0B; --amber-d: #FAC775;
+  }
+}
+
+body {
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 3rem 1.5rem;
+}
+
+.doc {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.doc-header {
+  padding-bottom: 1.25rem;
+  margin-bottom: 1.75rem;
+  border-bottom: 0.5px solid var(--border2);
+}
+
+.doc-kicker {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: .5rem;
+}
+
+.doc-title {
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--text);
+}
+
+.doc-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: .875rem;
+  align-items: center;
+}
+
+.meta-item {
+  font-size: 13px;
+  color: var(--text2);
+}
+
+.meta-sep {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--border2);
+  flex-shrink: 0;
+}
+
+.signoff-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: var(--amber-l);
+  color: var(--amber-d);
+  border: 0.5px solid var(--amber-b);
+}
+
+.section {
+  margin-bottom: 1.75rem;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: .625rem;
+  padding-bottom: .375rem;
+  border-bottom: 0.5px solid var(--border3);
+}
+
+.mandate-text {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text);
+}
+
+.mandate-text strong {
+  font-weight: 500;
+}
+
+.context-strip {
+  background: var(--bg2);
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.ctx-item { text-align: center; }
+.ctx-value { font-size: 20px; font-weight: 500; color: var(--text); }
+.ctx-label { font-size: 11px; color: var(--text3); margin-top: 3px; }
+
+.outputs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.output-card {
+  background: var(--bg2);
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.output-num {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text3);
+  min-width: 18px;
+  margin-top: 1px;
+}
+
+.output-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.output-sub {
+  font-size: 12px;
+  color: var(--text2);
+  margin-top: 3px;
+  line-height: 1.5;
+}
+
+.days-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.day-card {
+  border: 0.5px solid var(--border2);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.day-head {
+  padding: 10px 14px;
+  border-bottom: 0.5px solid var(--border);
+}
+
+.day-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.day-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-top: 2px;
+}
+
+.day-body {
+  padding: 12px 14px;
+}
+
+.day-desc {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.decision-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.decision-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.4;
+}
+
+.d-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--purple);
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.attendees-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.attendee-chip {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 0.5px solid var(--border2);
+  color: var(--text2);
+  background: var(--bg);
+}
+
+.doc-footer {
+  padding-top: 1rem;
+  margin-top: 1.75rem;
+  border-top: 0.5px solid var(--border3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.footer-note { font-size: 12px; color: var(--text3); }
+.footer-ref  { font-size: 12px; color: var(--text3); }
+
+@media (max-width: 560px) {
+  .outputs-grid { grid-template-columns: 1fr; }
+  .days-grid    { grid-template-columns: 1fr; }
+  .context-strip { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <div class="doc-header">
+    <div class="doc-kicker">GDB Logistics · MyFreight · Ocean Import</div>
+    <div class="doc-title">Global Forwarding Workshop</div>
+    <div class="doc-meta">
+      <span class="meta-item">2-day workshop</span>
+      <span class="meta-sep"></span>
+      <span class="meta-item">FR · DE · NL</span>
+      <span class="meta-sep"></span>
+      <span class="meta-item">~10 attendees</span>
+      <span class="meta-sep"></span>
+      <span class="signoff-badge">Pending sign-off: Head of Forwarding</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Mandate</div>
+    <p class="mandate-text">GDB Logistics operates MyFreight across three countries — France, Germany, and the Netherlands — without a shared operational standard. Each country has developed its own working practices, creating inconsistency in how shipments are managed, how work is distributed, and how issues are identified and resolved. This workshop exists to fix that. The objective is to define and agree a <strong>single global Ocean Import process</strong> in MyFreight, with country-specific exceptions permitted only where there is a clear operational justification. The Netherlands go-live in June 2025 makes this work time-critical: NL must launch on a standard that France and Germany will also adopt, not one built in isolation.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Context</div>
+    <div class="context-strip">
+      <div class="ctx-item">
+        <div class="ctx-value">9</div>
+        <div class="ctx-label">Operational stages to align</div>
+      </div>
+      <div class="ctx-item">
+        <div class="ctx-value">3</div>
+        <div class="ctx-label">Countries · FR, DE, NL</div>
+      </div>
+      <div class="ctx-item">
+        <div class="ctx-value">June 2025</div>
+        <div class="ctx-label">NL go-live deadline</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Expected outputs</div>
+    <div class="outputs-grid">
+      <div class="output-card">
+        <div class="output-num">01</div>
+        <div>
+          <div class="output-title">Agreed global Ocean Import process</div>
+          <div class="output-sub">A single operational standard for how shipments are managed in MyFreight across all three countries</div>
+        </div>
+      </div>
+      <div class="output-card">
+        <div class="output-num">02</div>
+        <div>
+          <div class="output-title">Defined and signed-off operational stages</div>
+          <div class="output-sub">Nine operational stages with agreed task lists, automation logic, and workgroup assignments</div>
+        </div>
+      </div>
+      <div class="output-card">
+        <div class="output-num">03</div>
+        <div>
+          <div class="output-title">Country exception log</div>
+          <div class="output-sub">All justified country-specific deviations from the global standard, formally approved</div>
+        </div>
+      </div>
+      <div class="output-card">
+        <div class="output-num">04</div>
+        <div>
+          <div class="output-title">Implementation plan</div>
+          <div class="output-sub">Sequenced delivery plan with owners and milestones, anchored to the NL June go-live</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Workshop structure</div>
+    <div class="days-grid">
+      <div class="day-card">
+        <div class="day-head">
+          <div class="day-label">Day 1</div>
+          <div class="day-title">Align &amp; propose</div>
+        </div>
+        <div class="day-body">
+          <div class="day-desc">Walk through the pre-built proposal for all nine operational stages. Each stage is validated, country differences are surfaced, and open items are logged.</div>
+          <div class="decision-list">
+            <div class="decision-item"><span class="d-dot"></span>Global process proposal presented and reviewed</div>
+            <div class="decision-item"><span class="d-dot"></span>Country differences identified and categorised</div>
+            <div class="decision-item"><span class="d-dot"></span>Open items logged with owners</div>
+          </div>
+        </div>
+      </div>
+      <div class="day-card">
+        <div class="day-head">
+          <div class="day-label">Day 2</div>
+          <div class="day-title">Resolve, finalise &amp; plan</div>
+        </div>
+        <div class="day-body">
+          <div class="day-desc">Resolve outstanding items, formally sign off the global standard and country exception log, and agree the implementation plan.</div>
+          <div class="decision-list">
+            <div class="decision-item"><span class="d-dot"></span>Open items resolved or formally parked</div>
+            <div class="decision-item"><span class="d-dot"></span>Country exception log approved</div>
+            <div class="decision-item"><span class="d-dot"></span>Implementation plan agreed and owned</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Attendees</div>
+    <div class="attendees-row">
+      <span class="attendee-chip">Head of Forwarding</span>
+	  <span class="attendee-chip">CEO</span>
+      <span class="attendee-chip">Key Users - FR</span>
+      <span class="attendee-chip">Key Users - DE</span>
+      <span class="attendee-chip">Key Users - NL</span>
+      <span class="attendee-chip">IT / Application Management</span>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <span class="footer-note">Prepared by IT / Application Management · GDB Logistics</span>
+    <span class="footer-ref">For director review and sign-off</span>
+  </div>
+
+</div>
+</body>
+</html>
