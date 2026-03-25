@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TG9 Financial Handling — Scenario Options</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #ffffff;
+  --bg2: #f7f6f2;
+  --bg3: #f0efe9;
+  --border: rgba(0,0,0,0.1);
+  --border2: rgba(0,0,0,0.18);
+  --border3: rgba(0,0,0,0.06);
+  --text: #1a1a18;
+  --text2: #5f5e5a;
+  --text3: #8b8a85;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14140f;
+    --bg2: #1c1c16;
+    --bg3: #232319;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --border3: rgba(255,255,255,0.04);
+    --text: #e8e6de;
+    --text2: #9c9a92;
+    --text3: #5f5e5a;
+  }
+}
+
+body {
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 2rem 1.5rem;
+}
+
+.doc { max-width: 720px; margin: 0 auto; }
+
+.toggle-row { display: flex; gap: 8px; margin-bottom: 2rem; }
+
+.tog-btn {
+  font-size: 13px; font-weight: 500; padding: 6px 16px;
+  border-radius: 20px; border: 0.5px solid var(--border2);
+  background: var(--bg); color: var(--text2);
+  cursor: pointer; transition: all .15s; font-family: inherit;
+}
+.tog-btn.active {
+  background: var(--text); color: var(--bg); border-color: var(--text);
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+.doc-header {
+  padding-bottom: 1.25rem; margin-bottom: 1.75rem;
+  border-bottom: 0.5px solid var(--border2);
+}
+.kicker {
+  font-size: 11px; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--text3); margin-bottom: .5rem;
+}
+.doc-title { font-size: 26px; font-weight: 500; line-height: 1.2; margin-bottom: .5rem; }
+
+.badge {
+  font-size: 11px; font-weight: 600; padding: 3px 10px;
+  border-radius: 20px; display: inline-block; margin-top: .5rem;
+}
+.badge-blue  { background: #E6F1FB; color: #0C447C; border: 0.5px solid #85B7EB; }
+.badge-teal  { background: #E1F5EE; color: #085041; border: 0.5px solid #5DCAA5; }
+.badge-amber { background: #FAEEDA; color: #633806; border: 0.5px solid #EF9F27; }
+.badge-coral { background: #FAECE7; color: #712B13; border: 0.5px solid #F0997B; }
+
+@media (prefers-color-scheme: dark) {
+  .badge-blue  { background: #042C53; color: #B5D4F4; border-color: #185FA5; }
+  .badge-teal  { background: #04342C; color: #9FE1CB; border-color: #0F6E56; }
+  .badge-amber { background: #412402; color: #FAC775; border-color: #854F0B; }
+  .badge-coral { background: #4A1B0C; color: #F0997B; border-color: #993C1D; }
+}
+
+.section { margin-bottom: 1.75rem; }
+
+.section-label {
+  font-size: 11px; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--text3);
+  margin-bottom: .625rem; padding-bottom: .375rem;
+  border-bottom: 0.5px solid var(--border3);
+}
+
+.prose { font-size: 14px; line-height: 1.75; color: var(--text); }
+
+.flow-wrap { display: flex; flex-direction: column; gap: 6px; margin-bottom: 4px; }
+.flow-step { display: flex; align-items: flex-start; gap: 10px; }
+.flow-num { font-size: 11px; font-weight: 600; color: var(--text3); min-width: 20px; margin-top: 2px; }
+.flow-content { flex: 1; }
+.flow-title { font-size: 13px; font-weight: 500; color: var(--text); }
+.flow-sub { font-size: 12px; color: var(--text2); margin-top: 2px; line-height: 1.5; }
+.flow-arrow { font-size: 11px; color: var(--text3); padding-left: 30px; margin-top: 2px; margin-bottom: 4px; }
+
+.cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.card { border-radius: 8px; padding: 12px 14px; }
+.card-gains { background: #EAF3DE; }
+.card-costs { background: #FAECE7; }
+
+@media (prefers-color-scheme: dark) {
+  .card-gains { background: #173404; }
+  .card-costs { background: #4A1B0C; }
+}
+
+.card-label {
+  font-size: 11px; font-weight: 600; color: var(--text3);
+  text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px;
+}
+.card-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+.card-body { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+.decision-list { display: flex; flex-direction: column; gap: 8px; }
+.decision-item {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 10px 12px; border-radius: 8px;
+  border: 0.5px solid var(--border2);
+}
+.d-num { font-size: 11px; font-weight: 600; color: var(--text3); min-width: 18px; margin-top: 1px; }
+.d-content { flex: 1; }
+.d-q { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+.d-owner { font-size: 12px; color: var(--text2); }
+
+.doc-footer {
+  padding-top: 1rem; margin-top: 1.75rem;
+  border-top: 0.5px solid var(--border3);
+  font-size: 12px; color: var(--text3);
+}
+
+@media (max-width: 520px) {
+  .cards-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <div class="toggle-row">
+    <button class="tog-btn active" onclick="show('a',this)">Option A — Ops-only model</button>
+    <button class="tog-btn" onclick="show('b',this)">Option B — Finance active model</button>
+  </div>
+
+  <!-- ── Option A ── -->
+  <div class="page active" id="page-a">
+    <div class="doc-header">
+      <div class="kicker">GDB Logistics · TG9 Financial Handling · April 14 workshop</div>
+      <div class="doc-title">Option A — Ops-only model</div>
+      <span class="badge badge-blue">MF scope: limited</span>
+      <span class="badge badge-teal" style="margin-left:6px">Finance: stays in Blue10</span>
+    </div>
+
+    <div class="section">
+      <div class="section-label">What this option means</div>
+      <p class="prose">MyFreight remains an Ops tool. Finance does not log in to MF. Ops records expected costs at the right moment in the shipment lifecycle, and Finance receives that data via Blue10 or an export — outside of MF. Invoice matching and approval continue as today, but now with a structured accrual to match against.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-label">How the process works</div>
+      <div class="flow-wrap">
+        <div class="flow-step">
+          <div class="flow-num">1</div>
+          <div class="flow-content">
+            <div class="flow-title">Milestone fires in MF</div>
+            <div class="flow-sub">ATD (origin incoterms) or ATA (destination incoterms) confirmed by MF live tracking. Accrual task automatically set to Pending on the shipment.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step">
+          <div class="flow-num">2</div>
+          <div class="flow-content">
+            <div class="flow-title">Ops records expected costs</div>
+            <div class="flow-sub">Ops opens the Accrual task and logs: supplier, shipment reference, charge code, expected amount, currency. Task set to Completed.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step">
+          <div class="flow-num">3</div>
+          <div class="flow-content">
+            <div class="flow-title">Agent invoice received</div>
+            <div class="flow-sub">Invoice document arrives via agent API. MF auto-forwards to Blue10 and marks Debit Note Received task as Completed.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step">
+          <div class="flow-num">4</div>
+          <div class="flow-content">
+            <div class="flow-title">Finance matches in Blue10</div>
+            <div class="flow-sub">Finance compares invoice against the accrual data received via export or Blue10 integration. Discrepancies resolved manually between Finance and Ops — outside MF.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step">
+          <div class="flow-num">5</div>
+          <div class="flow-content">
+            <div class="flow-title">Shipment closure gate</div>
+            <div class="flow-sub">Shipment cannot be closed in MF while Accrual task is Pending. Ops must complete the accrual before the shipment is marked done.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Tradeoffs</div>
+      <div class="cards-grid">
+        <div class="card card-gains">
+          <div class="card-label">What this gains</div>
+          <div class="card-body">Simpler scope and faster to implement. No Finance user provisioning needed. No new MF team logic. Accrual data is structured and available to Finance for the first time — a significant improvement on today's state.</div>
+        </div>
+        <div class="card card-costs">
+          <div class="card-label">What this costs</div>
+          <div class="card-body">Finance has no live visibility inside MF. Disputes and discrepancies are handled manually outside the system with no audit trail in MF. The loop between accrual and invoice resolution is not closed in one place.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Decisions needed</div>
+      <div class="decision-list">
+        <div class="decision-item">
+          <div class="d-num">1</div>
+          <div class="d-content">
+            <div class="d-q">Do we proceed with Option A, or do we move to Option B?</div>
+            <div class="d-owner">Decision owner: Finance + Ops + IT</div>
+          </div>
+        </div>
+        <div class="decision-item">
+          <div class="d-num">2</div>
+          <div class="d-content">
+            <div class="d-q">ATD trigger for origin incoterms — use ATD, or default to ATA for all?</div>
+            <div class="d-owner">Decision owner: Dev assessment + Finance/Ops sign-off</div>
+          </div>
+        </div>
+        <div class="decision-item">
+          <div class="d-num">3</div>
+          <div class="d-content">
+            <div class="d-q">How does Finance receive accrual data from MF — export, report, or Blue10 integration?</div>
+            <div class="d-owner">Decision owner: Finance + IT</div>
+          </div>
+        </div>
+        <div class="decision-item">
+          <div class="d-num">4</div>
+          <div class="d-content">
+            <div class="d-q">Shipment closure gate — hard block or soft warning?</div>
+            <div class="d-owner">Decision owner: Dev assessment + Ops</div>
+          </div>
+        </div>
+        <div class="decision-item">
+          <div class="d-num">5</div>
+          <div class="d-content">
+            <div class="d-q">Charge code list — who maintains it and where?</div>
+            <div class="d-owner">Decision owner: Finance + Forwarding</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-footer">GDB Logistics · IT / Application Management · For discussion April 14, 2026</div>
+  </div>
+
+  <!-- ── Option B ── -->
+  <div class="page" id="page-b">
+    <div class="doc-header">
+      <div class="kicker">GDB Logistics · TG9 Financial Handling · April 14 workshop</div>
+      <div class="doc-title">Option B — Finance active model</div>
+      <span class="badge badge-coral">MF scope: extended</span>
+      <span class="badge badge-amber" style="margin-left:6px">Finance: works in MF</span>
+    </div>
+
+    <div class="section">
+      <div class="section-label">What this option means</div>
+      <p class="prose">Finance users are provisioned in MyFreight and work actively within a dedicated Financial Handling team. Ops records the accrual; Finance picks up from there — invoice verification, matching, approval or dispute — all inside MF. The full financial loop is closed in one system, with a complete audit trail.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-label">How the process works</div>
+      <div class="flow-wrap">
+        <div class="flow-step">
+          <div class="flow-num">1</div>
+          <div class="flow-content">
+            <div class="flow-title">Milestone fires in MF</div>
+            <div class="flow-sub">ATD (origin incoterms) or ATA (destination incoterms) confirmed by MF live tracking. Accrual task automatically set to Pending on the shipment.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step">
+          <div class="flow-num">2</div>
+          <div class="flow-content">
+            <div class="flow-title">Ops records expected costs</div>
+            <div class="flow-sub">Ops opens the Accrual task and logs: supplier, shipment reference, charge code, expected amount, currency. Task set to Completed — visible to Finance in the Financial Handling team filter.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step">
+          <div class="flow-num">3</div>
+          <div class="flow-content">
+            <div class="flow-title">Invoice received — auto-forwarded to Blue10</div>
+            <div class="flow-sub">Agent invoice arrives, MF forwards to Blue10 and creates Invoice Verification task set to Pending. Task is held if Accrual task is not yet Completed.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step">
+          <div class="flow-num">4</div>
+          <div class="flow-content">
+            <div class="flow-title">Finance verifies in MF</div>
+            <div class="flow-sub">Finance opens Invoice Verification task. Compares invoice against accrual. Match → Invoice Approved. Mismatch → Dispute task created.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step">
+          <div class="flow-num">5</div>
+          <div class="flow-content">
+            <div class="flow-title">Dispute resolution (if needed)</div>
+            <div class="flow-sub">Finance and Ops resolve discrepancy. Outcome logged in MF — credit note raised, amount adjusted, or invoice accepted as is. Dispute task Completed.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-step">
+          <div class="flow-num">6</div>
+          <div class="flow-content">
+            <div class="flow-title">Shipment closure gate</div>
+            <div class="flow-sub">Shipment cannot be closed while Accrual or Dispute task is Pending. Full financial loop must be closed before shipment is marked done.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Tradeoffs</div>
+      <div class="cards-grid">
+        <div class="card card-gains">
+          <div class="card-label">What this gains</div>
+          <div class="card-body">Full auditability end-to-end. Disputes structured and traceable in MF. No data leaving the system for financial steps. Sets up BC integration (2027) cleanly. Finance has live visibility of accrual status on every shipment.</div>
+        </div>
+        <div class="card card-costs">
+          <div class="card-label">What this costs</div>
+          <div class="card-body">Finance user provisioning and training. New Financial Handling team in MF with access controls. Significant development effort — trigger logic, status transitions, task sequencing, dispute handling. Error-sensitive; automations are required, not optional.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Decisions needed</div>
+      <div class="decision-list">
+        <div class="decision-item">
+          <div class="d-num">1</div>
+          <div class="d-content">
+            <div class="d-q">Do Finance users get full MF access or read-only outside their tasks?</div>
+            <div class="d-owner">Decision owner: Finance + IT</div>
+          </div>
+        </div>
+        <div class="decision-item">
+          <div class="d-num">2</div>
+          <div class="d-content">
+            <div class="d-q">ATD trigger for origin incoterms — use ATD, or default to ATA for all?</div>
+            <div class="d-owner">Decision owner: Dev assessment + Finance/Ops sign-off</div>
+          </div>
+        </div>
+        <div class="decision-item">
+          <div class="d-num">3</div>
+          <div class="d-content">
+            <div class="d-q">Invoice Verification gate — hold until accrual is complete, or allow with warning?</div>
+            <div class="d-owner">Decision owner: Finance + Dev</div>
+          </div>
+        </div>
+        <div class="decision-item">
+          <div class="d-num">4</div>
+          <div class="d-content">
+            <div class="d-q">Invoice Approved — implicit on match, or explicit Finance approval step required?</div>
+            <div class="d-owner">Decision owner: Finance</div>
+          </div>
+        </div>
+        <div class="decision-item">
+          <div class="d-num">5</div>
+          <div class="d-content">
+            <div class="d-q">Shipment closure gate — hard block or soft warning?</div>
+            <div class="d-owner">Decision owner: Dev assessment + Ops</div>
+          </div>
+        </div>
+        <div class="decision-item">
+          <div class="d-num">6</div>
+          <div class="d-content">
+            <div class="d-q">Charge code list — who maintains it and where?</div>
+            <div class="d-owner">Decision owner: Finance + Forwarding</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-footer">GDB Logistics · IT / Application Management · For discussion April 14, 2026</div>
+  </div>
+
+</div>
+
+<script>
+function show(opt, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tog-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + opt).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
