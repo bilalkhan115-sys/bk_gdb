@@ -106,20 +106,25 @@ body {
 .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
 .card { border-radius: 8px; padding: 12px 14px; }
-.card-gains { background: #EAF3DE; }
-.card-costs { background: #FAECE7; }
+.card-gains { background: #F2F9EA; border: 0.5px solid #B8D98A; }
+.card-costs { background: #FEF3EE; border: 0.5px solid #F5B99A; }
 
 @media (prefers-color-scheme: dark) {
-  .card-gains { background: #173404; }
-  .card-costs { background: #4A1B0C; }
+  .card-gains { background: #1A3D06; border-color: #4A7A20; }
+  .card-costs { background: #4A1B0C; border-color: #8A3010; }
 }
 
 .card-label {
-  font-size: 11px; font-weight: 600; color: var(--text3);
-  text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px;
+  font-size: 11px; font-weight: 700; color: var(--text);
+  text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px;
 }
 .card-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
-.card-body { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.card-body { font-size: 12px; color: var(--text); line-height: 1.7; }
+.card-body ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 5px; }
+.card-body ul li { display: flex; align-items: flex-start; gap: 7px; }
+.card-body ul li::before { content: ''; width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; margin-top: 8px; }
+.card-gains .card-body ul li::before { background: #4A8A18; }
+.card-costs .card-body ul li::before { background: #C04A20; }
 
 .decision-list { display: flex; flex-direction: column; gap: 8px; }
 .decision-item {
@@ -146,11 +151,6 @@ body {
 <body>
 <div class="doc">
 
-  <div class="toggle-row">
-    <button class="tog-btn active" onclick="show('a',this)">Option A — Ops-only model</button>
-    <button class="tog-btn" onclick="show('b',this)">Option B — Finance active model</button>
-  </div>
-
   <!-- ── Option A ── -->
   <div class="page active" id="page-a">
     <div class="doc-header">
@@ -158,7 +158,11 @@ body {
       <div class="doc-title">Option A — Ops-only model</div>
       <span class="badge badge-blue">MF scope: limited</span>
       <span class="badge badge-teal" style="margin-left:6px">Finance: stays in Blue10</span>
-    </div>
+    <div class="toggle-row" style="margin-top:1rem;margin-bottom:0">
+        <button class="tog-btn active" onclick="show('a',this)">Option A — Ops-only model</button>
+        <button class="tog-btn" onclick="show('b',this)">Option B — Finance active model</button>
+      </div>
+	</div>
 
     <div class="section">
       <div class="section-label">What this option means</div>
@@ -172,7 +176,7 @@ body {
           <div class="flow-num">1</div>
           <div class="flow-content">
             <div class="flow-title">Milestone fires in MF</div>
-            <div class="flow-sub">ATD (origin incoterms) or ATA (destination incoterms) confirmed by MF live tracking. Accrual task automatically set to Pending on the shipment.</div>
+            <div class="flow-sub">ATD (for origin incoterms) or ATA (for destination incoterms) confirmed by MF live tracking. Accrual task automatically set to Pending on the shipment.</div>
           </div>
         </div>
         <div class="flow-arrow">↓</div>
@@ -215,11 +219,20 @@ body {
       <div class="cards-grid">
         <div class="card card-gains">
           <div class="card-label">What this gains</div>
-          <div class="card-body">Simpler scope and faster to implement. No Finance user provisioning needed. No new MF team logic. Accrual data is structured and available to Finance for the first time — a significant improvement on today's state.</div>
+          <div class="card-body"><ul>
+			<li>Simpler scope and faster to implement.</li>
+			<li>No Finance user provisioning needed.</li>
+			<li>No new MF team logic.</li>
+			<li>Accrual data is structured and available to Finance for the first time — a significant improvement on today's state.</li>
+			</ul></div>
         </div>
         <div class="card card-costs">
           <div class="card-label">What this costs</div>
-          <div class="card-body">Finance has no live visibility inside MF. Disputes and discrepancies are handled manually outside the system with no audit trail in MF. The loop between accrual and invoice resolution is not closed in one place.</div>
+          <div class="card-body"><ul>
+  <li>Finance has no live visibility inside MF.</li>
+  <li>Disputes and discrepancies are handled manually outside the system with no audit trail in MF.</li>
+  <li>The loop between accrual and invoice resolution is not closed in one place.</li>
+</ul></div>
         </div>
       </div>
     </div>
@@ -275,7 +288,11 @@ body {
       <div class="doc-title">Option B — Finance active model</div>
       <span class="badge badge-coral">MF scope: extended</span>
       <span class="badge badge-amber" style="margin-left:6px">Finance: works in MF</span>
-    </div>
+    <div class="toggle-row" style="margin-top:1rem;margin-bottom:0">
+        <button class="tog-btn" onclick="show('a',this)">Option A — Ops-only model</button>
+        <button class="tog-btn active" onclick="show('b',this)">Option B — Finance active model</button>
+      </div>
+	</div>
 
     <div class="section">
       <div class="section-label">What this option means</div>
@@ -340,11 +357,22 @@ body {
       <div class="cards-grid">
         <div class="card card-gains">
           <div class="card-label">What this gains</div>
-          <div class="card-body">Full auditability end-to-end. Disputes structured and traceable in MF. No data leaving the system for financial steps. Sets up BC integration (2027) cleanly. Finance has live visibility of accrual status on every shipment.</div>
+          <div class="card-body"><ul>
+  <li>Full auditability end-to-end.</li>
+  <li>Disputes structured and traceable in MF.</li>
+  <li>No data leaving the system for financial steps.</li>
+  <li>Sets up BC integration (2027) cleanly.</li>
+  <li>Finance has live visibility of accrual status on every shipment.</li>
+</ul></div>
         </div>
         <div class="card card-costs">
           <div class="card-label">What this costs</div>
-          <div class="card-body">Finance user provisioning and training. New Financial Handling team in MF with access controls. Significant development effort — trigger logic, status transitions, task sequencing, dispute handling. Error-sensitive; automations are required, not optional.</div>
+          <div class="card-body"><ul>
+  <li>Finance user provisioning and training.</li>
+  <li>New Financial Handling team in MF with access controls.</li>
+  <li>Significant development effort — trigger logic, status transitions, task sequencing, dispute handling.</li>
+  <li>Error-sensitive; automations are required, not optional.</li>
+</ul></div>
         </div>
       </div>
     </div>
@@ -407,7 +435,11 @@ function show(opt, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tog-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('page-' + opt).classList.add('active');
-  btn.classList.add('active');
+  document.querySelectorAll('.tog-btn').forEach(b => {
+    if (b.textContent.toLowerCase().includes('option ' + opt)) {
+      b.classList.add('active');
+    }
+  });
 }
 </script>
 </body>
