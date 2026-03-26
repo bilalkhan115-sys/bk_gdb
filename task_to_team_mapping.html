@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TG to Team Mapping — GDB Logistics</title>
+<title>Operational Stage to Team Mapping — GDB Logistics</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -175,8 +175,8 @@ td { padding: 9px 14px; vertical-align: middle; line-height: 1.4; }
 
   <div class="header">
     <div class="header-eyebrow">GDB Logistics · MyFreight · Ocean Import</div>
-    <div class="header-title">TG to team mapping</div>
-    <div class="header-sub">Task group tasks assigned to MF workgroup teams — all countries, Ocean Import</div>
+    <div class="header-title">Operational Stage to Team mapping</div>
+    <div class="header-sub">Operational stage tasks assigned to MF workgroup teams — all countries, Ocean Import</div>
   </div>
 
   <div class="legend">
@@ -202,7 +202,7 @@ td { padding: 9px 14px; vertical-align: middle; line-height: 1.4; }
       <thead>
         <tr>
           <th style="width:50px"></th>
-          <th style="width:110px">Task group</th>
+          <th style="width:110px">Operational Stage</th>
           <th style="width:175px">Task</th>
           <th>Notes</th>
           <th style="width:148px">Automation</th>
@@ -233,94 +233,94 @@ const AUTO = {
 };
 
 const TG_COLORS = {
-  TG1: { bg: '#EEEDFE', color: '#534AB7' },
-  TG2: { bg: '#EEEDFE', color: '#534AB7' },
-  TG3: { bg: '#E1F5EE', color: '#0F6E56' },
-  TG4: { bg: '#E1F5EE', color: '#0F6E56' },
-  TG5: { bg: '#E6F1FB', color: '#185FA5' },
-  TG6: { bg: '#E1F5EE', color: '#0F6E56' },
-  TG7: { bg: '#E6F1FB', color: '#185FA5' },
-  TG8: { bg: '#E6F1FB', color: '#185FA5' },
-  TG9: { bg: '#FAECE7', color: '#993C1D' },
-  DEV: { bg: '#FAEEDA', color: '#854F0B' },
+  STG1: { bg: '#EEEDFE', color: '#534AB7' },
+  STG2: { bg: '#EEEDFE', color: '#534AB7' },
+  STG3: { bg: '#E1F5EE', color: '#0F6E56' },
+  STG4: { bg: '#E1F5EE', color: '#0F6E56' },
+  STG5: { bg: '#E6F1FB', color: '#185FA5' },
+  STG6: { bg: '#E1F5EE', color: '#0F6E56' },
+  STG7: { bg: '#E6F1FB', color: '#185FA5' },
+  STG8: { bg: '#E6F1FB', color: '#185FA5' },
+  STG9: { bg: '#FAECE7', color: '#993C1D' },
+  DEV:  { bg: '#FAEEDA', color: '#854F0B' },
 };
 
 const rows = [
-  { tg:'TG1', tgLabel:'Booking intake & validation', task:'Validate booking',
+  { tg:'STG1', tgLabel:'Booking intake & validation', task:'Validate booking',
     note:'Auto-completed for API bookings with all fields present. Pending for manual/exception bookings. All countries.',
     auto:'full', team:'booking' },
-  { tg:'TG1', tgLabel:'Booking intake & validation', task:'Request booking confirmation',
+  { tg:'STG1', tgLabel:'Booking intake & validation', task:'Request booking confirmation',
     note:'DE and NL only. FR does not send booking confirmation (country delta #1).',
     auto:'manual', team:'booking' },
-  { tg:'TG1', tgLabel:'Booking intake & validation', task:'Agent booking communication',
+  { tg:'STG1', tgLabel:'Booking intake & validation', task:'Agent booking communication',
     note:'All countries. Action task when agent communication is needed.',
     auto:'exception', team:'booking' },
 
-  { tg:'TG2', tgLabel:'Shipment data completion', task:'Check agent update',
+  { tg:'STG2', tgLabel:'Shipment data completion', task:'Check agent update',
     note:'API shipments only. Resets to Pending on each agent update from SnapLogic.',
     auto:'recurring', team:'booking' },
-  { tg:'TG2', tgLabel:'Shipment data completion', task:'Complete shipment data',
+  { tg:'STG2', tgLabel:'Shipment data completion', task:'Complete shipment data',
     note:'Non-API shipments only. Full checklist: parties, transport, cargo, documents.',
     auto:'manual', team:'booking' },
-  { tg:'TG2', tgLabel:'Shipment data completion', task:'Agent booking communication',
-    note:'Shared with TG1. Triggered when data is missing after agent update.',
+  { tg:'STG2', tgLabel:'Shipment data completion', task:'Agent booking communication',
+    note:'Shared with STG1. Triggered when data is missing after agent update.',
     auto:'exception', team:'booking' },
-  { tg:'TG2', tgLabel:'Shipment data completion', task:'Seaway bill released',
-    note:'Placement TBD — TG2 or TG3. Auto-triggered when seaway bill confirmed.',
+  { tg:'STG2', tgLabel:'Shipment data completion', task:'Seaway bill released',
+    note:'Placement TBD — STG2 or STG3. Auto-triggered when seaway bill confirmed.',
     auto:'full', team:'booking', review:true },
 
-  { tg:'TG3', tgLabel:'Document verification', task:'Verify commercial invoice',
+  { tg:'STG3', tgLabel:'Document verification', task:'Verify commercial invoice',
     note:'All countries. Manual check against shipment data.',
     auto:'manual', team:'documentation' },
-  { tg:'TG3', tgLabel:'Document verification', task:'Verify packing list',
+  { tg:'STG3', tgLabel:'Document verification', task:'Verify packing list',
     note:'All countries. Manual check against shipment data.',
     auto:'manual', team:'documentation' },
-  { tg:'TG3', tgLabel:'Document verification', task:'Verify HBL / TLX / seaway bill',
-    note:'Document type depends on shipment. Overlap with TG2 documents section TBD.',
+  { tg:'STG3', tgLabel:'Document verification', task:'Verify HBL / TLX / seaway bill',
+    note:'Document type depends on shipment. Overlap with STG2 documents section TBD.',
     auto:'manual', team:'documentation', review:true },
 
-  { tg:'TG4', tgLabel:'Customs processing', task:'Submit customs declaration',
+  { tg:'STG4', tgLabel:'Customs processing', task:'Submit customs declaration',
     note:'Submitted via Maco. All countries, country-specific rules apply.',
     auto:'manual', team:'documentation' },
-  { tg:'TG4', tgLabel:'Customs processing', task:'Customs clearance confirmed',
+  { tg:'STG4', tgLabel:'Customs processing', task:'Customs clearance confirmed',
     note:'Auto-completed on confirmation message received from Maco.',
     auto:'full', team:'documentation' },
-  { tg:'TG4', tgLabel:'Customs processing', task:'Customs rejection handling',
+  { tg:'STG4', tgLabel:'Customs processing', task:'Customs rejection handling',
     note:'Triggered on API rejection from Maco. Surfaces in Error Handling team.',
     auto:'exception', team:'error' },
 
-  { tg:'TG5', tgLabel:'Arrival monitoring', task:'Monitor vessel ETA',
-  note:'Planned dates (ETD/ETA) provided by agent API. Actual dates (ATD/ATA) tracked by MF native live tracking. Partial manual for inland/feeder services.',
-  auto:'recurring', team:'operations' },
-  { tg:'TG5', tgLabel:'Arrival monitoring', task:'Confirm arrival at POD',
+  { tg:'STG5', tgLabel:'Arrival monitoring', task:'Monitor vessel ETA',
+    note:'Planned dates (ETD/ETA) provided by agent API. Actual dates (ATD/ATA) tracked by MF native live tracking. Partial manual for inland/feeder services.',
+    auto:'recurring', team:'operations' },
+  { tg:'STG5', tgLabel:'Arrival monitoring', task:'Confirm arrival at POD',
     note:'Auto-completed on ATA event from carrier or agent update.',
     auto:'full', team:'operations' },
 
-  { tg:'TG6', tgLabel:'Carrier release', task:'Carrier release confirmed',
-  note:'Automation status to be confirmed during TG walkthrough. No confirmed integration with carrier system established.',
-  auto:'manual', team:'documentation', review:true },
-  { tg:'TG6', tgLabel:'Carrier release', task:'Carrier release confirmed',
+  { tg:'STG6', tgLabel:'Carrier release', task:'Request carrier release',
+    note:'Automation status to be confirmed during operational stage walkthrough. No confirmed integration with carrier system established.',
+    auto:'manual', team:'documentation', review:true },
+  { tg:'STG6', tgLabel:'Carrier release', task:'Carrier release confirmed',
     note:'Auto-completed on release confirmation from carrier system.',
     auto:'full', team:'documentation' },
 
-  { tg:'TG7', tgLabel:'Delivery planning', task:'Plan delivery',
+  { tg:'STG7', tgLabel:'Delivery planning', task:'Plan delivery',
     note:'Manual. Coordinate with customer and transport provider.',
     auto:'manual', team:'operations' },
-  { tg:'TG7', tgLabel:'Delivery planning', task:'Confirm delivery appointment',
+  { tg:'STG7', tgLabel:'Delivery planning', task:'Confirm delivery appointment',
     note:'Manual confirmation once delivery slot is agreed.',
     auto:'manual', team:'operations' },
 
-  { tg:'TG8', tgLabel:'Operational handling', task:'Operational follow-up',
-    note:'Exception-based. Any outstanding operational action not covered by other TGs. Task definition to be tightened.',
+  { tg:'STG8', tgLabel:'Operational handling', task:'Operational follow-up',
+    note:'Exception-based. Any outstanding operational action not covered by other operational stages. Task definition to be tightened.',
     auto:'exception', team:'operations', review:true },
 
-  { tg:'TG9', tgLabel:'Financial handling', task:'Invoice verification',
+  { tg:'STG9', tgLabel:'Financial handling', task:'Invoice verification',
     note:'Blue10 integration. Manual review of freight invoice against booking.',
     auto:'manual', team:'financial' },
-  { tg:'TG9', tgLabel:'Financial handling', task:'Invoice approved',
+  { tg:'STG9', tgLabel:'Financial handling', task:'Invoice approved',
     note:'Manual approval. Triggers downstream payment process.',
     auto:'manual', team:'financial' },
-  { tg:'TG9', tgLabel:'Financial handling', task:'Credit note / dispute',
+  { tg:'STG9', tgLabel:'Financial handling', task:'Credit note / dispute',
     note:'Exception-based. Raised when invoice does not match.',
     auto:'exception', team:'financial' },
 
