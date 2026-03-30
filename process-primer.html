@@ -397,14 +397,14 @@ const steps = [
   {
     label: "Step 3 of 6",
     title: "Four teams cover all operational work",
-    sub: "Each team maps to a distinct phase of the Ocean Import process. Tasks defined in TG1–TG9 each belong to exactly one team.",
+    sub: "Each team maps to a distinct phase of the Ocean Import process. Tasks defined in STG-1 through STG-8 each belong to exactly one team.",
     render() {
       return `
         <div class="concept-grid">
           <div class="concept-card cc-purple">
             <div class="cc-title">Import booking</div>
             <div class="cc-sub">All booking intake and data completion tasks</div>
-            <span class="cc-tag">TG1 · TG2</span>
+            <span class="cc-tag">STG-1 · STG-2</span>
             <div class="cc-tasks">
               <span class="task-pill">Validate booking</span>
               <span class="task-pill">Check agent update</span>
@@ -415,7 +415,7 @@ const steps = [
           <div class="concept-card cc-teal">
             <div class="cc-title">Import documentation</div>
             <div class="cc-sub">Document verification, customs, carrier release</div>
-            <span class="cc-tag">TG3 · TG4 · TG6</span>
+            <span class="cc-tag">STG-3 · STG-4 · STG-6</span>
             <div class="cc-tasks">
               <span class="task-pill">Document verification</span>
               <span class="task-pill">Customs submission</span>
@@ -425,7 +425,7 @@ const steps = [
           <div class="concept-card cc-blue">
             <div class="cc-title">Import operations</div>
             <div class="cc-sub">Arrival, delivery planning, operational handling</div>
-            <span class="cc-tag">TG5 · TG7 · TG8</span>
+            <span class="cc-tag">STG-5 · STG-7</span>
             <div class="cc-tasks">
               <span class="task-pill">Arrival monitoring</span>
               <span class="task-pill">Delivery planning</span>
@@ -442,7 +442,7 @@ const steps = [
             </div>
           </div>
         </div>
-        <div class="highlight-box">Financial handling (TG9) sits separately and will be assigned to the finance workgroup rather than an ops team — discussed during the TG review sessions.</div>`;
+        <div class="highlight-box">Financial handling (STG-8) is assigned to the finance workgroup. It covers accruals, invoice verification, and shipment closure — the final stage before a shipment is marked complete.</div>`;
     }
   },
   {
@@ -553,7 +553,7 @@ const steps = [
             {t:'Error handling', c:'cc-amber', d:'Proactive triage of integration and customs errors'},
           ].map(i=>`<div class="concept-card ${i.c}"><div class="cc-title">${i.t}</div><div class="cc-sub" style="font-size:11px">${i.d}</div></div>`).join('')}
         </div>
-        <div class="highlight-box"><strong>What this requires:</strong> Every task in TG1–TG9 must be assigned to exactly one team. That mapping is agreed during the workshop.</div>`;
+        <div class="highlight-box"><strong>What this requires:</strong> Every task in STG-1 through STG-8 must be assigned to exactly one team. That mapping is agreed during the workshop.</div>`;
     }
   }
 ];
