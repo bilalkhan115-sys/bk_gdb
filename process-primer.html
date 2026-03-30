@@ -52,7 +52,7 @@ body {
 }
 
 .container {
-  max-width: 780px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
@@ -236,7 +236,7 @@ body {
 /* ── Concept cards ── */
 .concept-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 10px;
   margin-bottom: 14px;
 }
@@ -275,6 +275,20 @@ body {
 .cc-gray .cc-title { color: var(--text); }
 .cc-gray .cc-sub   { color: var(--text2); }
 .cc-gray .task-pill { background: var(--bg3); color: var(--text2); }
+
+.cc-coral { background: #FAECE7; border-color: #F0997B; }
+.cc-coral .cc-title { color: #4A1B0C; }
+.cc-coral .cc-sub   { color: #993C1D; }
+.cc-coral .cc-tag   { background: #F5C4B3; color: #4A1B0C; }
+.cc-coral .task-pill { background: rgba(153,60,29,.12); color: #4A1B0C; }
+
+@media (prefers-color-scheme: dark) {
+  .cc-coral { background: #4A1B0C; border-color: #993C1D; }
+  .cc-coral .cc-title { color: #F5C4B3; }
+  .cc-coral .cc-sub   { color: #F0997B; }
+  .cc-coral .cc-tag   { background: #712B13; color: #F5C4B3; }
+  .cc-coral .task-pill { background: rgba(240,153,123,.12); color: #F5C4B3; }
+}
 
 .cc-title { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
 .cc-sub   { font-size: 12px; line-height: 1.5; margin-bottom: 6px; }
@@ -396,14 +410,14 @@ const steps = [
   },
   {
     label: "Step 3 of 6",
-    title: "Four teams cover all operational work",
+    title: "Five teams cover all operational work",
     sub: "Each team maps to a distinct phase of the Ocean Import process. Tasks defined in STG-1 through STG-8 each belong to exactly one team.",
     render() {
       return `
         <div class="concept-grid">
           <div class="concept-card cc-purple">
             <div class="cc-title">Import booking</div>
-            <div class="cc-sub">All booking intake and data completion tasks</div>
+            <div class="cc-sub">Booking intake and data completion</div>
             <span class="cc-tag">STG-1 · STG-2</span>
             <div class="cc-tasks">
               <span class="task-pill">Validate booking</span>
@@ -424,12 +438,22 @@ const steps = [
           </div>
           <div class="concept-card cc-blue">
             <div class="cc-title">Import operations</div>
-            <div class="cc-sub">Arrival, delivery planning, operational handling</div>
+            <div class="cc-sub">Arrival monitoring and delivery planning</div>
             <span class="cc-tag">STG-5 · STG-7</span>
             <div class="cc-tasks">
               <span class="task-pill">Arrival monitoring</span>
               <span class="task-pill">Delivery planning</span>
-              <span class="task-pill">Operational handling</span>
+              <span class="task-pill">Empty container return</span>
+            </div>
+          </div>
+          <div class="concept-card cc-coral">
+            <div class="cc-title">Financial handling</div>
+            <div class="cc-sub">Accruals, invoice verification, shipment closure</div>
+            <span class="cc-tag">STG-8</span>
+            <div class="cc-tasks">
+              <span class="task-pill">Record accrual</span>
+              <span class="task-pill">Invoice verification</span>
+              <span class="task-pill">Close shipment</span>
             </div>
           </div>
           <div class="concept-card cc-amber">
@@ -441,8 +465,7 @@ const steps = [
               <span class="task-pill">Customs rejection</span>
             </div>
           </div>
-        </div>
-        <div class="highlight-box">Financial handling (STG-8) is assigned to the finance workgroup. It covers accruals, invoice verification, and shipment closure — the final stage before a shipment is marked complete.</div>`;
+        </div>`;
     }
   },
   {
