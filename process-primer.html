@@ -568,12 +568,13 @@ const steps = [
           <div class="cc-title">Ops users scan task queues by type</div>
           <div class="cc-sub">A user opens "Import Booking" and works through every shipment with a booking task — regardless of who handles that shipment otherwise. The task queue is shared. Any qualified person can pick up the next item.</div>
         </div>
-        <div class="team-grid">
+        <div class="team-grid" style="grid-template-columns:repeat(5,1fr)">
           ${[
-            {t:'Import booking',  c:'cc-purple', d:'Scan daily for new bookings and agent updates'},
-            {t:'Import documentation', c:'cc-teal', d:'Work through pending document and customs tasks'},
-            {t:'Import operations', c:'cc-blue', d:'Monitor arrivals and manage delivery planning'},
-            {t:'Error handling', c:'cc-amber', d:'Proactive triage of integration and customs errors'},
+            {t:'Import booking',       c:'cc-purple', d:'Scan daily for new bookings and agent updates'},
+            {t:'Import documentation', c:'cc-teal',   d:'Work through pending document and customs tasks'},
+            {t:'Import operations',    c:'cc-blue',   d:'Monitor arrivals and manage delivery planning'},
+            {t:'Financial handling',   c:'cc-coral',  d:'Record accruals, verify invoices, close shipments'},
+            {t:'Error handling',       c:'cc-amber',  d:'Proactive triage of integration and customs errors'},
           ].map(i=>`<div class="concept-card ${i.c}"><div class="cc-title">${i.t}</div><div class="cc-sub" style="font-size:11px">${i.d}</div></div>`).join('')}
         </div>
         <div class="highlight-box"><strong>What this requires:</strong> Every task in STG-1 through STG-8 must be assigned to exactly one team. That mapping is agreed during the workshop.</div>`;
