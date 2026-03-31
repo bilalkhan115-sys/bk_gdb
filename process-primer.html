@@ -437,7 +437,7 @@ const steps = [
           <div class="concept-card cc-teal">
             <div class="cc-title">Import documentation</div>
             <div class="cc-sub">Document verification, customs, carrier release</div>
-            <span class="cc-tag">STG-3 · STG-4 · STG-6</span>
+            <span class="cc-tag">STG-3 · STG-4</span>
             <div class="cc-tasks">
               <span class="task-pill">Document verification</span>
               <span class="task-pill">Customs submission</span>
@@ -446,8 +446,8 @@ const steps = [
           </div>
           <div class="concept-card cc-blue">
             <div class="cc-title">Import operations</div>
-            <div class="cc-sub">Arrival monitoring and delivery planning</div>
-            <span class="cc-tag">STG-5 · STG-7</span>
+            <div class="cc-sub">Arrival monitoring, carrier release, delivery planning</div>
+            <span class="cc-tag">STG-5 · STG-6 · STG-7</span>
             <div class="cc-tasks">
               <span class="task-pill">Arrival monitoring</span>
               <span class="task-pill">Delivery planning</span>
@@ -580,7 +580,7 @@ const steps = [
           ${[
             {t:'Import booking',       c:'cc-purple', d:'Scan daily for new bookings and agent updates'},
             {t:'Import documentation', c:'cc-teal',   d:'Work through pending document and customs tasks'},
-            {t:'Import operations',    c:'cc-blue',   d:'Monitor arrivals and manage delivery planning'},
+            {t:'Import operations',    c:'cc-blue',   d:'Monitor arrivals, manage carrier release and delivery planning'},
             {t:'Financial handling',   c:'cc-coral',  d:'Record accruals, verify invoices, close shipments'},
             {t:'Error handling',       c:'cc-amber',  d:'Proactive triage of integration and customs errors'},
           ].map(i=>`<div class="concept-card ${i.c}"><div class="cc-title">${i.t}</div><div class="cc-sub" style="font-size:11px">${i.d}</div></div>`).join('')}
