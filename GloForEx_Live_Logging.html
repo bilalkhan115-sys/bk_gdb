@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GloForEx — Live Workshop Log</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:      #0e0e0e;
+  --bg2:     #161616;
+  --bg3:     #1e1e1e;
+  --bg4:     #252525;
+  --border:  rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --border3: rgba(255,255,255,0.04);
+  --text:    #e8e6de;
+  --text2:   #8a8880;
+  --text3:   #505050;
+
+  --green:  #3fb950; --green-l: #1a3a1a; --green-d: #a7f3bc;
+  --blue:   #388bfd; --blue-l:  #0d2244; --blue-d:  #b8d4ff;
+  --amber:  #d29922; --amber-l: #2a1f00; --amber-d: #fac775;
+  --red:    #f85149; --red-l:   #2a0d0d; --red-d:   #ffb3b0;
+  --purple: #a371f7; --purple-l:#1e1040; --purple-d:#d2b9ff;
+  --teal:   #39d3aa; --teal-l:  #0a2820; --teal-d:  #9fedd9;
+
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'IBM Plex Sans', sans-serif;
+}
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ── Layout ── */
+.shell {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  grid-template-rows: 48px 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ── Topbar ── */
+.topbar {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  padding: 0 16px;
+  justify-content: space-between;
+}
+
+.topbar-left {
+  display: flex; align-items: center; gap: 12px;
+}
+
+.logo {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text2);
+  letter-spacing: .06em;
+}
+
+.logo span { color: var(--green); }
+
+.topbar-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  padding-left: 12px;
+  border-left: 1px solid var(--border2);
+}
+
+.topbar-right {
+  display: flex; align-items: center; gap: 8px;
+}
+
+.day-switch {
+  display: flex; gap: 4px;
+}
+
+.day-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all .15s;
+}
+.day-btn:hover { color: var(--text); border-color: var(--border2); background: var(--bg3); }
+.day-btn.active { background: var(--bg3); color: var(--text); border-color: var(--border2); }
+
+.btn-summary {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--border2);
+  background: var(--bg3);
+  color: var(--text);
+  cursor: pointer;
+  transition: all .15s;
+  margin-left: 8px;
+}
+.btn-summary:hover { background: var(--bg4); }
+
+.btn-export {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--green);
+  background: transparent;
+  color: var(--green);
+  cursor: pointer;
+  transition: all .15s;
+}
+.btn-export:hover { background: var(--green-l); }
+
+/* ── Sidebar ── */
+.sidebar {
+  border-right: 1px solid var(--border);
+  background: var(--bg);
+  overflow-y: auto;
+  padding: 12px 0;
+}
+
+.sidebar-section {
+  margin-bottom: 4px;
+}
+
+.sidebar-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  padding: 6px 14px 4px;
+}
+
+.stage-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 14px;
+  background: transparent;
+  border: none;
+  color: var(--text2);
+  font-family: var(--sans);
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+  border-radius: 0;
+  transition: all .1s;
+  position: relative;
+}
+
+.stage-btn:hover { background: var(--bg2); color: var(--text); }
+.stage-btn.active { background: var(--bg3); color: var(--text); }
+.stage-btn.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 4px; bottom: 4px;
+  width: 2px;
+  background: var(--blue);
+  border-radius: 0 2px 2px 0;
+}
+
+.stage-code {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  min-width: 34px;
+  text-align: center;
+}
+
+.stage-badge {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 10px;
+  display: none;
+}
+
+.stage-btn.has-changes .stage-badge { display: block; background: var(--amber-l); color: var(--amber-d); }
+.stage-btn.has-decisions .stage-badge { display: block; background: var(--blue-l); color: var(--blue-d); }
+.stage-btn.has-both .stage-badge { display: block; background: var(--purple-l); color: var(--purple-d); }
+
+/* Stage code colors */
+.s1 { background: rgba(56,139,253,.15); color: var(--blue-d); }
+.s2 { background: rgba(56,139,253,.15); color: var(--blue-d); }
+.s3 { background: rgba(57,211,170,.15); color: var(--teal-d); }
+.s4 { background: rgba(57,211,170,.15); color: var(--teal-d); }
+.s5 { background: rgba(56,139,253,.1);  color: var(--blue-d); }
+.s6 { background: rgba(57,211,170,.15); color: var(--teal-d); }
+.s7 { background: rgba(56,139,253,.1);  color: var(--blue-d); }
+.s8 { background: rgba(210,153,34,.15); color: var(--amber-d); }
+.sd { background: rgba(248,81,73,.15);  color: var(--red-d); }
+
+/* ── Main content ── */
+.main {
+  overflow-y: auto;
+  background: var(--bg2);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Decision bar at top */
+.decision-bar {
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.decision-bar-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+  letter-spacing: .06em;
+  white-space: nowrap;
+}
+
+.decision-input {
+  flex: 1;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--text);
+  outline: none;
+}
+.decision-input:focus { border-color: var(--blue); }
+.decision-input::placeholder { color: var(--text3); }
+
+.btn-log-decision {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 4px;
+  border: 1px solid var(--blue);
+  background: var(--blue-l);
+  color: var(--blue-d);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .15s;
+}
+.btn-log-decision:hover { background: rgba(56,139,253,.2); }
+
+/* Stage content */
+.stage-content {
+  flex: 1;
+  padding: 20px;
+}
+
+.stage-header {
+  margin-bottom: 16px;
+}
+
+.stage-header-top {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  margin-bottom: 4px;
+}
+
+.stage-name {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.stage-team-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 9px;
+  border-radius: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.stage-desc {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+/* Tasks section */
+.section-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+
+.section-hdr:first-of-type { margin-top: 0; }
+
+.section-hdr-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+
+.btn-add {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all .15s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.btn-add:hover { background: var(--bg3); color: var(--text); }
+
+/* Task cards */
+.task-list { display: flex; flex-direction: column; gap: 6px; }
+
+.task-card {
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  padding: 10px 12px;
+  transition: border-color .15s;
+}
+
+.task-card:hover { border-color: rgba(255,255,255,.2); }
+.task-card.modified { border-color: var(--amber); border-left-width: 3px; }
+.task-card.added { border-color: var(--green); border-left-width: 3px; }
+
+.task-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.task-name-display {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.task-actions { display: flex; gap: 4px; flex-shrink: 0; }
+
+.task-action-btn {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 3px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--text3);
+  cursor: pointer;
+  transition: all .15s;
+}
+.task-action-btn:hover { background: var(--bg3); color: var(--text2); }
+.task-action-btn.edit-btn:hover { border-color: var(--amber); color: var(--amber-d); }
+.task-action-btn.del-btn:hover  { border-color: var(--red); color: var(--red-d); }
+
+.task-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.task-pill {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  padding: 1px 7px;
+  border-radius: 10px;
+}
+
+.pill-auto-full      { background: #1a3a1a; color: #56d364; }
+.pill-auto-recurring { background: var(--blue-l); color: var(--blue-d); }
+.pill-auto-manual    { background: var(--bg3); color: var(--text3); }
+.pill-auto-exception { background: var(--amber-l); color: var(--amber-d); }
+
+.task-change-note {
+  font-size: 11px;
+  color: var(--amber-d);
+  font-style: italic;
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid var(--border3);
+}
+
+/* ── Edit modal ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.65);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+}
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  width: 100%;
+  max-width: 540px;
+  overflow: hidden;
+}
+
+.modal-head {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.modal-close {
+  font-size: 18px;
+  background: none;
+  border: none;
+  color: var(--text3);
+  cursor: pointer;
+  line-height: 1;
+  padding: 2px 6px;
+}
+.modal-close:hover { color: var(--text); }
+
+.modal-body { padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+
+.field { display: flex; flex-direction: column; gap: 5px; }
+
+.field-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+
+.field input, .field select, .field textarea {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  padding: 7px 10px;
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--text);
+  outline: none;
+  width: 100%;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--blue); }
+.field select option { background: var(--bg2); }
+.field textarea { resize: vertical; min-height: 60px; }
+
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.change-type-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.change-btn {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all .15s;
+}
+.change-btn:hover { background: var(--bg3); }
+.change-btn.active.scope    { background: var(--amber-l); color: var(--amber-d); border-color: var(--amber); }
+.change-btn.active.trigger  { background: var(--blue-l);  color: var(--blue-d);  border-color: var(--blue); }
+.change-btn.active.deadline { background: var(--purple-l);color: var(--purple-d);border-color: var(--purple); }
+.change-btn.active.name     { background: var(--teal-l);  color: var(--teal-d);  border-color: var(--teal); }
+.change-btn.active.other    { background: var(--bg3);     color: var(--text2);   border-color: var(--border2); }
+
+.modal-foot {
+  padding: 12px 18px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.btn-cancel {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 4px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--text2);
+  cursor: pointer;
+}
+
+.btn-save {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 4px;
+  border: 1px solid var(--green);
+  background: var(--green-l);
+  color: var(--green-d);
+  cursor: pointer;
+  transition: all .15s;
+}
+.btn-save:hover { background: rgba(63,185,80,.15); }
+
+/* Decisions list */
+.decision-cards { display: flex; flex-direction: column; gap: 6px; }
+
+.decision-card {
+  background: var(--blue-l);
+  border: 1px solid var(--blue);
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.decision-card.global { background: var(--purple-l); border-color: var(--purple); }
+
+.d-idx {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text3);
+  min-width: 20px;
+  margin-top: 1px;
+}
+
+.d-text { font-size: 13px; color: var(--text); flex: 1; }
+.d-time { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 3px; }
+
+.d-del {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--text3);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.d-del:hover { border-color: var(--red); color: var(--red-d); }
+
+/* ── Summary modal ── */
+.summary-modal {
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  width: 100%;
+  max-width: 760px;
+  max-height: 85vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-body {
+  overflow-y: auto;
+  padding: 20px;
+  flex: 1;
+}
+
+.summary-section { margin-bottom: 24px; }
+
+.summary-section-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.summary-row {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border3);
+  font-size: 13px;
+  color: var(--text);
+}
+.summary-row:last-child { border-bottom: none; }
+.summary-row .s-label { color: var(--text3); font-family: var(--mono); font-size: 11px; display: block; margin-bottom: 2px; }
+.summary-change-type {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+.empty-state {
+  font-size: 13px;
+  color: var(--text3);
+  padding: 10px 0;
+  font-style: italic;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="logo">GDB <span>·</span> GloForEx</div>
+      <div class="topbar-title">Live Workshop Log</div>
+    </div>
+    <div class="topbar-right">
+      <div class="day-switch">
+        <button class="day-btn active" onclick="setDay(1,this)">Day 1</button>
+        <button class="day-btn" onclick="setDay(2,this)">Day 2</button>
+      </div>
+      <button class="btn-summary" onclick="openSummary()">Summary ↗</button>
+      <button class="btn-export" onclick="exportText()" title="Export plain-text summary">Export .txt</button>
+      <button class="btn-export" onclick="exportJSON()" title="Save full JSON backup" style="border-color:var(--teal);color:var(--teal);">Backup</button>
+      <button class="btn-export" onclick="importJSON()" title="Restore from JSON backup" style="border-color:var(--text3);color:var(--text3);">Restore</button>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Stages</div>
+      <button class="stage-btn" data-stage="STG-1" onclick="selectStage('STG-1',this)">
+        <span class="stage-code s1">STG-1</span>
+        <span>Booking intake</span>
+        <span class="stage-badge">—</span>
+      </button>
+      <button class="stage-btn" data-stage="STG-2" onclick="selectStage('STG-2',this)">
+        <span class="stage-code s2">STG-2</span>
+        <span>Shipment data</span>
+        <span class="stage-badge">—</span>
+      </button>
+      <button class="stage-btn" data-stage="STG-3" onclick="selectStage('STG-3',this)">
+        <span class="stage-code s3">STG-3</span>
+        <span>Doc verification</span>
+        <span class="stage-badge">—</span>
+      </button>
+      <button class="stage-btn" data-stage="STG-4" onclick="selectStage('STG-4',this)">
+        <span class="stage-code s4">STG-4</span>
+        <span>Customs processing</span>
+        <span class="stage-badge">—</span>
+      </button>
+      <button class="stage-btn" data-stage="STG-5" onclick="selectStage('STG-5',this)">
+        <span class="stage-code s5">STG-5</span>
+        <span>Arrival monitoring</span>
+        <span class="stage-badge">—</span>
+      </button>
+      <button class="stage-btn" data-stage="STG-6" onclick="selectStage('STG-6',this)">
+        <span class="stage-code s6">STG-6</span>
+        <span>Carrier release</span>
+        <span class="stage-badge">—</span>
+      </button>
+      <button class="stage-btn" data-stage="STG-7" onclick="selectStage('STG-7',this)">
+        <span class="stage-code s7">STG-7</span>
+        <span>Delivery planning</span>
+        <span class="stage-badge">—</span>
+      </button>
+      <button class="stage-btn" data-stage="STG-8" onclick="selectStage('STG-8',this)">
+        <span class="stage-code s8">STG-8</span>
+        <span>Financial handling</span>
+        <span class="stage-badge">—</span>
+      </button>
+      <button class="stage-btn" data-stage="DEV" onclick="selectStage('DEV',this)">
+        <span class="stage-code sd">DEV</span>
+        <span>Dev message log</span>
+        <span class="stage-badge">—</span>
+      </button>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label" style="margin-top:8px">Global</div>
+      <button class="stage-btn" data-stage="GLOBAL" onclick="selectStage('GLOBAL',this)">
+        <span class="stage-code" style="background:var(--purple-l);color:var(--purple-d)">ALL</span>
+        <span>Workshop-wide</span>
+        <span class="stage-badge">—</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- Decision bar -->
+    <div class="decision-bar">
+      <div class="decision-label">DECISION</div>
+      <input class="decision-input" id="decision-input" placeholder="Type decision and press Enter — will be logged to current stage…" />
+      <button class="btn-log-decision" onclick="logDecision()">Log decision</button>
+    </div>
+
+    <!-- Stage area -->
+    <div class="stage-content" id="stage-content">
+      <div style="color:var(--text3);font-size:13px;padding:20px 0;">← Select a stage to begin</div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit / Add Task Modal -->
+<div class="modal-overlay" id="task-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="modal-title">Edit task</div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <div class="field-label">Task name</div>
+        <input type="text" id="f-name" placeholder="Task name" />
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <div class="field-label">Automation</div>
+          <select id="f-auto">
+            <option value="manual">Manual</option>
+            <option value="auto-full">Fully automated</option>
+            <option value="auto-recurring">Automated / recurring</option>
+            <option value="auto-exception">Manual / exception</option>
+          </select>
+        </div>
+        <div class="field">
+          <div class="field-label">Team</div>
+          <select id="f-team">
+            <option value="Import Booking">Import Booking</option>
+            <option value="Import Documentation">Import Documentation</option>
+            <option value="Import Operations">Import Operations</option>
+            <option value="Financial Handling">Financial Handling</option>
+            <option value="Error Handling">Error Handling</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">Notes / scope</div>
+        <textarea id="f-notes" placeholder="Any notes on scope, conditions, countries…"></textarea>
+      </div>
+      <div class="field" id="change-type-field">
+        <div class="field-label">Change type</div>
+        <div class="change-type-row" id="change-type-row">
+          <button class="change-btn scope"    onclick="toggleChangeType('scope',this)">Scope</button>
+          <button class="change-btn trigger"  onclick="toggleChangeType('trigger',this)">Trigger</button>
+          <button class="change-btn deadline" onclick="toggleChangeType('deadline',this)">Deadline</button>
+          <button class="change-btn name"     onclick="toggleChangeType('name',this)">Name</button>
+          <button class="change-btn other"    onclick="toggleChangeType('other',this)">Other</button>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">Change note (what changed / why)</div>
+        <textarea id="f-changenote" placeholder="Briefly describe what changed and the reason agreed in the room…" style="min-height:50px"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveTask()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Summary Modal -->
+<div class="modal-overlay" id="summary-modal">
+  <div class="summary-modal">
+    <div class="modal-head">
+      <div class="modal-title">Workshop summary — all changes &amp; decisions</div>
+      <button class="modal-close" onclick="closeSummary()">×</button>
+    </div>
+    <div class="summary-body" id="summary-body"></div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeSummary()">Close</button>
+      <button class="btn-save" onclick="exportText()">Export as text</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Data ──────────────────────────────────────────────────────────────────
+const STAGES = {
+  'STG-1': {
+    name: 'STG-1 — Booking intake & validation',
+    team: 'Import Booking', teamCls: 's1-team',
+    desc: 'Initial booking received, validated, and confirmed. Covers both API (agent) and manual bookings.',
+    tasks: [
+      { id: 'stg1-1', name: 'Validate booking', auto: 'auto-full',      notes: 'Auto-completed for API bookings with all fields present. Pending for manual/exception bookings. All countries.' },
+      { id: 'stg1-2', name: 'Request booking confirmation', auto: 'manual',    notes: 'DE and NL only. FR does not send booking confirmation (country delta #1).' },
+      { id: 'stg1-3', name: 'Agent booking communication', auto: 'auto-exception', notes: 'All countries. Action task when agent communication is needed.' },
+    ]
+  },
+  'STG-2': {
+    name: 'STG-2 — Shipment data completion',
+    team: 'Import Booking',
+    desc: 'Ensure all mandatory shipment data fields are complete before operational processing begins.',
+    tasks: [
+      { id: 'stg2-1', name: 'Check agent update',         auto: 'auto-recurring', notes: 'API shipments only. Resets to Pending on each agent update from SnapLogic.' },
+      { id: 'stg2-2', name: 'Complete shipment data',     auto: 'manual',         notes: 'Non-API shipments only. Full checklist: parties, transport, cargo, documents.' },
+      { id: 'stg2-3', name: 'Agent booking communication',auto: 'auto-exception', notes: 'Shared with STG-1. Triggered when data is missing after agent update.' },
+      { id: 'stg2-4', name: 'Seaway bill released',       auto: 'auto-full',      notes: 'OPEN ITEM: Placement in STG-2 or STG-3 TBC. Auto-triggered when seaway bill confirmed.' },
+    ]
+  },
+  'STG-3': {
+    name: 'STG-3 — Document verification',
+    team: 'Import Documentation',
+    desc: 'Verify all required shipping documents are received and correct before customs submission.',
+    tasks: [
+      { id: 'stg3-1', name: 'Verify commercial invoice',   auto: 'manual', notes: 'All countries. Manual check against shipment data.' },
+      { id: 'stg3-2', name: 'Verify packing list',         auto: 'manual', notes: 'All countries. Manual check against shipment data.' },
+      { id: 'stg3-3', name: 'Verify HBL / TLX / seaway bill', auto: 'manual', notes: 'OPEN ITEM: Document type depends on shipment. Overlap with STG-2 documents section TBD.' },
+    ]
+  },
+  'STG-4': {
+    name: 'STG-4 — Customs processing',
+    team: 'Import Documentation',
+    desc: 'Submit customs declaration and handle confirmation or rejection from Maco.',
+    tasks: [
+      { id: 'stg4-1', name: 'Submit customs declaration', auto: 'manual',         notes: 'Submitted via Maco. All countries, country-specific rules apply.' },
+      { id: 'stg4-2', name: 'Customs clearance confirmed',auto: 'auto-full',      notes: 'Auto-completed on confirmation message received from Maco.' },
+      { id: 'stg4-3', name: 'Customs rejection handling', auto: 'auto-exception', notes: 'Triggered on API rejection from Maco. Surfaces in Error Handling team.' },
+    ]
+  },
+  'STG-5': {
+    name: 'STG-5 — Arrival monitoring',
+    team: 'Import Operations',
+    desc: 'Track vessel and confirm actual arrival at port of discharge.',
+    tasks: [
+      { id: 'stg5-1', name: 'Monitor vessel ETA',   auto: 'auto-recurring', notes: 'MF live tracking for deepsea. Partial manual for inland/feeder services.' },
+      { id: 'stg5-2', name: 'Confirm arrival at POD', auto: 'auto-full',   notes: 'Auto-completed on ATA event from carrier or agent update.' },
+    ]
+  },
+  'STG-6': {
+    name: 'STG-6 — Carrier release',
+    team: 'Import Documentation',
+    desc: 'Request and confirm release of cargo from the carrier after customs clearance.',
+    tasks: [
+      { id: 'stg6-1', name: 'Request carrier release',   auto: 'manual',    notes: 'Manual trigger after customs clearance confirmed.' },
+      { id: 'stg6-2', name: 'Carrier release confirmed', auto: 'auto-full', notes: 'Auto-completed on release confirmation from carrier system.' },
+    ]
+  },
+  'STG-7': {
+    name: 'STG-7 — Delivery planning',
+    team: 'Import Operations',
+    desc: 'Plan and confirm delivery of cargo to consignee.',
+    tasks: [
+      { id: 'stg7-1', name: 'Plan delivery',               auto: 'manual', notes: 'Manual. Coordinate with customer and transport provider. Data pushed to Qargo.' },
+      { id: 'stg7-2', name: 'Confirm delivery appointment', auto: 'manual', notes: 'Manual confirmation once delivery slot is agreed.' },
+    ]
+  },
+  'STG-8': {
+    name: 'STG-8 — Financial handling',
+    team: 'Financial Handling',
+    desc: 'Accrual recording, invoice verification, and financial closure. Finance-owned; see Option A / B one-pager.',
+    tasks: [
+      { id: 'stg8-1', name: 'Record accrual',         auto: 'manual',         notes: 'Ops records: supplier, shipment ref, charge code, expected amount, currency. Triggered at ATD (origin incoterms) or ATA (destination incoterms).' },
+      { id: 'stg8-2', name: 'Debit note received',    auto: 'auto-full',      notes: 'Auto-completed when agent invoice received and forwarded to Blue10.' },
+      { id: 'stg8-3', name: 'Invoice verification',   auto: 'manual',         notes: 'OPTION B ONLY: Finance verifies invoice vs accrual inside MF.' },
+      { id: 'stg8-4', name: 'Invoice approved',       auto: 'manual',         notes: 'OPTION B ONLY: Finance approves matched invoice.' },
+      { id: 'stg8-5', name: 'Dispute / credit note',  auto: 'auto-exception', notes: 'OPTION B ONLY: Raised when invoice does not match accrual. Owner: Finance + Ops.' },
+    ]
+  },
+  'DEV': {
+    name: 'DEV — Dev message log',
+    team: 'Error Handling',
+    desc: 'Persistent task on every shipment. Green/completed = informational only. Yellow/pending = integration error or missing data requires Ops action.',
+    tasks: [
+      { id: 'dev-1', name: 'Dev message log', auto: 'auto-recurring', notes: 'Persistent on every shipment. Completed = informational only. Pending = error or missing data requires Ops action.' },
+    ]
+  },
+  'GLOBAL': {
+    name: 'Workshop-wide decisions',
+    team: 'All',
+    desc: 'Decisions and notes not tied to a specific stage — cross-cutting, process-wide, or administrative.',
+    tasks: []
+  }
+};
+
+// State
+let state = {
+  currentStage: null,
+  currentDay: 1,
+  decisions: {}, // stage -> [{text, time, day}]
+  taskChanges: {}, // taskId -> {name, auto, notes, changeTypes, changeNote, status: 'modified'|'deleted'}
+  addedTasks: {}, // stage -> [{id, name, auto, team, notes, changeNote, day}]
+};
+
+let editContext = null; // {mode:'edit'|'add', stageId, taskId}
+let activeChangeTypes = new Set();
+
+function ts() {
+  const d = new Date();
+  return d.toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'});
+}
+
+// ── Storage (localStorage primary, window.storage fallback) ───────────────
+const STORAGE_KEY = 'gloforex-workshop-log';
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const saved = JSON.parse(raw);
+      state = { ...state, ...saved };
+    }
+  } catch(e) {}
+  updateSidebarBadges();
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch(e) {}
+}
+
+// ── Day ────────────────────────────────────────────────────────────────────
+function setDay(d, btn) {
+  state.currentDay = d;
+  document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (state.currentStage) renderStage(state.currentStage);
+}
+
+// ── Sidebar ────────────────────────────────────────────────────────────────
+function selectStage(id, btn) {
+  state.currentStage = id;
+  document.querySelectorAll('.stage-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // update decision input placeholder
+  document.getElementById('decision-input').placeholder = `Log a decision for ${id} — type and press Enter or click "Log decision"…`;
+  renderStage(id);
+}
+
+function updateSidebarBadges() {
+  document.querySelectorAll('.stage-btn').forEach(btn => {
+    const id = btn.dataset.stage;
+    const hasChanges = hasStageChanges(id);
+    const hasDecisions = hasStageDecisions(id);
+    const badge = btn.querySelector('.stage-badge');
+    btn.classList.remove('has-changes','has-decisions','has-both');
+    badge.style.display = 'none';
+    if (hasChanges && hasDecisions) {
+      btn.classList.add('has-both');
+      badge.style.display = 'block';
+      badge.textContent = '✦';
+    } else if (hasChanges) {
+      btn.classList.add('has-changes');
+      badge.style.display = 'block';
+      badge.textContent = '✦';
+    } else if (hasDecisions) {
+      btn.classList.add('has-decisions');
+      badge.style.display = 'block';
+      badge.textContent = '✦';
+    }
+  });
+}
+
+function hasStageChanges(id) {
+  const stage = STAGES[id];
+  if (!stage) return false;
+  const added = state.addedTasks[id] && state.addedTasks[id].length > 0;
+  const modified = stage.tasks.some(t => state.taskChanges[t.id]);
+  return added || modified;
+}
+
+function hasStageDecisions(id) {
+  return state.decisions[id] && state.decisions[id].length > 0;
+}
+
+// ── Decision ───────────────────────────────────────────────────────────────
+document.getElementById('decision-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') logDecision();
+});
+
+function logDecision() {
+  const inp = document.getElementById('decision-input');
+  const text = inp.value.trim();
+  if (!text || !state.currentStage) return;
+  const stageId = state.currentStage;
+  if (!state.decisions[stageId]) state.decisions[stageId] = [];
+  state.decisions[stageId].push({ text, time: ts(), day: state.currentDay });
+  inp.value = '';
+  saveState();
+  updateSidebarBadges();
+  renderStage(stageId);
+}
+
+function deleteDecision(stageId, idx) {
+  state.decisions[stageId].splice(idx, 1);
+  saveState();
+  updateSidebarBadges();
+  renderStage(stageId);
+}
+
+// ── Render stage ───────────────────────────────────────────────────────────
+const TEAM_COLORS = {
+  'Import Booking':      'background:rgba(56,139,253,.15);color:var(--blue-d)',
+  'Import Documentation':'background:rgba(57,211,170,.15);color:var(--teal-d)',
+  'Import Operations':   'background:rgba(56,139,253,.1);color:var(--blue-d)',
+  'Financial Handling':  'background:rgba(210,153,34,.15);color:var(--amber-d)',
+  'Error Handling':      'background:rgba(248,81,73,.15);color:var(--red-d)',
+  'All':                 'background:rgba(163,113,247,.15);color:var(--purple-d)',
+};
+
+const AUTO_LABELS = {
+  'manual':          ['Manual',               'pill-auto-manual'],
+  'auto-full':       ['Fully automated',      'pill-auto-full'],
+  'auto-recurring':  ['Automated / recurring','pill-auto-recurring'],
+  'auto-exception':  ['Manual / exception',   'pill-auto-exception'],
+};
+
+const CHANGE_TYPE_COLORS = {
+  scope:    'background:var(--amber-l);color:var(--amber-d)',
+  trigger:  'background:var(--blue-l);color:var(--blue-d)',
+  deadline: 'background:var(--purple-l);color:var(--purple-d)',
+  name:     'background:var(--teal-l);color:var(--teal-d)',
+  other:    'background:var(--bg3);color:var(--text2)',
+};
+
+function renderStage(id) {
+  const stage = STAGES[id];
+  if (!stage) return;
+  const teamStyle = TEAM_COLORS[stage.team] || '';
+  const decisions = state.decisions[id] || [];
+  const addedTasks = state.addedTasks[id] || [];
+
+  let tasksHtml = '';
+  if (stage.tasks.length > 0 || addedTasks.length > 0) {
+    tasksHtml = `
+    <div class="section-hdr">
+      <div class="section-hdr-label">Tasks</div>
+      <button class="btn-add" onclick="openAddTask('${id}')">+ Add task</button>
+    </div>
+    <div class="task-list">
+      ${stage.tasks.map(t => renderTask(t, id)).join('')}
+      ${addedTasks.map((t,i) => renderAddedTask(t, id, i)).join('')}
+    </div>`;
+  } else {
+    tasksHtml = `
+    <div class="section-hdr">
+      <div class="section-hdr-label">Tasks</div>
+      <button class="btn-add" onclick="openAddTask('${id}')">+ Add task</button>
+    </div>
+    <div style="color:var(--text3);font-size:13px;padding:8px 0;font-style:italic">No pre-defined tasks. Use "Add task" to capture new tasks agreed in the room.</div>`;
+  }
+
+  let decisionsHtml = '';
+  if (decisions.length > 0) {
+    decisionsHtml = `
+    <div class="section-hdr" style="margin-top:24px">
+      <div class="section-hdr-label">Decisions logged</div>
+    </div>
+    <div class="decision-cards">
+      ${decisions.map((d,i) => `
+      <div class="decision-card${id==='GLOBAL'?' global':''}">
+        <div class="d-idx">${String(i+1).padStart(2,'0')}</div>
+        <div style="flex:1">
+          <div class="d-text">${escHtml(d.text)}</div>
+          <div class="d-time">Day ${d.day} · ${d.time}</div>
+        </div>
+        <button class="d-del" onclick="deleteDecision('${id}',${i})">×</button>
+      </div>`).join('')}
+    </div>`;
+  } else {
+    decisionsHtml = `
+    <div class="section-hdr" style="margin-top:24px">
+      <div class="section-hdr-label">Decisions logged</div>
+    </div>
+    <div class="empty-state">No decisions logged yet. Type a decision in the bar above and press Enter.</div>`;
+  }
+
+  document.getElementById('stage-content').innerHTML = `
+    <div class="stage-header">
+      <div class="stage-header-top">
+        <div class="stage-name">${stage.name}</div>
+        <div class="stage-team-tag" style="${teamStyle}">${stage.team}</div>
+      </div>
+      <div class="stage-desc">${stage.desc}</div>
+    </div>
+    ${tasksHtml}
+    ${decisionsHtml}
+  `;
+}
+
+function renderTask(t, stageId) {
+  const change = state.taskChanges[t.id];
+  const effectiveName = change ? change.name : t.name;
+  const effectiveAuto = change ? change.auto : t.auto;
+  const effectiveNotes = change ? change.notes : t.notes;
+  const [autoLabel, autoCls] = AUTO_LABELS[effectiveAuto] || AUTO_LABELS['manual'];
+  const isModified = !!change;
+  const isDeleted = change && change.status === 'deleted';
+
+  if (isDeleted) {
+    return `
+    <div class="task-card" style="opacity:.4;border-left:3px solid var(--red)">
+      <div class="task-top">
+        <div class="task-name-display" style="text-decoration:line-through">${escHtml(effectiveName)}</div>
+        <div class="task-actions">
+          <button class="task-action-btn" onclick="undeleteTask('${t.id}','${stageId}')">Restore</button>
+        </div>
+      </div>
+      <div class="task-meta"><span class="task-pill ${autoCls}">${autoLabel}</span></div>
+      <div class="task-change-note" style="color:var(--red-d)">Removed in session</div>
+    </div>`;
+  }
+
+  let changeTypes = '';
+  if (change && change.changeTypes && change.changeTypes.length) {
+    changeTypes = change.changeTypes.map(ct =>
+      `<span class="summary-change-type" style="${CHANGE_TYPE_COLORS[ct]}">${ct}</span>`
+    ).join('');
+  }
+
+  return `
+  <div class="task-card${isModified?' modified':''}">
+    <div class="task-top">
+      <div class="task-name-display">${escHtml(effectiveName)}</div>
+      <div class="task-actions">
+        <button class="task-action-btn edit-btn" onclick="openEditTask('${t.id}','${stageId}')">Edit</button>
+        <button class="task-action-btn del-btn" onclick="deleteTask('${t.id}','${stageId}')">Remove</button>
+      </div>
+    </div>
+    <div class="task-meta">
+      <span class="task-pill ${autoCls}">${autoLabel}</span>
+      ${effectiveNotes ? `<span style="font-size:12px;color:var(--text2)">${escHtml(effectiveNotes)}</span>` : ''}
+    </div>
+    ${isModified ? `<div class="task-change-note">${changeTypes}${escHtml(change.changeNote||'')}</div>` : ''}
+  </div>`;
+}
+
+function renderAddedTask(t, stageId, idx) {
+  const [autoLabel, autoCls] = AUTO_LABELS[t.auto] || AUTO_LABELS['manual'];
+  return `
+  <div class="task-card added">
+    <div class="task-top">
+      <div class="task-name-display">${escHtml(t.name)}</div>
+      <div class="task-actions">
+        <button class="task-action-btn del-btn" onclick="deleteAddedTask('${stageId}',${idx})">Remove</button>
+      </div>
+    </div>
+    <div class="task-meta">
+      <span class="task-pill ${autoCls}">${autoLabel}</span>
+      ${t.notes ? `<span style="font-size:12px;color:var(--text2)">${escHtml(t.notes)}</span>` : ''}
+    </div>
+    ${t.changeNote ? `<div class="task-change-note" style="color:var(--green-d)">New · ${escHtml(t.changeNote)}</div>` : '<div class="task-change-note" style="color:var(--green-d)">New task added in session</div>'}
+  </div>`;
+}
+
+// ── Task CRUD ──────────────────────────────────────────────────────────────
+function openEditTask(taskId, stageId) {
+  const stage = STAGES[stageId];
+  const task = stage.tasks.find(t => t.id === taskId);
+  if (!task) return;
+  const existing = state.taskChanges[taskId] || {};
+
+  editContext = { mode: 'edit', stageId, taskId };
+  activeChangeTypes = new Set(existing.changeTypes || []);
+
+  document.getElementById('modal-title').textContent = 'Edit task';
+  document.getElementById('f-name').value = existing.name !== undefined ? existing.name : task.name;
+  document.getElementById('f-auto').value = existing.auto || task.auto;
+  document.getElementById('f-notes').value = existing.notes !== undefined ? existing.notes : task.notes;
+  document.getElementById('f-changenote').value = existing.changeNote || '';
+  document.getElementById('change-type-field').style.display = '';
+  renderChangeTypeBtns();
+  document.getElementById('task-modal').classList.add('open');
+}
+
+function openAddTask(stageId) {
+  editContext = { mode: 'add', stageId };
+  activeChangeTypes = new Set();
+
+  document.getElementById('modal-title').textContent = 'Add new task';
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-auto').value = 'manual';
+  document.getElementById('f-notes').value = '';
+  document.getElementById('f-changenote').value = '';
+  document.getElementById('change-type-field').style.display = 'none';
+
+  // Set default team
+  const stage = STAGES[stageId];
+  document.getElementById('f-team').value = stage?.team || 'Import Booking';
+
+  document.getElementById('task-modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('task-modal').classList.remove('open');
+  editContext = null;
+}
+
+function toggleChangeType(type, btn) {
+  if (activeChangeTypes.has(type)) {
+    activeChangeTypes.delete(type);
+    btn.classList.remove('active', type);
+  } else {
+    activeChangeTypes.add(type);
+    btn.classList.add('active', type);
+  }
+}
+
+function renderChangeTypeBtns() {
+  document.querySelectorAll('#change-type-row .change-btn').forEach(btn => {
+    const type = btn.classList[1];
+    btn.classList.remove('active');
+    if (activeChangeTypes.has(type)) btn.classList.add('active', type);
+  });
+}
+
+function saveTask() {
+  if (!editContext) return;
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { document.getElementById('f-name').focus(); return; }
+
+  const auto = document.getElementById('f-auto').value;
+  const notes = document.getElementById('f-notes').value.trim();
+  const changenote = document.getElementById('f-changenote').value.trim();
+  const team = document.getElementById('f-team').value;
+
+  if (editContext.mode === 'edit') {
+    state.taskChanges[editContext.taskId] = {
+      name, auto, notes,
+      changeTypes: [...activeChangeTypes],
+      changeNote: changenote,
+      day: state.currentDay,
+      status: 'modified'
+    };
+  } else {
+    if (!state.addedTasks[editContext.stageId]) state.addedTasks[editContext.stageId] = [];
+    state.addedTasks[editContext.stageId].push({
+      id: 'add-' + Date.now(),
+      name, auto, team, notes,
+      changeNote: changenote,
+      day: state.currentDay
+    });
+  }
+
+  closeModal();
+  saveState();
+  updateSidebarBadges();
+  renderStage(editContext?.stageId || state.currentStage);
+}
+
+function deleteTask(taskId, stageId) {
+  const task = STAGES[stageId]?.tasks.find(t => t.id === taskId);
+  if (!task) return;
+  const existing = state.taskChanges[taskId] || {};
+  state.taskChanges[taskId] = { ...existing, name: existing.name||task.name, auto: existing.auto||task.auto, notes: existing.notes||task.notes, changeTypes: existing.changeTypes||[], changeNote: existing.changeNote||'', status: 'deleted', day: state.currentDay };
+  saveState();
+  updateSidebarBadges();
+  renderStage(stageId);
+}
+
+function undeleteTask(taskId, stageId) {
+  if (state.taskChanges[taskId]) {
+    state.taskChanges[taskId].status = 'modified';
+    if (!state.taskChanges[taskId].changeNote) delete state.taskChanges[taskId];
+  }
+  saveState();
+  updateSidebarBadges();
+  renderStage(stageId);
+}
+
+function deleteAddedTask(stageId, idx) {
+  state.addedTasks[stageId].splice(idx, 1);
+  saveState();
+  updateSidebarBadges();
+  renderStage(stageId);
+}
+
+// ── Summary ────────────────────────────────────────────────────────────────
+function openSummary() {
+  const body = document.getElementById('summary-body');
+  let html = '';
+
+  // Decisions section
+  let anyDecisions = false;
+  for (const [stageId, decs] of Object.entries(state.decisions)) {
+    if (!decs || decs.length === 0) continue;
+    anyDecisions = true;
+    html += `<div class="summary-section">
+      <div class="summary-section-title">Decisions — ${STAGES[stageId]?.name || stageId}</div>`;
+    decs.forEach((d,i) => {
+      html += `<div class="summary-row">
+        <span class="s-label">Day ${d.day} · ${d.time}</span>
+        ${escHtml(d.text)}
+      </div>`;
+    });
+    html += '</div>';
+  }
+  if (!anyDecisions) html += `<div class="summary-section"><div class="summary-section-title">Decisions</div><div class="empty-state">No decisions logged yet.</div></div>`;
+
+  // Task changes section
+  let anyChanges = false;
+  for (const [stageId, stage] of Object.entries(STAGES)) {
+    const changes = stage.tasks.filter(t => state.taskChanges[t.id]);
+    const added = state.addedTasks[stageId] || [];
+    if (changes.length === 0 && added.length === 0) continue;
+    anyChanges = true;
+    html += `<div class="summary-section">
+      <div class="summary-section-title">Task changes — ${stage.name}</div>`;
+
+    changes.forEach(t => {
+      const c = state.taskChanges[t.id];
+      const isDeleted = c.status === 'deleted';
+      const ctags = (c.changeTypes||[]).map(ct => `<span class="summary-change-type" style="${CHANGE_TYPE_COLORS[ct]}">${ct}</span>`).join('');
+      html += `<div class="summary-row">
+        <span class="s-label">${isDeleted?'REMOVED':'MODIFIED'} · Day ${c.day}</span>
+        <strong style="${isDeleted?'text-decoration:line-through':''}">${escHtml(c.name)}</strong>
+        ${ctags}
+        ${c.changeNote ? `<br><span style="color:var(--text2);font-size:12px">${escHtml(c.changeNote)}</span>` : ''}
+      </div>`;
+    });
+
+    added.forEach(t => {
+      html += `<div class="summary-row">
+        <span class="s-label">NEW TASK · Day ${t.day}</span>
+        <strong>${escHtml(t.name)}</strong>
+        <span class="summary-change-type" style="background:var(--green-l);color:var(--green-d)">new</span>
+        ${t.changeNote ? `<br><span style="color:var(--text2);font-size:12px">${escHtml(t.changeNote)}</span>` : ''}
+      </div>`;
+    });
+
+    html += '</div>';
+  }
+  if (!anyChanges) html += `<div class="summary-section"><div class="summary-section-title">Task changes</div><div class="empty-state">No task changes logged yet.</div></div>`;
+
+  body.innerHTML = html;
+  document.getElementById('summary-modal').classList.add('open');
+}
+
+function closeSummary() {
+  document.getElementById('summary-modal').classList.remove('open');
+}
+
+// ── Export ────────────────────────────────────────────────────────────────
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], {type: 'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'gloforex_backup_' + new Date().toISOString().slice(0,16).replace('T','_').replace(':','h') + '.json';
+  a.click();
+}
+
+function importJSON() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const restored = JSON.parse(ev.target.result);
+        state = { ...state, ...restored };
+        saveState();
+        updateSidebarBadges();
+        if (state.currentStage) renderStage(state.currentStage);
+        showToast('Backup restored successfully');
+      } catch(err) {
+        showToast('Could not read file — invalid backup', true);
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function showToast(msg, isError = false) {
+  const t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = `
+    position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+    background:${isError ? 'var(--red-l)' : 'var(--green-l)'};
+    color:${isError ? 'var(--red-d)' : 'var(--green-d)'};
+    border:1px solid ${isError ? 'var(--red)' : 'var(--green)'};
+    font-family:var(--mono); font-size:12px; font-weight:500;
+    padding:8px 18px; border-radius:6px; z-index:999;
+    transition: opacity .4s;
+  `;
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 400); }, 2500);
+}
+
+function exportText() {
+  let lines = [];
+  lines.push('GDB LOGISTICS · GLOFOREX WORKSHOP LOG');
+  lines.push('Generated: ' + new Date().toLocaleString('nl-NL'));
+  lines.push('');
+
+  lines.push('═══════════════════════════════════════');
+  lines.push('DECISIONS');
+  lines.push('═══════════════════════════════════════');
+  let anyDec = false;
+  for (const [stageId, decs] of Object.entries(state.decisions)) {
+    if (!decs || decs.length === 0) continue;
+    anyDec = true;
+    lines.push('');
+    lines.push('[ ' + (STAGES[stageId]?.name || stageId) + ' ]');
+    decs.forEach((d,i) => {
+      lines.push(`  ${i+1}. [Day ${d.day} · ${d.time}] ${d.text}`);
+    });
+  }
+  if (!anyDec) lines.push('  — None logged —');
+
+  lines.push('');
+  lines.push('═══════════════════════════════════════');
+  lines.push('TASK CHANGES');
+  lines.push('═══════════════════════════════════════');
+  let anyChange = false;
+  for (const [stageId, stage] of Object.entries(STAGES)) {
+    const changes = stage.tasks.filter(t => state.taskChanges[t.id]);
+    const added = state.addedTasks[stageId] || [];
+    if (changes.length === 0 && added.length === 0) continue;
+    anyChange = true;
+    lines.push('');
+    lines.push('[ ' + stage.name + ' ]');
+    changes.forEach(t => {
+      const c = state.taskChanges[t.id];
+      const status = c.status === 'deleted' ? 'REMOVED' : 'MODIFIED';
+      lines.push(`  [${status}] ${c.name}`);
+      if (c.changeTypes && c.changeTypes.length) lines.push(`    Change type: ${c.changeTypes.join(', ')}`);
+      if (c.changeNote) lines.push(`    Note: ${c.changeNote}`);
+    });
+    added.forEach(t => {
+      lines.push(`  [NEW] ${t.name}`);
+      if (t.notes) lines.push(`    Notes: ${t.notes}`);
+      if (t.changeNote) lines.push(`    Reason: ${t.changeNote}`);
+    });
+  }
+  if (!anyChange) lines.push('  — None logged —');
+
+  const blob = new Blob([lines.join('\n')], {type: 'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'gloforex_workshop_log.txt';
+  a.click();
+}
+
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Keyboard shortcut ──────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeModal();
+    closeSummary();
+  }
+});
+
+// ── Init ───────────────────────────────────────────────────────────────────
+loadState().then(() => {
+  // Auto-select STG-1
+  const firstBtn = document.querySelector('[data-stage="STG-1"]');
+  if (firstBtn) selectStage('STG-1', firstBtn);
+});
+</script>
+</body>
+</html>
