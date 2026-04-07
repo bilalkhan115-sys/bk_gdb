@@ -81,7 +81,9 @@ body {
   font-weight: 500;
   color: var(--text);
   padding-left: 12px;
+  padding-right: 12px;
   border-left: 1px solid var(--border2);
+  border-right: 1px solid var(--border2);
 }
 
 .topbar-right {
@@ -670,13 +672,20 @@ body {
     <div class="topbar-left">
       <div class="logo">GDB <span>·</span> GloForEx</div>
       <div class="topbar-title">Live Workshop Log</div>
+      <img
+        src="https://gdblogistics.com/wp-content/uploads/2025/11/Logo-GDB-landscape.svg"
+        alt="GDB Logistics"
+        style="height:28px;width:auto;flex-shrink:0;margin-left:4px;opacity:0.9;"
+        onerror="this.style.display='none'"
+      />
     </div>
     <div class="topbar-right">
       <div class="day-switch">
         <button class="day-btn active" onclick="setDay(1,this)">Day 1</button>
         <button class="day-btn" onclick="setDay(2,this)">Day 2</button>
       </div>
-      <button class="btn-summary" onclick="openSummary()">Summary ↗</button>
+      <button class="btn-summary" onclick="openSummary()">Changes ↗</button>
+      <button class="btn-summary" onclick="switchToSummaryView()">Day summary</button>
       <button class="btn-export" onclick="exportText()" title="Export plain-text summary">Export .txt</button>
       <button class="btn-export" onclick="exportJSON()" title="Save full JSON backup" style="border-color:var(--teal);color:var(--teal);">Backup</button>
       <button class="btn-export" onclick="importJSON()" title="Restore from JSON backup" style="border-color:var(--text3);color:var(--text3);">Restore</button>
@@ -759,6 +768,25 @@ body {
       <div style="color:var(--text3);font-size:13px;padding:20px 0;">← Select a stage to begin</div>
     </div>
   </div>
+</div>
+
+<!-- Summary view (full-screen overlay) -->
+<div id="summary-view" style="display:none;position:fixed;inset:0;background:var(--bg2);z-index:200;overflow-y:auto">
+  <div style="position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--border2);padding:0 20px;height:48px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:10">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="font-family:var(--mono);font-size:12px;font-weight:600;color:var(--text2)">GDB <span style="color:var(--green)">·</span> GloForEx</div>
+      <div id="sv-title" style="font-size:13px;font-weight:500;padding-left:12px;border-left:1px solid var(--border2)">Day summary</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px">
+      <div style="display:flex;gap:3px" id="sv-day-tabs">
+        <button onclick="setSvDay(1,this)" style="font-family:var(--mono);font-size:11px;padding:3px 10px;border-radius:4px;border:1px solid var(--border2);background:var(--bg3);color:var(--text);cursor:pointer">Day 1</button>
+        <button onclick="setSvDay(2,this)" style="font-family:var(--mono);font-size:11px;padding:3px 10px;border-radius:4px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer">Day 2</button>
+        <button onclick="setSvDay(null,this)" style="font-family:var(--mono);font-size:11px;padding:3px 10px;border-radius:4px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer">All</button>
+      </div>
+      <button onclick="closeSummaryView()" style="font-family:var(--sans);font-size:12px;padding:4px 12px;border-radius:4px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;margin-left:8px">✕ Close</button>
+    </div>
+  </div>
+  <div id="sv-body" style="max-width:820px;margin:0 auto;padding:28px 24px 60px"></div>
 </div>
 
 <!-- Edit / Add Task Modal -->
@@ -1510,11 +1538,126 @@ document.addEventListener('keydown', e => {
 });
 
 // ── Init ───────────────────────────────────────────────────────────────────
-loadState().then(() => {
-  // Auto-select STG-1
-  const firstBtn = document.querySelector('[data-stage="STG-1"]');
-  if (firstBtn) selectStage('STG-1', firstBtn);
-});
+loadState();
+const firstBtn = document.querySelector('[data-stage="STG-1"]');
+if (firstBtn) selectStage('STG-1', firstBtn);
+// ── Summary view (Option A) ───────────────────────────────────────────────
+let svDay = 1;
+
+function switchToSummaryView() {
+  document.getElementById('summary-view').style.display = 'block';
+  renderSummaryView();
+}
+
+function closeSummaryView() {
+  document.getElementById('summary-view').style.display = 'none';
+}
+
+function setSvDay(day, btn) {
+  svDay = day;
+  document.querySelectorAll('#sv-day-tabs button').forEach(b => {
+    b.style.background = 'transparent'; b.style.color = 'var(--text2)';
+  });
+  btn.style.background = 'var(--bg3)'; btn.style.color = 'var(--text)';
+  document.getElementById('sv-title').textContent = day ? `Day ${day} summary` : 'Workshop summary';
+  renderSummaryView();
+}
+
+function renderSummaryView() {
+  const body = document.getElementById('sv-body');
+  const filterDay = svDay;
+  let html = '';
+
+  // Stats
+  let dec = 0, chg = 0, add = 0, rem = 0;
+  for (const decs of Object.values(state.decisions || {})) dec += (filterDay ? decs.filter(d => d.day === filterDay) : decs).length;
+  for (const c of Object.values(state.taskChanges || {})) { if (!filterDay || c.day === filterDay) { if (c.status === 'deleted') rem++; else chg++; } }
+  for (const tasks of Object.values(state.addedTasks || {})) add += (filterDay ? tasks.filter(t => t.day === filterDay) : tasks).length;
+
+  html += `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px">
+    ${[[ dec,'Decisions'],[chg,'Modified'],[add,'Added'],[rem,'Removed']].map(([n,l])=>`
+    <div style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:12px 14px">
+      <div style="font-family:var(--mono);font-size:22px;font-weight:500;line-height:1;margin-bottom:4px">${n}</div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.06em;text-transform:uppercase">${l}</div>
+    </div>`).join('')}
+  </div>`;
+
+  // Decisions
+  html += svSectionHdr('Decisions');
+  let anyDec = false;
+  for (const [sid, decs] of Object.entries(state.decisions || {})) {
+    const f = filterDay ? decs.filter(d => d.day === filterDay) : decs;
+    if (!f.length) continue;
+    anyDec = true;
+    html += svStageBlock(sid, f.map((d, i) => `
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:7px 10px;border-radius:5px;background:${sid==='GLOBAL'?'var(--purple-l)':'var(--blue-l)'};border:1px solid ${sid==='GLOBAL'?'rgba(163,113,247,.3)':'rgba(56,139,253,.25)'}">
+        <span style="font-family:var(--mono);font-size:10px;font-weight:600;color:var(--text3);min-width:18px;margin-top:1px">${String(i+1).padStart(2,'0')}</span>
+        <div><div style="font-size:13px;color:var(--text)">${escHtml(d.text)}</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:2px">Day ${d.day} · ${d.time}</div></div>
+      </div>`).join(''));
+  }
+  if (!anyDec) html += `<div style="font-size:13px;color:var(--text3);font-style:italic;padding:8px 0">No decisions logged${filterDay?' for Day '+filterDay:''}.</div>`;
+
+  // Task changes
+  html += svSectionHdr('Task changes');
+  let anyChg = false;
+  for (const [sid] of Object.entries(STAGES)) {
+    const changes = Object.entries(state.taskChanges || {})
+      .filter(([id]) => id.startsWith(sid.toLowerCase().replace('-','')))
+      .map(([id,c]) => ({id,...c}))
+      .filter(c => !filterDay || c.day === filterDay);
+    const added = (state.addedTasks?.[sid] || []).filter(t => !filterDay || t.day === filterDay);
+    if (!changes.length && !added.length) continue;
+    anyChg = true;
+
+    const items = [
+      ...changes.map(c => {
+        const del = c.status === 'deleted';
+        const ctags = (c.changeTypes||[]).map(ct => `<span style="font-family:var(--mono);font-size:10px;padding:1px 5px;border-radius:8px;${CHANGE_TYPE_COLORS[ct]||''}">${ct}</span>`).join(' ');
+        return `<div style="padding:8px 10px;border-radius:5px;border-left:3px solid ${del?'var(--red)':'var(--amber)'};background:var(--bg3)">
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:2px">
+            <span style="font-family:var(--mono);font-size:9px;font-weight:600;padding:1px 5px;border-radius:8px;background:${del?'var(--red-l)':'var(--amber-l)'};color:${del?'var(--red-d)':'var(--amber-d)'};text-transform:uppercase">${del?'removed':'modified'}</span>
+            <span style="font-size:13px;font-weight:500;${del?'text-decoration:line-through;opacity:.6':''}">${escHtml(c.name)}</span>
+          </div>
+          ${ctags ? `<div style="margin-top:3px;display:flex;gap:4px;flex-wrap:wrap">${ctags}</div>` : ''}
+          ${c.changeNote ? `<div style="font-size:12px;color:var(--text2);margin-top:3px;font-style:italic">${escHtml(c.changeNote)}</div>` : ''}
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:2px">Day ${c.day}</div>
+        </div>`;
+      }),
+      ...added.map(t => `<div style="padding:8px 10px;border-radius:5px;border-left:3px solid var(--green);background:var(--bg3)">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:2px">
+          <span style="font-family:var(--mono);font-size:9px;font-weight:600;padding:1px 5px;border-radius:8px;background:var(--green-l);color:var(--green-d);text-transform:uppercase">new</span>
+          <span style="font-size:13px;font-weight:500">${escHtml(t.name)}</span>
+        </div>
+        ${t.notes ? `<div style="font-size:12px;color:var(--text2);margin-top:3px">${escHtml(t.notes)}</div>` : ''}
+        ${t.changeNote ? `<div style="font-size:12px;color:var(--text2);margin-top:2px;font-style:italic">${escHtml(t.changeNote)}</div>` : ''}
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:2px">Day ${t.day}</div>
+      </div>`)
+    ];
+    html += svStageBlock(sid, items.join(''));
+  }
+  if (!anyChg) html += `<div style="font-size:13px;color:var(--text3);font-style:italic;padding:8px 0">No task changes logged${filterDay?' for Day '+filterDay:''}.</div>`;
+
+  body.innerHTML = html;
+}
+
+function svSectionHdr(title) {
+  return `<div style="font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)">${title}</div>`;
+}
+
+function svStageBlock(sid, innerHtml) {
+  const c = { 'STG-1':'rgba(56,139,253,.15)','STG-2':'rgba(56,139,253,.15)','STG-3':'rgba(57,211,170,.15)','STG-4':'rgba(57,211,170,.15)','STG-5':'rgba(56,139,253,.1)','STG-6':'rgba(57,211,170,.15)','STG-7':'rgba(56,139,253,.1)','STG-8':'rgba(210,153,34,.15)','DEV':'rgba(248,81,73,.15)','GLOBAL':'rgba(163,113,247,.15)' };
+  const tc = { 'STG-1':'var(--blue-d)','STG-2':'var(--blue-d)','STG-3':'var(--teal-d)','STG-4':'var(--teal-d)','STG-5':'var(--blue-d)','STG-6':'var(--teal-d)','STG-7':'var(--blue-d)','STG-8':'var(--amber-d)','DEV':'var(--red-d)','GLOBAL':'var(--purple-d)' };
+  const st = STAGES[sid] || { name: sid };
+  const code = sid === 'GLOBAL' ? 'ALL' : sid;
+  return `<div style="margin-bottom:12px;border:1px solid var(--border2);border-radius:6px;overflow:hidden">
+    <div style="padding:8px 14px;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px">
+      <span style="font-family:var(--mono);font-size:10px;font-weight:600;padding:1px 6px;border-radius:3px;background:${c[sid]||'var(--bg4)'};color:${tc[sid]||'var(--text2)'}">${code}</span>
+      <span style="font-size:13px;font-weight:500;color:var(--text)">${escHtml(st.name)}</span>
+    </div>
+    <div style="padding:10px 14px;display:flex;flex-direction:column;gap:7px">${innerHtml}</div>
+  </div>`;
+}
 </script>
 </body>
 </html>
