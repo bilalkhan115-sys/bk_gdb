@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GloForEx — Workshop Summary</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:      #faf9f6;
+  --bg2:     #f3f1eb;
+  --bg3:     #ebe8e0;
+  --border:  rgba(0,0,0,0.08);
+  --border2: rgba(0,0,0,0.14);
+  --text:    #1c1a14;
+  --text2:   #6b6760;
+  --text3:   #a09d96;
+  --green:   #2d6a4f; --green-l: #d8f3dc; --green-b: #52b788;
+  --blue:    #1a5276; --blue-l:  #d6eaf8; --blue-b:  #5dade2;
+  --amber:   #7d5a0a; --amber-l: #fef3cd; --amber-b: #f0a500;
+  --red:     #7b241c; --red-l:   #fadbd8; --red-b:   #e74c3c;
+  --teal:    #0e6655; --teal-l:  #d0ece7;
+  --purple:  #4a235a; --purple-l:#e8daef;
+  --serif: 'Fraunces', Georgia, serif;
+  --mono:  'DM Mono', monospace;
+  --sans:  'DM Sans', sans-serif;
+}
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: white; }
+  .page-break { page-break-before: always; }
+  .stage-block { break-inside: avoid; }
+}
+
+body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.6; }
+
+/* Drop screen */
+#drop-screen { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; }
+.drop-logo { font-family: var(--serif); font-size: 13px; font-style: italic; color: var(--text3); margin-bottom: 3rem; }
+.drop-zone { width: 100%; max-width: 460px; border: 1.5px dashed var(--border2); border-radius: 12px; padding: 3rem 2rem; text-align: center; cursor: pointer; transition: all .2s; background: var(--bg); }
+.drop-zone:hover, .drop-zone.drag-over { border-color: var(--blue-b); background: var(--blue-l); }
+.drop-icon { font-size: 36px; margin-bottom: 1rem; opacity: .35; }
+.drop-title { font-family: var(--serif); font-size: 22px; font-weight: 400; color: var(--text); margin-bottom: .5rem; }
+.drop-sub { font-size: 13px; color: var(--text3); margin-bottom: 1.5rem; line-height: 1.7; }
+.drop-btn { font-family: var(--sans); font-size: 13px; font-weight: 500; padding: 8px 20px; border-radius: 6px; border: 1.5px solid var(--border2); background: var(--bg); color: var(--text2); cursor: pointer; transition: all .15s; }
+.drop-btn:hover { background: var(--bg2); color: var(--text); }
+.drop-hint { margin-top: 1.5rem; font-size: 11px; color: var(--text3); font-family: var(--mono); }
+#file-input { display: none; }
+
+/* Summary screen */
+#summary-screen { display: none; }
+
+.topbar { position: sticky; top: 0; z-index: 50; background: #0e0e0e; border-bottom: 1px solid rgba(255,255,255,0.07); padding: 0 2rem; height: 52px; display: flex; align-items: center; justify-content: space-between; }
+.topbar-brand { font-family: var(--mono); font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: .06em; }
+.topbar-brand strong { font-style: normal; font-weight: 600; color: rgba(255,255,255,0.85); }
+.topbar-right { display: flex; gap: 8px; align-items: center; }
+
+.tab-row { display: flex; gap: 2px; background: rgba(255,255,255,0.08); padding: 3px; border-radius: 8px; }
+.tab-btn { font-family: var(--sans); font-size: 12px; font-weight: 500; padding: 4px 14px; border-radius: 6px; border: none; background: transparent; color: rgba(255,255,255,0.45); cursor: pointer; transition: all .15s; white-space: nowrap; }
+.tab-btn:hover { color: rgba(255,255,255,0.85); }
+.tab-btn.active { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.92); box-shadow: none; }
+
+.action-btn { font-family: var(--sans); font-size: 12px; font-weight: 500; padding: 5px 14px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.18); background: transparent; color: rgba(255,255,255,0.55); cursor: pointer; transition: all .15s; }
+.action-btn:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.9); }
+.action-btn.primary { border-color: #5dade2; color: #5dade2; }
+.action-btn.primary:hover { background: rgba(93,173,226,0.12); }
+
+.content { max-width: 860px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* Sections */
+.section { margin-bottom: 2.5rem; }
+.section-eyebrow { font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--text3); margin-bottom: .5rem; }
+.section-title { font-family: var(--serif); font-size: 26px; font-weight: 400; color: var(--text); margin-bottom: .375rem; line-height: 1.2; }
+.section-sub { font-size: 13px; color: var(--text2); margin-bottom: 1.25rem; line-height: 1.6; }
+.divider { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+
+/* Stat strip */
+.stat-strip { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 2rem; }
+.stat-cell { background: var(--bg); padding: 16px 18px; text-align: center; }
+.stat-num { font-family: var(--serif); font-size: 30px; font-weight: 300; color: var(--text); line-height: 1; margin-bottom: 5px; }
+.stat-label { font-size: 11px; color: var(--text3); font-family: var(--mono); letter-spacing: .04em; }
+
+/* Stage blocks */
+.stage-block { margin-bottom: 1.25rem; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.stage-head { padding: 10px 16px; background: var(--bg2); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.stage-code-tag { font-family: var(--mono); font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 4px; flex-shrink: 0; }
+.stage-head-title { font-size: 13px; font-weight: 500; color: var(--text); flex: 1; }
+.stage-count { font-family: var(--mono); font-size: 10px; color: var(--text3); }
+.stage-body { padding: 0; }
+.empty-stage { padding: 14px 16px; font-size: 13px; color: var(--text3); font-style: italic; }
+
+/* Decisions */
+.decision-row { display: flex; align-items: flex-start; gap: 12px; padding: 10px 16px; border-bottom: 1px solid var(--border); }
+.decision-row:last-child { border-bottom: none; }
+.d-num { font-family: var(--mono); font-size: 10px; color: var(--text3); min-width: 22px; padding-top: 2px; flex-shrink: 0; }
+.d-body { flex: 1; }
+.d-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+.d-meta { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 3px; }
+
+/* Changes */
+.change-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--border); }
+.change-row:last-child { border-bottom: none; }
+.change-status { font-family: var(--mono); font-size: 9px; font-weight: 500; padding: 2px 7px; border-radius: 3px; white-space: nowrap; flex-shrink: 0; margin-top: 3px; letter-spacing: .04em; }
+.cs-modified { background: var(--amber-l); color: var(--amber); }
+.cs-new      { background: var(--green-l); color: var(--green); }
+.cs-removed  { background: var(--red-l);   color: var(--red); }
+.change-body { flex: 1; }
+.change-name { font-size: 13px; font-weight: 500; color: var(--text); }
+.change-name.removed { text-decoration: line-through; color: var(--text3); }
+.change-note { font-size: 12px; color: var(--text2); margin-top: 3px; line-height: 1.5; }
+.change-day { font-family: var(--mono); font-size: 10px; color: var(--text3); flex-shrink: 0; padding-top: 3px; }
+.change-types { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 5px; }
+.ct-tag { font-family: var(--mono); font-size: 9px; font-weight: 500; padding: 1px 6px; border-radius: 3px; letter-spacing: .04em; }
+.ct-scope    { background: var(--amber-l); color: var(--amber); }
+.ct-trigger  { background: var(--blue-l);  color: var(--blue); }
+.ct-deadline { background: var(--purple-l);color: var(--purple); }
+.ct-name     { background: var(--teal-l);  color: var(--teal); }
+.ct-other    { background: var(--bg3);     color: var(--text2); }
+
+/* Open items */
+.oi-table { width: 100%; border-collapse: collapse; font-size: 13px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.oi-table th { font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--text3); padding: 9px 14px; text-align: left; border-bottom: 1px solid var(--border2); background: var(--bg2); }
+.oi-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text); }
+.oi-table tr:last-child td { border-bottom: none; }
+.oi-table tr:hover td { background: var(--bg2); }
+.oi-stage-tag { font-family: var(--mono); font-size: 10px; padding: 1px 7px; border-radius: 3px; background: var(--bg3); color: var(--text2); white-space: nowrap; }
+
+/* Meta header */
+.meta-header { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+.meta-title { font-family: var(--serif); font-size: 20px; font-weight: 400; color: var(--text); margin-bottom: 4px; }
+.meta-sub { font-size: 12px; color: var(--text2); font-family: var(--mono); }
+.meta-badges { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-top: 4px; }
+.meta-badge { font-family: var(--mono); font-size: 10px; font-weight: 500; padding: 3px 9px; border-radius: 10px; border: 1px solid var(--border2); color: var(--text2); background: var(--bg); }
+
+/* Next steps */
+.ns-header-row { display: grid; grid-template-columns: 1fr 140px 140px 32px; gap: 8px; padding: 0 10px 6px; }
+.ns-col-label { font-family: var(--mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--text3); }
+.next-steps-grid { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+.next-step-row { display: grid; grid-template-columns: 1fr 140px 140px 32px; gap: 8px; align-items: center; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); transition: border-color .15s; }
+.next-step-row:hover { border-color: var(--border2); }
+.ns-input { font-family: var(--sans); font-size: 13px; color: var(--text); background: transparent; border: none; outline: none; width: 100%; }
+.ns-input::placeholder { color: var(--text3); }
+.ns-small { font-family: var(--sans); font-size: 12px; color: var(--text2); background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; padding: 4px 8px; outline: none; width: 100%; }
+.ns-small:focus { border-color: var(--blue-b); }
+.ns-del { font-size: 14px; background: none; border: none; color: var(--text3); cursor: pointer; padding: 2px 4px; border-radius: 4px; line-height: 1; }
+.ns-del:hover { color: var(--red-b); background: var(--red-l); }
+.add-step-btn { font-family: var(--sans); font-size: 12px; font-weight: 500; padding: 8px 14px; border-radius: 6px; border: 1.5px dashed var(--border2); background: transparent; color: var(--text3); cursor: pointer; transition: all .15s; width: 100%; text-align: left; }
+.add-step-btn:hover { border-color: var(--blue-b); color: var(--blue); background: var(--blue-l); }
+.ns-source { font-family: var(--mono); font-size: 9px; padding: 1px 5px; border-radius: 3px; background: var(--bg3); color: var(--text3); margin-left: 6px; vertical-align: middle; }
+
+@media (max-width: 640px) {
+  .stat-strip { grid-template-columns: 1fr 1fr; }
+  .next-step-row { grid-template-columns: 1fr; }
+  .ns-header-row { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Drop screen -->
+<div id="drop-screen">
+  <div class="drop-logo">GDB Logistics · <em>GloForEx</em></div>
+  <div class="drop-zone" id="drop-zone">
+    <div class="drop-icon">↓</div>
+    <div class="drop-title">Load workshop backup</div>
+    <div class="drop-sub">Drag and drop a <code>.json</code> backup exported from the Live Log tool, or click to browse.</div>
+    <button class="drop-btn" onclick="document.getElementById('file-input').click()">Choose file</button>
+    <div class="drop-hint">gloforex_backup_2026-04-14_09h30.json</div>
+  </div>
+  <input type="file" id="file-input" accept=".json" />
+</div>
+
+<!-- Summary screen -->
+<div id="summary-screen">
+  <div class="topbar no-print">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="topbar-brand">GDB · <strong>GloForEx</strong></div>
+      <div style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.85);padding-left:12px;padding-right:12px;border-left:1px solid rgba(255,255,255,0.12);border-right:1px solid rgba(255,255,255,0.12);">Workshop Summary</div>
+      <img
+        src="https://gdblogistics.com/wp-content/uploads/2025/11/Logo-GDB-landscape.svg"
+        alt="GDB Logistics"
+        style="height:26px;width:auto;flex-shrink:0;opacity:0.85;filter:brightness(0) invert(1);"
+        onerror="this.style.display='none'"
+      />
+    </div>
+    <div class="topbar-right">
+      <div class="tab-row">
+        <button class="tab-btn active" onclick="switchTab('eod',this)">End of day</button>
+        <button class="tab-btn" onclick="switchTab('full',this)">Full summary</button>
+        <button class="tab-btn" onclick="switchTab('next',this)">Next steps</button>
+      </div>
+      <button class="action-btn no-print" onclick="resetToDropScreen()">Load new</button>
+      <button class="action-btn primary no-print" onclick="window.print()">Print / PDF</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- End of day tab -->
+    <div class="tab-panel active" id="tab-eod">
+      <div class="section">
+        <div class="section-eyebrow">End-of-day review</div>
+        <div class="section-title" id="eod-title">Day summary</div>
+        <div class="section-sub">All decisions and task changes from this session. Walk the room through this before closing.</div>
+      </div>
+      <div class="stat-strip" id="eod-stats"></div>
+      <div class="section">
+        <div class="section-eyebrow">Decisions logged</div>
+        <div id="eod-decisions"></div>
+      </div>
+      <hr class="divider">
+      <div class="section">
+        <div class="section-eyebrow">Task changes</div>
+        <div id="eod-changes"></div>
+      </div>
+    </div>
+
+    <!-- Full summary tab -->
+    <div class="tab-panel" id="tab-full">
+      <div class="section">
+        <div class="section-eyebrow">Workshop summary</div>
+        <div class="section-title">Complete log — all days</div>
+        <div class="section-sub">Every decision and task change across all stages and both workshop days.</div>
+      </div>
+      <div id="full-meta"></div>
+      <div class="stat-strip" id="full-stats"></div>
+      <div class="section">
+        <div class="section-eyebrow">All decisions — by stage</div>
+        <div id="full-decisions"></div>
+      </div>
+      <hr class="divider page-break">
+      <div class="section">
+        <div class="section-eyebrow">All task changes — by stage</div>
+        <div id="full-changes"></div>
+      </div>
+      <hr class="divider">
+      <div class="section">
+        <div class="section-eyebrow">Open items</div>
+        <div class="section-sub" style="margin-bottom:.75rem">Tasks whose notes contain "OPEN ITEM" or "TBC". Review and assign owners.</div>
+        <div id="full-open-items"></div>
+      </div>
+    </div>
+
+    <!-- Next steps tab -->
+    <div class="tab-panel" id="tab-next">
+      <div class="section">
+        <div class="section-eyebrow">Post-workshop planning</div>
+        <div class="section-title">Next steps</div>
+        <div class="section-sub">Pre-populated from logged decisions and task changes. Edit freely — add owner and target date for each action, remove anything not relevant.</div>
+      </div>
+      <div class="ns-header-row">
+        <div class="ns-col-label">Action</div>
+        <div class="ns-col-label">Owner</div>
+        <div class="ns-col-label">Target date</div>
+        <div></div>
+      </div>
+      <div class="next-steps-grid" id="next-steps-grid"></div>
+      <button class="add-step-btn" onclick="addNextStep()">+ Add action</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const STAGE_META = {
+  'STG-1': { label:'STG-1', name:'Booking intake & validation',  color:'#1a5276', bg:'#d6eaf8' },
+  'STG-2': { label:'STG-2', name:'Shipment data completion',     color:'#1a5276', bg:'#d6eaf8' },
+  'STG-3': { label:'STG-3', name:'Document verification',        color:'#0e6655', bg:'#d0ece7' },
+  'STG-4': { label:'STG-4', name:'Customs processing',           color:'#0e6655', bg:'#d0ece7' },
+  'STG-5': { label:'STG-5', name:'Arrival monitoring',           color:'#1a5276', bg:'#d6eaf8' },
+  'STG-6': { label:'STG-6', name:'Carrier release',              color:'#0e6655', bg:'#d0ece7' },
+  'STG-7': { label:'STG-7', name:'Delivery planning',            color:'#1a5276', bg:'#d6eaf8' },
+  'STG-8': { label:'STG-8', name:'Financial handling',           color:'#7d5a0a', bg:'#fef3cd' },
+  'DEV':   { label:'DEV',   name:'Dev message log',              color:'#7b241c', bg:'#fadbd8' },
+  'GLOBAL':{ label:'ALL',   name:'Workshop-wide',                color:'#4a235a', bg:'#e8daef' },
+  'PARKING':{ label:'PKG',  name:'Parking lot',                  color:'#7d5a0a', bg:'#fef3cd' },
+};
+const CT_CLS = { scope:'ct-scope', trigger:'ct-trigger', deadline:'ct-deadline', name:'ct-name', other:'ct-other' };
+
+let DATA = null;
+let nextSteps = [];
+
+// ── File loading ──────────────────────────────────────────────────────────
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+
+dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('drag-over'); if (e.dataTransfer.files[0]) readFile(e.dataTransfer.files[0]); });
+fileInput.addEventListener('change',   e => { if (e.target.files[0]) readFile(e.target.files[0]); });
+
+function readFile(file) {
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      DATA = JSON.parse(ev.target.result);
+      buildNextSteps();
+      render();
+      document.getElementById('drop-screen').style.display = 'none';
+      document.getElementById('summary-screen').style.display = 'block';
+    } catch(e) {
+      alert('Could not parse file — make sure this is a valid GloForEx backup (.json).');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function resetToDropScreen() {
+  DATA = null; nextSteps = [];
+  document.getElementById('drop-screen').style.display = 'flex';
+  document.getElementById('summary-screen').style.display = 'none';
+  fileInput.value = '';
+}
+
+// ── Tab switching ─────────────────────────────────────────────────────────
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── Master render ─────────────────────────────────────────────────────────
+function render() {
+  const day = DATA.currentDay || 1;
+  document.getElementById('eod-title').textContent = `Day ${day} — session summary`;
+  renderEOD(day);
+  renderFull();
+  renderNextSteps();
+}
+
+// ── EOD ───────────────────────────────────────────────────────────────────
+function renderEOD(day) {
+  let decCount = 0, modCount = 0, newCount = 0, delCount = 0;
+
+  // Count decisions for this day
+  for (const decs of Object.values(DATA.decisions || {}))
+    decs.filter(d => d.day === day).forEach(() => decCount++);
+
+  // Count task changes for this day
+  for (const c of Object.values(DATA.taskChanges || {}))
+    if (c.day === day) { c.status === 'deleted' ? delCount++ : modCount++; }
+
+  for (const arr of Object.values(DATA.addedTasks || {}))
+    arr.filter(t => t.day === day).forEach(() => newCount++);
+
+  document.getElementById('eod-stats').innerHTML = `
+    <div class="stat-cell"><div class="stat-num">${decCount}</div><div class="stat-label">Decisions</div></div>
+    <div class="stat-cell"><div class="stat-num">${modCount}</div><div class="stat-label">Modified</div></div>
+    <div class="stat-cell"><div class="stat-num">${newCount}</div><div class="stat-label">New tasks</div></div>
+    <div class="stat-cell"><div class="stat-num">${delCount}</div><div class="stat-label">Removed</div></div>`;
+
+  // Decisions
+  let decHtml = '', anyDec = false;
+  for (const [sid, decs] of stageEntries()) {
+    const filtered = (DATA.decisions[sid] || []).filter(d => d.day === day);
+    if (!filtered.length) continue;
+    anyDec = true;
+    decHtml += stageBlock(sid,
+      filtered.map((d,i) => decRow(d, i+1)).join(''),
+      filtered.length + ' decision' + (filtered.length > 1 ? 's' : ''));
+  }
+  document.getElementById('eod-decisions').innerHTML = anyDec
+    ? decHtml
+    : '<p style="font-size:13px;color:var(--text3);font-style:italic;padding:6px 0">No decisions logged for this day.</p>';
+
+  // Parked items for this day
+  let parkHtml = '', anyPark = false;
+  for (const [sid, items] of Object.entries(DATA.parkedItems || {})) {
+    const filtered = items.filter(p => p.day === day);
+    if (!filtered.length) continue;
+    anyPark = true;
+    parkHtml += stageBlock(sid,
+      filtered.map(p => parkedRow(p, true)).join(''),
+      filtered.length + ' item' + (filtered.length > 1 ? 's' : ''));
+  }
+  const eodParkSection = `
+    <hr class="divider">
+    <div class="section">
+      <div class="section-eyebrow">Parked items</div>
+      ${anyPark ? parkHtml : '<p style="font-size:13px;color:var(--text3);font-style:italic;padding:6px 0">No items parked this day.</p>'}
+    </div>`;
+  document.getElementById('eod-changes').insertAdjacentHTML('afterend', eodParkSection);
+
+  // Changes
+  let chHtml = '', anyCh = false;
+  for (const [sid] of stageEntries()) {
+    const rows = changesForStage(sid).filter(r => (r.c.day || r.t?.day) === day);
+    const added = (DATA.addedTasks[sid] || []).filter(t => t.day === day);
+    if (!rows.length && !added.length) continue;
+    anyCh = true;
+    chHtml += stageBlock(sid,
+      [...rows.map(r => changeRow(r.c, r.status)), ...added.map(t => changeRow(t, 'new'))].join(''),
+      (rows.length + added.length) + ' change' + (rows.length + added.length > 1 ? 's' : ''));
+  }
+  document.getElementById('eod-changes').innerHTML = anyCh
+    ? chHtml
+    : '<p style="font-size:13px;color:var(--text3);font-style:italic;padding:6px 0">No task changes for this day.</p>';
+}
+
+// ── Full summary ──────────────────────────────────────────────────────────
+function renderFull() {
+  let decCount = 0, modCount = 0, newCount = 0, delCount = 0;
+  for (const decs of Object.values(DATA.decisions || {})) decCount += decs.length;
+  for (const c of Object.values(DATA.taskChanges || {})) c.status === 'deleted' ? delCount++ : modCount++;
+  for (const arr of Object.values(DATA.addedTasks || {})) newCount += arr.length;
+
+  document.getElementById('full-stats').innerHTML = `
+    <div class="stat-cell"><div class="stat-num">${decCount}</div><div class="stat-label">Total decisions</div></div>
+    <div class="stat-cell"><div class="stat-num">${modCount}</div><div class="stat-label">Modified tasks</div></div>
+    <div class="stat-cell"><div class="stat-num">${newCount}</div><div class="stat-label">New tasks</div></div>
+    <div class="stat-cell"><div class="stat-num">${delCount}</div><div class="stat-label">Removed tasks</div></div>`;
+
+  document.getElementById('full-meta').innerHTML = `
+    <div class="meta-header">
+      <div>
+        <div class="meta-title">GloForEx — Global Forwarding Excellence</div>
+        <div class="meta-sub">De Rijp · April 14–15, 2026 · Ocean Import</div>
+      </div>
+      <div class="meta-badges">
+        <span class="meta-badge">FR · DE · NL</span>
+        <span class="meta-badge">~10 attendees</span>
+        <span class="meta-badge">MyFreight</span>
+        <span class="meta-badge">NL go-live June 2026</span>
+      </div>
+    </div>`;
+
+  // All decisions
+  let decHtml = '', anyDec = false;
+  for (const [sid] of stageEntries()) {
+    const decs = DATA.decisions[sid] || [];
+    if (!decs.length) continue;
+    anyDec = true;
+    decHtml += stageBlock(sid, decs.map((d,i) => decRow(d, i+1, true)).join(''), decs.length + ' decision' + (decs.length > 1 ? 's' : ''));
+  }
+  document.getElementById('full-decisions').innerHTML = anyDec
+    ? decHtml
+    : '<p style="font-size:13px;color:var(--text3);font-style:italic;padding:6px 0">No decisions logged.</p>';
+
+  // All changes
+  let chHtml = '', anyCh = false;
+  for (const [sid] of stageEntries()) {
+    const rows = changesForStage(sid);
+    const added = DATA.addedTasks[sid] || [];
+    if (!rows.length && !added.length) continue;
+    anyCh = true;
+    chHtml += stageBlock(sid,
+      [...rows.map(r => changeRow(r.c, r.status, true)), ...added.map(t => changeRow(t, 'new', true))].join(''),
+      (rows.length + added.length) + ' change' + (rows.length + added.length > 1 ? 's' : ''));
+  }
+  document.getElementById('full-changes').innerHTML = anyCh
+    ? chHtml
+    : '<p style="font-size:13px;color:var(--text3);font-style:italic;padding:6px 0">No task changes logged.</p>';
+
+  // Open items
+  const openItems = [];
+  for (const [tid, c] of Object.entries(DATA.taskChanges || {})) {
+    const notes = (c.notes || '').toUpperCase();
+    if (notes.includes('OPEN') || notes.includes('TBC')) {
+      openItems.push({ stage: tidToStage(tid), name: c.name, notes: c.notes });
+    }
+  }
+  // Also surface any decisions that contain "TBC" or "open"
+  for (const [sid, decs] of Object.entries(DATA.decisions || {})) {
+    decs.forEach(d => {
+      if (d.text.toUpperCase().includes('TBC') || d.text.toUpperCase().includes('OPEN')) {
+        openItems.push({ stage: sid, name: 'Decision: ' + d.text, notes: `Day ${d.day} · ${d.time}` });
+      }
+    });
+  }
+
+// All parked items across all stages
+  let allParkHtml = '', anyAllPark = false;
+  for (const [sid, items] of Object.entries(DATA.parkedItems || {})) {
+    if (!items.length) continue;
+    anyAllPark = true;
+    allParkHtml += stageBlock(sid,
+      items.map(p => parkedRow(p, true)).join(''),
+      items.length + ' item' + (items.length > 1 ? 's' : ''));
+  }
+  const fullParkSection = `
+    <hr class="divider">
+    <div class="section">
+      <div class="section-eyebrow">Parking lot — all stages</div>
+      <div class="section-sub" style="margin-bottom:.75rem">All items parked during the workshop, with owner and resolution target.</div>
+      ${anyAllPark ? allParkHtml : '<p style="font-size:13px;color:var(--text3);font-style:italic;padding:6px 0">No items were parked during the workshop.</p>'}
+    </div>`;
+  document.getElementById('full-open-items').insertAdjacentHTML('afterend', fullParkSection);
+  if (openItems.length) {
+    document.getElementById('full-open-items').innerHTML = `
+      <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden">
+        <table class="oi-table">
+          <thead><tr><th>Stage</th><th>Item</th><th>Note</th></tr></thead>
+          <tbody>${openItems.map(r => `<tr>
+            <td><span class="oi-stage-tag">${esc(r.stage)}</span></td>
+            <td>${esc(r.name)}</td>
+            <td style="color:var(--text2);font-size:12px">${esc(r.notes || '')}</td>
+          </tr>`).join('')}</tbody>
+        </table>
+      </div>`;
+  } else {
+    document.getElementById('full-open-items').innerHTML = '<p style="font-size:13px;color:var(--text3);font-style:italic;padding:6px 0">No open items detected automatically. Items with "OPEN ITEM" or "TBC" in their notes will appear here.</p>';
+  }
+}
+
+// ── Next steps ────────────────────────────────────────────────────────────
+function buildNextSteps() {
+  nextSteps = [];
+  // From decisions
+  for (const [sid, decs] of Object.entries(DATA.decisions || {})) {
+    decs.forEach(d => nextSteps.push({ action: d.text, owner: '', date: '', source: sid }));
+  }
+  // From new tasks
+  for (const [sid, tasks] of Object.entries(DATA.addedTasks || {})) {
+    tasks.forEach(t => nextSteps.push({ action: `Implement new task: ${t.name}`, owner: '', date: '', source: sid }));
+  }
+  // From modified tasks
+  for (const [tid, c] of Object.entries(DATA.taskChanges || {})) {
+    if (c.status !== 'deleted') {
+      const note = c.changeNote ? ` — ${c.changeNote}` : '';
+      nextSteps.push({ action: `Apply change to "${c.name}"${note}`, owner: '', date: '', source: tidToStage(tid) });
+    }
+  }
+  // From deleted tasks
+  for (const [tid, c] of Object.entries(DATA.taskChanges || {})) {
+    if (c.status === 'deleted') {
+      nextSteps.push({ action: `Remove task "${c.name}" from MF configuration`, owner: '', date: '', source: tidToStage(tid) });
+    }
+  }
+  // From parked items — carry forward with owner pre-filled
+  for (const [sid, items] of Object.entries(DATA.parkedItems || {})) {
+    items.forEach(p => {
+      nextSteps.push({ action: `[Parked] ${p.text}`, owner: p.owner || '', date: p.when === 'Post-workshop' ? 'Post-workshop' : '', source: sid });
+    });
+  }
+}
+
+function renderNextSteps() {
+  document.getElementById('next-steps-grid').innerHTML = nextSteps.map((s, i) => `
+    <div class="next-step-row">
+      <div style="display:flex;align-items:center;gap:6px">
+        <input class="ns-input" value="${esc(s.action)}" placeholder="Action…" oninput="nextSteps[${i}].action=this.value" />
+        ${s.source ? `<span class="ns-source">${esc(s.source)}</span>` : ''}
+      </div>
+      <input class="ns-small" value="${esc(s.owner)}" placeholder="Owner" oninput="nextSteps[${i}].owner=this.value" />
+      <input class="ns-small" value="${esc(s.date)}"  placeholder="Target date" oninput="nextSteps[${i}].date=this.value" />
+      <button class="ns-del" onclick="removeNextStep(${i})">×</button>
+    </div>`).join('');
+}
+
+function addNextStep() {
+  nextSteps.push({ action: '', owner: '', date: '', source: '' });
+  renderNextSteps();
+  setTimeout(() => {
+    const rows = document.querySelectorAll('.next-step-row');
+    if (rows.length) rows[rows.length-1].querySelector('.ns-input').focus();
+  }, 40);
+}
+
+function removeNextStep(i) {
+  nextSteps.splice(i, 1);
+  renderNextSteps();
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────
+function stageEntries() {
+  return Object.entries(STAGE_META);
+}
+
+function changesForStage(sid) {
+  const prefix = sid.toLowerCase().replace('-', '');
+  const results = [];
+  for (const [tid, c] of Object.entries(DATA.taskChanges || {})) {
+    if (tid.startsWith(prefix)) {
+      results.push({ c, status: c.status === 'deleted' ? 'removed' : 'modified' });
+    }
+  }
+  return results;
+}
+
+function tidToStage(tid) {
+  if (tid.startsWith('stg')) return 'STG-' + tid.replace('stg','').split('-')[0];
+  if (tid.startsWith('dev')) return 'DEV';
+  return 'GLOBAL';
+}
+
+function stageBlock(sid, innerHtml, countLabel) {
+  const m = STAGE_META[sid] || { label: sid, name: sid, color: '#555', bg: '#eee' };
+  return `<div class="stage-block">
+    <div class="stage-head">
+      <span class="stage-code-tag" style="background:${m.bg};color:${m.color}">${m.label}</span>
+      <span class="stage-head-title">${m.name}</span>
+      <span class="stage-count">${countLabel}</span>
+    </div>
+    <div class="stage-body">${innerHtml || '<div class="empty-stage">Nothing logged.</div>'}</div>
+  </div>`;
+}
+
+function decRow(d, num, showDay = false) {
+  return `<div class="decision-row">
+    <div class="d-num">${String(num).padStart(2,'0')}</div>
+    <div class="d-body">
+      <div class="d-text">${esc(d.text)}</div>
+      <div class="d-meta">${showDay ? `Day ${d.day} · ` : ''}${d.time}</div>
+    </div>
+  </div>`;
+}
+
+function changeRow(c, status, showDay = false) {
+  const labelMap = { modified:'MODIFIED', new:'NEW', removed:'REMOVED' };
+  const clsMap   = { modified:'cs-modified', new:'cs-new', removed:'cs-removed' };
+  const ctags = (c.changeTypes || []).map(ct => `<span class="ct-tag ${CT_CLS[ct]||'ct-other'}">${ct}</span>`).join('');
+  const dayStr = showDay && (c.day) ? `<div class="change-day">Day ${c.day}</div>` : '';
+  return `<div class="change-row">
+    <span class="change-status ${clsMap[status]}">${labelMap[status]}</span>
+    <div class="change-body">
+      <div class="change-name${status==='removed'?' removed':''}">${esc(c.name || '')}</div>
+      ${c.changeNote ? `<div class="change-note">${esc(c.changeNote)}</div>` : ''}
+      ${ctags ? `<div class="change-types">${ctags}</div>` : ''}
+      ${c.notes ? `<div class="change-note" style="font-size:11px;color:var(--text3)">${esc(c.notes)}</div>` : ''}
+    </div>
+    ${dayStr}
+  </div>`;
+}
+
+function parkedRow(p, showDay = false) {
+  const whenCls = p.when === 'Post-workshop' ? 'cs-modified' : 'cs-new';
+  return `<div class="change-row">
+    <span class="change-status ${whenCls}" style="white-space:nowrap">${esc(p.when || 'TBD')}</span>
+    <div class="change-body">
+      <div class="change-name">${esc(p.text)}</div>
+      ${p.owner ? `<div class="change-note">Owner: ${esc(p.owner)}</div>` : '<div class="change-note" style="color:var(--text3);font-style:italic">No owner assigned</div>'}
+    </div>
+    ${showDay && p.day ? `<div class="change-day">Day ${p.day} · ${p.time}</div>` : ''}
+  </div>`;
+}
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
