@@ -750,6 +750,11 @@ body {
         <span>Workshop-wide</span>
         <span class="stage-badge">—</span>
       </button>
+      <button class="stage-btn" data-stage="PARKING" onclick="selectStage('PARKING',this)">
+        <span class="stage-code" style="background:var(--amber-l);color:var(--amber-d)">PKG</span>
+        <span>Parking lot</span>
+        <span class="stage-badge">—</span>
+      </button>
     </div>
   </div>
 
@@ -761,6 +766,7 @@ body {
       <div class="decision-label">DECISION</div>
       <input class="decision-input" id="decision-input" placeholder="Type decision and press Enter — will be logged to current stage…" />
       <button class="btn-log-decision" onclick="logDecision()">Log decision</button>
+      <button class="btn-log-decision" onclick="openParkModal()" style="border-color:var(--amber);background:var(--amber-l);color:var(--amber-d);">Park item</button>
     </div>
 
     <!-- Stage area -->
@@ -881,7 +887,7 @@ const STAGES = {
     team: 'Import Booking',
     desc: 'Ensure all mandatory shipment data fields are complete before operational processing begins.',
     tasks: [
-      { id: 'stg2-1', name: 'Check agent update',         auto: 'auto-recurring', notes: 'API shipments only. Resets to Pending on each agent update from SnapLogic.' },
+      { id: 'stg2-1', name: 'Check agent update',         auto: 'auto-recurring', notes: 'API shipments only. Resets to Pending on each agent update.' },
       { id: 'stg2-2', name: 'Complete shipment data',     auto: 'manual',         notes: 'Non-API shipments only. Full checklist: parties, transport, cargo, documents.' },
       { id: 'stg2-3', name: 'Agent booking communication',auto: 'auto-exception', notes: 'Shared with STG-1. Triggered when data is missing after agent update.' },
       { id: 'stg2-4', name: 'Seaway bill released',       auto: 'auto-full',      notes: 'OPEN ITEM: Placement in STG-2 or STG-3 TBC. Auto-triggered when seaway bill confirmed.' },
@@ -894,7 +900,7 @@ const STAGES = {
     tasks: [
       { id: 'stg3-1', name: 'Verify commercial invoice',   auto: 'manual', notes: 'All countries. Manual check against shipment data.' },
       { id: 'stg3-2', name: 'Verify packing list',         auto: 'manual', notes: 'All countries. Manual check against shipment data.' },
-      { id: 'stg3-3', name: 'Verify HBL / TLX / seaway bill', auto: 'manual', notes: 'OPEN ITEM: Document type depends on shipment. Overlap with STG-2 documents section TBD.' },
+      { id: 'stg3-3', name: 'Verify HBL / TLX / Seaway bill', auto: 'manual', notes: 'OPEN ITEM: Document type depends on shipment. Overlap with STG-2 documents section TBD.' },
     ]
   },
   'STG-4': {
@@ -959,6 +965,12 @@ const STAGES = {
     team: 'All',
     desc: 'Decisions and notes not tied to a specific stage — cross-cutting, process-wide, or administrative.',
     tasks: []
+  },
+  'PARKING': {
+    name: 'Parking lot',
+    team: 'All',
+    desc: 'All items parked across the workshop — unresolved, with owner and target resolution moment.',
+    tasks: []
   }
 };
 
@@ -966,9 +978,10 @@ const STAGES = {
 let state = {
   currentStage: null,
   currentDay: 1,
-  decisions: {}, // stage -> [{text, time, day}]
-  taskChanges: {}, // taskId -> {name, auto, notes, changeTypes, changeNote, status: 'modified'|'deleted'}
-  addedTasks: {}, // stage -> [{id, name, auto, team, notes, changeNote, day}]
+  decisions: {},
+  taskChanges: {},
+  addedTasks: {},
+  parkedItems: {}, // stage -> [{id, text, owner, when, time, day}]
 };
 
 let editContext = null; // {mode:'edit'|'add', stageId, taskId}
@@ -1025,16 +1038,16 @@ function updateSidebarBadges() {
     const badge = btn.querySelector('.stage-badge');
     btn.classList.remove('has-changes','has-decisions','has-both');
     badge.style.display = 'none';
+    const hasParked = hasStageParkedBadge(id);
+    const anyActivity = hasChanges || hasDecisions || hasParked;
     if (hasChanges && hasDecisions) {
       btn.classList.add('has-both');
-      badge.style.display = 'block';
-      badge.textContent = '✦';
-    } else if (hasChanges) {
+    } else if (hasChanges || hasParked) {
       btn.classList.add('has-changes');
-      badge.style.display = 'block';
-      badge.textContent = '✦';
     } else if (hasDecisions) {
       btn.classList.add('has-decisions');
+    }
+    if (anyActivity) {
       badge.style.display = 'block';
       badge.textContent = '✦';
     }
@@ -1051,6 +1064,13 @@ function hasStageChanges(id) {
 
 function hasStageDecisions(id) {
   return state.decisions[id] && state.decisions[id].length > 0;
+}
+
+function hasStageParkedBadge(id) {
+  if (id === 'PARKING') {
+    return Object.values(state.parkedItems || {}).some(arr => arr.length > 0);
+  }
+  return state.parkedItems[id] && state.parkedItems[id].length > 0;
 }
 
 // ── Decision ───────────────────────────────────────────────────────────────
@@ -1155,6 +1175,42 @@ function renderStage(id) {
     <div class="empty-state">No decisions logged yet. Type a decision in the bar above and press Enter.</div>`;
   }
 
+  // Parking lot view: show all parked items across all stages
+  let parkingHtml = '';
+  if (id === 'PARKING') {
+    let allParked = '';
+    for (const [sid, items] of Object.entries(state.parkedItems || {})) {
+      if (!items.length) continue;
+      const st = STAGES[sid] || { name: sid };
+      const codeBg = { 'STG-1':'rgba(56,139,253,.15)','STG-2':'rgba(56,139,253,.15)','STG-3':'rgba(57,211,170,.15)','STG-4':'rgba(57,211,170,.15)','STG-5':'rgba(56,139,253,.1)','STG-6':'rgba(57,211,170,.15)','STG-7':'rgba(56,139,253,.1)','STG-8':'rgba(210,153,34,.15)','DEV':'rgba(248,81,73,.15)','GLOBAL':'rgba(163,113,247,.15)' };
+      const codeCol = { 'STG-1':'var(--blue-d)','STG-2':'var(--blue-d)','STG-3':'var(--teal-d)','STG-4':'var(--teal-d)','STG-5':'var(--blue-d)','STG-6':'var(--teal-d)','STG-7':'var(--blue-d)','STG-8':'var(--amber-d)','DEV':'var(--red-d)','GLOBAL':'var(--purple-d)' };
+      allParked += `<div style="margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;">
+          <span style="font-family:var(--mono);font-size:10px;font-weight:600;padding:1px 6px;border-radius:3px;background:${codeBg[sid]||'var(--bg4)'};color:${codeCol[sid]||'var(--text2)'}">${sid}</span>
+          <span style="font-size:12px;color:var(--text2)">${escHtml(st.name)}</span>
+        </div>
+        <div class="task-list">${items.map((p,i) => `
+          <div class="task-card" style="border-left:3px solid var(--amber);border-color:var(--amber);">
+            <div class="task-top">
+              <div class="task-name-display" style="color:var(--amber-d)">${escHtml(p.text)}</div>
+              <div class="task-actions">
+                <button class="task-action-btn edit-btn" onclick="openParkModal('${sid}',${i})">Edit</button>
+                <button class="task-action-btn del-btn" onclick="deleteParkItem('${sid}',${i})">×</button>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;">
+              <span style="font-family:var(--mono);font-size:10px;padding:1px 7px;border-radius:8px;background:var(--amber-l);color:var(--amber-d)">${escHtml(p.when)}</span>
+              ${p.owner ? `<span style="font-size:11px;color:var(--text2)">Owner: ${escHtml(p.owner)}</span>` : `<span style="font-size:11px;color:var(--text3);font-style:italic">No owner</span>`}
+              <span style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-left:auto">Day ${p.day} · ${p.time}</span>
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>`;
+    }
+    if (!allParked) allParked = `<div class="empty-state">No items parked yet across any stage.</div>`;
+    parkingHtml = allParked;
+  }
+
   document.getElementById('stage-content').innerHTML = `
     <div class="stage-header">
       <div class="stage-header-top">
@@ -1163,8 +1219,9 @@ function renderStage(id) {
       </div>
       <div class="stage-desc">${stage.desc}</div>
     </div>
-    ${tasksHtml}
-    ${decisionsHtml}
+    ${id === 'PARKING' ? parkingHtml : tasksHtml}
+    ${id === 'PARKING' ? '' : decisionsHtml}
+    ${id !== 'PARKING' ? renderParkedItems(id) : ''}
   `;
 }
 
@@ -1541,6 +1598,99 @@ document.addEventListener('keydown', e => {
 loadState();
 const firstBtn = document.querySelector('[data-stage="STG-1"]');
 if (firstBtn) selectStage('STG-1', firstBtn);
+// ── Parking lot ───────────────────────────────────────────────────────────
+let parkContext = null; // {stageId, editIdx} — null = new item
+
+function openParkModal(stageId, editIdx) {
+  parkContext = (stageId !== undefined && editIdx !== undefined)
+    ? { stageId, editIdx }
+    : { stageId: state.currentStage, editIdx: null };
+
+  if (!parkContext.stageId) { showToast('Select a stage first', true); return; }
+
+  const existing = (editIdx !== null && editIdx !== undefined)
+    ? (state.parkedItems[parkContext.stageId] || [])[editIdx]
+    : null;
+
+  document.getElementById('park-modal-title').textContent = existing ? 'Edit parked item' : 'Park item';
+  document.getElementById('p-text').value  = existing ? existing.text  : '';
+  document.getElementById('p-owner').value = existing ? existing.owner : '';
+  document.getElementById('p-when').value  = existing ? existing.when  : 'Day 2';
+  document.getElementById('park-modal').classList.add('open');
+}
+
+function closeParkModal() {
+  document.getElementById('park-modal').classList.remove('open');
+  parkContext = null;
+}
+
+function saveParkItem() {
+  const text  = document.getElementById('p-text').value.trim();
+  if (!text) { document.getElementById('p-text').focus(); return; }
+  const owner = document.getElementById('p-owner').value.trim();
+  const when  = document.getElementById('p-when').value;
+  const sid   = parkContext.stageId;
+
+  if (!state.parkedItems[sid]) state.parkedItems[sid] = [];
+
+  if (parkContext.editIdx !== null && parkContext.editIdx !== undefined) {
+    state.parkedItems[sid][parkContext.editIdx] = { ...state.parkedItems[sid][parkContext.editIdx], text, owner, when };
+  } else {
+    state.parkedItems[sid].push({ id: 'p-' + Date.now(), text, owner, when, time: ts(), day: state.currentDay });
+  }
+
+  closeParkModal();
+  saveState();
+  updateSidebarBadges();
+  renderStage(sid);
+}
+
+function deleteParkItem(stageId, idx) {
+  state.parkedItems[stageId].splice(idx, 1);
+  saveState();
+  updateSidebarBadges();
+  renderStage(stageId);
+}
+
+function hasStageParked(id) {
+  return state.parkedItems[id] && state.parkedItems[id].length > 0;
+}
+
+function renderParkedItems(stageId) {
+  const items = state.parkedItems[stageId] || [];
+  const isParking = stageId === 'PARKING';
+  let html = `
+  <div class="section-hdr" style="margin-top:${isParking?'0':'24px'}">
+    <div class="section-hdr-label">Parked items</div>
+    <button class="btn-add" onclick="openParkModal('${stageId}')">+ Park item</button>
+  </div>`;
+
+  if (items.length === 0) {
+    html += `<div class="empty-state">No items parked${isParking?' across any stage':' for this stage'} yet.</div>`;
+    return html;
+  }
+
+  html += `<div class="task-list">`;
+  items.forEach((p, i) => {
+    html += `
+    <div class="task-card" style="border-left:3px solid var(--amber);border-color:var(--amber);">
+      <div class="task-top">
+        <div class="task-name-display" style="color:var(--amber-d)">${escHtml(p.text)}</div>
+        <div class="task-actions">
+          <button class="task-action-btn edit-btn" onclick="openParkModal('${stageId}',${i})">Edit</button>
+          <button class="task-action-btn del-btn" onclick="deleteParkItem('${stageId}',${i})">×</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;">
+        <span style="font-family:var(--mono);font-size:10px;padding:1px 7px;border-radius:8px;background:var(--amber-l);color:var(--amber-d)">${escHtml(p.when)}</span>
+        ${p.owner ? `<span style="font-size:11px;color:var(--text2)">Owner: ${escHtml(p.owner)}</span>` : `<span style="font-size:11px;color:var(--text3);font-style:italic">No owner assigned</span>`}
+        <span style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-left:auto">Day ${p.day} · ${p.time}</span>
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+  return html;
+}
 // ── Summary view (Option A) ───────────────────────────────────────────────
 let svDay = 1;
 
@@ -1659,5 +1809,38 @@ function svStageBlock(sid, innerHtml) {
   </div>`;
 }
 </script>
+<!-- Park item modal -->
+<div class="modal-overlay" id="park-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="park-modal-title">Park item</div>
+      <button class="modal-close" onclick="closeParkModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <div class="field-label">Item description</div>
+        <textarea id="p-text" placeholder="Describe the item to be resolved later…" style="min-height:60px"></textarea>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <div class="field-label">Owner</div>
+          <input type="text" id="p-owner" placeholder="Who owns this?" />
+        </div>
+        <div class="field">
+          <div class="field-label">Resolve when</div>
+          <select id="p-when">
+            <option value="Day 2">Day 2</option>
+            <option value="Post-workshop">Post-workshop</option>
+            <option value="TBD">TBD</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeParkModal()">Cancel</button>
+      <button class="btn-save" onclick="saveParkItem()" style="border-color:var(--amber);background:var(--amber-l);color:var(--amber-d);">Park item</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
