@@ -355,13 +355,37 @@ body {
   .two-col     { grid-template-columns: 1fr; }
   .team-grid   { grid-template-columns: 1fr 1fr; }
 }
+.logo-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+:root .logo-banner {
+  background: #2a2a24;
+  padding: 10px 1rem;
+  margin-left: calc(-1rem);
+  margin-right: calc(-1rem);
+  margin-top: calc(-2rem);
+  margin-bottom: 10px;
+}
+
+.dark .logo-banner {
+  background: transparent;
+  padding: 0;
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
 </style>
 </head>
 <body>
 <div class="container">
 
   <div class="header">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+    <div class="logo-banner">
       <img
         src="https://gdblogistics.com/wp-content/uploads/2025/11/Logo-GDB-landscape.svg"
         alt="GDB Logistics"
