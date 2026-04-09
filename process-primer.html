@@ -24,24 +24,36 @@
   --green-l: #EAF3DE; --green-d: #27500A;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #14140f;
-    --bg2: #1c1c16;
-    --bg3: #232319;
-    --border: rgba(255,255,255,0.08);
-    --border2: rgba(255,255,255,0.14);
-    --text: #e8e6de;
-    --text2: #9c9a92;
-    --text3: #5f5e5a;
-    --purple-l: #26215C; --purple-d: #CECBF6;
-    --teal-l: #04342C;   --teal-d: #9FE1CB;
-    --amber-l: #412402;  --amber-d: #FAC775;
-    --blue-l: #042C53;   --blue-d: #B5D4F4;
-    --red-l: #501313;
-    --green-l: #173404; --green-d: #C0DD97;
-  }
+.dark {
+  --bg: #14140f;
+  --bg2: #1c1c16;
+  --bg3: #232319;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --text: #e8e6de;
+  --text2: #9c9a92;
+  --text3: #5f5e5a;
+  --purple-l: #26215C; --purple-d: #CECBF6;
+  --teal-l: #04342C;   --teal-d: #9FE1CB;
+  --amber-l: #412402;  --amber-d: #FAC775;
+  --blue-l: #042C53;   --blue-d: #B5D4F4;
+  --red-l: #501313;
+  --green-l: #173404; --green-d: #C0DD97;
 }
+
+.dark .cc-purple .cc-tag   { background: #3C3489; color: #CECBF6; }
+.dark .cc-purple .task-pill { background: rgba(83,74,183,.2); color: #CECBF6; }
+.dark .cc-teal .cc-tag     { background: #085041; color: #9FE1CB; }
+.dark .cc-teal .task-pill  { background: rgba(15,110,86,.2); color: #9FE1CB; }
+.dark .cc-blue .cc-tag     { background: #0C447C; color: #B5D4F4; }
+.dark .cc-blue .task-pill  { background: rgba(24,95,165,.2); color: #B5D4F4; }
+.dark .cc-amber .cc-tag    { background: #633806; color: #FAC775; }
+.dark .cc-amber .task-pill { background: rgba(133,79,11,.2); color: #FAC775; }
+.dark .cc-coral { background: #4A1B0C; border-color: #993C1D; }
+.dark .cc-coral .cc-title  { color: #F5C4B3; }
+.dark .cc-coral .cc-sub    { color: #F0997B; }
+.dark .cc-coral .cc-tag    { background: #712B13; color: #F5C4B3; }
+.dark .cc-coral .task-pill { background: rgba(240,153,123,.12); color: #F5C4B3; }
 
 body {
   font-family: -apple-system, "Segoe UI", sans-serif;
@@ -282,21 +294,6 @@ body {
 .cc-coral .cc-tag   { background: #F5C4B3; color: #4A1B0C; }
 .cc-coral .task-pill { background: rgba(153,60,29,.12); color: #4A1B0C; }
 
-@media (prefers-color-scheme: dark) {
-  .cc-purple .cc-tag   { background: #3C3489; color: #CECBF6; }
-  .cc-purple .task-pill { background: rgba(83,74,183,.2); color: #CECBF6; }
-  .cc-teal .cc-tag     { background: #085041; color: #9FE1CB; }
-  .cc-teal .task-pill  { background: rgba(15,110,86,.2); color: #9FE1CB; }
-  .cc-blue .cc-tag     { background: #0C447C; color: #B5D4F4; }
-  .cc-blue .task-pill  { background: rgba(24,95,165,.2); color: #B5D4F4; }
-  .cc-amber .cc-tag    { background: #633806; color: #FAC775; }
-  .cc-amber .task-pill { background: rgba(133,79,11,.2); color: #FAC775; }
-  .cc-coral { background: #4A1B0C; border-color: #993C1D; }
-  .cc-coral .cc-title  { color: #F5C4B3; }
-  .cc-coral .cc-sub    { color: #F0997B; }
-  .cc-coral .cc-tag    { background: #712B13; color: #F5C4B3; }
-  .cc-coral .task-pill { background: rgba(240,153,123,.12); color: #F5C4B3; }
-}
 
 .cc-title { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
 .cc-sub   { font-size: 12px; line-height: 1.5; margin-bottom: 6px; }
@@ -335,6 +332,23 @@ body {
 .model-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 8px; margin-top: 14px; }
 .team-grid   { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px; }
 
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text3);
+  cursor: pointer;
+  background: none;
+  border: 0.5px solid var(--border2);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-family: inherit;
+  transition: all .15s;
+  margin-top: 12px;
+}
+.theme-toggle:hover { background: var(--bg2); }
+.theme-toggle-icon { font-size: 14px; }
 @media (max-width: 600px) {
   .dash-stats  { grid-template-columns: repeat(2, 1fr); }
   .concept-grid { grid-template-columns: 1fr 1fr; }
@@ -352,17 +366,39 @@ body {
     <div class="header-sub">How operational work is organised and managed in MyFreight</div>
   </div>
 
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+    <span class="theme-toggle-icon" id="themeIcon">☀️</span>
+    <span id="themeLabel">Light mode</span>
+  </button>
+  <div style="margin-top:1.5rem"></div>
   <div class="step-dots" id="dots"></div>
   <div class="panel" id="panel"></div>
 
 </div>
 
 <script>
+// ── Theme ──
+function applyTheme(dark) {
+  document.documentElement.classList.toggle('dark', dark);
+  document.getElementById('themeIcon').textContent  = dark ? '🌙' : '☀️';
+  document.getElementById('themeLabel').textContent = dark ? 'Dark mode' : 'Light mode';
+  localStorage.setItem('gdb-theme', dark ? 'dark' : 'light');
+}
+
+function toggleTheme() {
+  applyTheme(!document.documentElement.classList.contains('dark'));
+}
+
+(function initTheme() {
+  const saved = localStorage.getItem('gdb-theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyTheme(saved ? saved === 'dark' : prefersDark);
+})();
 const steps = [
   {
     label: "Step 1 of 6",
     title: "The dashboard is where work starts",
-    sub: "Every morning, an Ops user opens the MF dashboard. It shows exactly what needs attention — overdue tasks, pending tasks, and arrivals — before a single shipment is opened.",
+    sub: "Every morning, the user opens the MyFreight dashboard. It shows exactly what needs attention - overdue tasks, pending tasks, and arrivals - before a single shipment is opened.",
     render() {
       return `
         <div class="dash-mock">
@@ -413,7 +449,198 @@ const steps = [
             <div class="task-route">${route}</div>
           </div>`).join('')}
         </div>
-        <div class="highlight-box"><strong>The shift in thinking:</strong> Instead of an Ops user owning a portfolio of individual shipments, they select their team filter and work through every shipment that has an open task in that category — regardless of who "owns" the shipment.</div>`;
+        <div class="highlight-box"><strong>The shift in thinking:</strong> Instead of the user owning a portfolio of individual shipments, they select their team filter and work through every shipment that has an open task in that category — regardless of who "owns" the shipment.</div>`;
+    }
+  },
+{
+    title: "Shipment data completeness is a shared standard",
+    sub: "MF is the source of truth for every shipment — for downstream systems, customer-facing outputs, and financial processing. Empty fields break integrations and delay other teams. Completeness is a baseline expectation, not a best effort.",
+    render() {
+      const sections = [
+        {
+          label: 'Origin & lane',
+          cls: 'cc-purple',
+          dotColor: '#534AB7',
+          fields: [
+            { name: 'POL', req: true }, { name: 'POD', req: true },
+            { name: 'ETD', req: true }, { name: 'ETA', req: true },
+            { name: 'Incoterm', req: true }, { name: 'Load type', req: true },
+            { name: 'Container type', req: true }, { name: 'Carrier', req: true },
+            { name: 'Vessel', req: true }, { name: 'MBL', req: true },
+            { name: 'HBL', req: true }, { name: 'Contract number', req: false },
+          ]
+        },
+        {
+          label: 'Parties',
+          cls: 'cc-teal',
+          dotColor: '#0F6E56',
+          fields: [
+            { name: 'Customer', req: true }, { name: 'Shipper', req: true },
+            { name: 'Consignee', req: true }, { name: 'Notify party', req: false },
+            { name: 'Agent', req: true },
+          ]
+        },
+        {
+          label: 'Cargo',
+          cls: 'cc-blue',
+          dotColor: '#185FA5',
+          fields: [
+            { name: 'Package count', req: true }, { name: 'Weight', req: true },
+            { name: 'Cargo description', req: true }, { name: 'HS codes', req: true },
+            { name: 'Value', req: true }, { name: 'Currency', req: true },
+          ]
+        },
+        {
+          label: 'Destination routing',
+          cls: 'cc-amber',
+          dotColor: '#854F0B',
+          fields: [
+            { name: 'Pick-up terminal', req: true }, { name: 'Planned pick-up date', req: true },
+            { name: 'Transport company', req: true }, { name: 'Delivery address', req: true },
+            { name: 'Delivery date', req: true }, { name: 'Return terminal', req: true },
+            { name: 'Return planned date', req: true }, { name: 'Extra terminal (barge)', req: false },
+          ]
+        },
+      ];
+
+      const sectionHtml = sections.map(s => `
+        <div class="concept-card ${s.cls}" style="min-width:0">
+          <div class="cc-title">${s.label}</div>
+          <div class="cc-tasks" style="margin-top:6px;padding-top:6px">
+            ${s.fields.map(f => `
+              <span class="task-pill" style="display:inline-flex;align-items:center;gap:4px;margin-bottom:3px">
+                ${f.req
+                  ? `<span style="width:5px;height:5px;border-radius:50%;background:${s.dotColor};flex-shrink:0"></span>`
+                  : `<span style="width:5px;height:5px;border-radius:50%;border:1.5px solid ${s.dotColor};opacity:.6;flex-shrink:0"></span>`}
+                ${f.name}
+              </span>`).join('')}
+          </div>
+        </div>`).join('');
+
+      return `
+        <div class="concept-grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-bottom:12px">
+          ${sectionHtml}
+        </div>
+        <div style="display:flex;gap:16px;font-size:11px;color:var(--text3);margin-bottom:14px;align-items:center">
+          <span style="display:inline-flex;align-items:center;gap:5px">
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--text2)"></span> Required for all shipments
+          </span>
+          <span style="display:inline-flex;align-items:center;gap:5px">
+            <span style="width:6px;height:6px;border-radius:50%;border:1.5px solid var(--text2)"></span> Conditional — fill where applicable
+          </span>
+        </div>
+        <div class="two-col" style="margin-bottom:14px">
+          <div class="concept-card cc-purple">
+            <div class="cc-title">API bookings</div>
+            <div class="cc-sub" style="color:var(--purple-d)">The agent populates most fields automatically. Ops verifies completeness and fills any gaps — typically via the Check Agent Update task in STG-2.</div>
+          </div>
+          <div class="concept-card cc-teal">
+            <div class="cc-title">Manual bookings</div>
+            <div class="cc-sub" style="color:var(--teal-d)">Ops is responsible for filling all required fields. This is the scope of the Complete Shipment Data task in STG-2.</div>
+          </div>
+        </div>
+        <div class="highlight-box" style="margin-bottom:20px"><strong>Looking ahead:</strong> Validation logic will be introduced to check for empty required fields when specific tasks are completed — preventing a shipment from advancing with missing data. For now, completeness is an operational standard enforced through the STG-2 task structure.</div>
+
+        <button onclick="(function(btn){const body=document.getElementById('routing-example');const icon=document.getElementById('routing-chevron');const open=body.style.display!=='none';body.style.display=open?'none':'block';icon.style.transform=open?'rotate(0deg)':'rotate(90deg)'})(this)" style="display:flex;align-items:center;gap:8px;background:none;border:none;cursor:pointer;padding:0;margin-bottom:10px;font-family:inherit">
+          <span id="routing-chevron" style="font-size:11px;color:var(--text3);transition:transform .2s;transform:rotate(0deg)">▶</span>
+          <span style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3)">Example — destination routing fields in MyFreight</span>
+        </button>
+        <div id="routing-example" style="display:none;background:#0d1117;border-radius:10px;padding:16px 20px;font-family:-apple-system,'Segoe UI',sans-serif">
+
+          <div style="font-size:13px;font-weight:600;color:#e6edf3;margin-bottom:14px">Edit Routing — Destination</div>
+
+${[
+            {
+              id: '3.1 PICK-UP TERMINAL',
+              mandatory: true,
+              rows: [
+                [
+                  { label: 'Planned date', req: true },
+                  { label: 'Actual date', req: true },
+                  { label: 'Terminal', req: true },
+                  { label: 'Reference', req: true },
+                ],
+                [
+                  { label: 'Mode', req: false },
+                  { label: 'Transport company', req: true },
+                  { label: '', req: false, empty: true },
+                  { label: '', req: false, empty: true },
+                ],
+              ]
+            },
+            {
+              id: '3.2 EXTRA TERMINAL',
+              mandatory: false,
+              note: 'Conditional — only when goods are routed via a barge terminal',
+              rows: [
+                [
+                  { label: 'Planned date', req: false },
+                  { label: 'Actual date', req: false },
+                  { label: 'Terminal', req: false },
+                  { label: 'Reference', req: false },
+                ],
+              ]
+            },
+            {
+              id: '3.3 DELIVERY',
+              mandatory: true,
+              rows: [
+                [
+                  { label: 'Start date / End date', req: true },
+                  { label: 'Delivery address', req: true },
+                  { label: 'Reference', req: false },
+                  { label: 'Remarks', req: false },
+                ],
+              ]
+            },
+            {
+              id: '3.4 EXTRA TERMINAL',
+              mandatory: false,
+              note: 'Conditional — only when goods return to deep sea terminal via barge',
+              rows: [
+                [
+                  { label: 'Planned date', req: false },
+                  { label: 'Actual date', req: false },
+                  { label: 'Terminal', req: false },
+                  { label: 'Reference', req: false },
+                ],
+              ]
+            },
+            {
+              id: '3.5 RETURN TERMINAL',
+              mandatory: true,
+              note: 'Use last planned date for detention / demurrage tracking',
+              rows: [
+                [
+                  { label: 'Planned date', req: true },
+                  { label: 'Actual date', req: true },
+                  { label: 'Terminal', req: true },
+                  { label: 'Reference', req: false },
+                ],
+              ]
+            },
+          ].map(section => `
+            <div style="margin-bottom:14px">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+                <span style="font-size:10px;font-weight:600;letter-spacing:.06em;color:#8b949e">${section.id}</span>
+                ${section.mandatory
+                  ? `<span style="font-size:10px;font-weight:600;color:#f85149">● Required</span>`
+                  : `<span style="font-size:10px;color:#8b949e">◯ Conditional</span>`}
+                ${section.note ? `<span style="font-size:10px;color:#8b949e;font-style:italic">— ${section.note}</span>` : ''}
+              </div>
+              ${section.rows.map(row => `
+                <div style="display:grid;grid-template-columns:repeat(${row.length},1fr);gap:6px;margin-bottom:6px">
+                  ${row.map(f => `
+                    ${f.empty
+                      ? `<div style="border-radius:6px;padding:7px 10px"></div>`
+                      : `<div style="background:#161b22;border:0.5px solid ${f.req ? '#f8514940' : '#30363d'};border-radius:6px;padding:7px 10px">
+                      <div style="font-size:10px;color:#8b949e;margin-bottom:2px">${f.label}</div>
+                      <div style="font-size:11px;font-weight:500;color:${f.req ? '#f85149' : '#8b949e'}">${f.req ? 'Mandatory' : 'Optional'}</div>
+                    </div>`}`).join('')}
+                </div>`).join('')}
+            </div>`).join('')}
+
+        </div>`;
     }
   },
   {
@@ -518,7 +745,7 @@ const steps = [
   {
     label: "Step 5 of 6",
     title: "Error handling: a dedicated triage layer",
-    sub: "The Error Handling team is not a phase in the process — it runs in parallel. Any Ops user can open this filter and immediately see every shipment with an active integration problem.",
+    sub: "The Error Handling team is not a phase in the process — it runs in parallel. Any user can open this filter and immediately see every shipment with an active integration problem.",
     render() {
       return `
         <div class="dash-mock" style="margin-bottom:14px">
@@ -550,14 +777,14 @@ const steps = [
         <div class="concept-grid" style="grid-template-columns:1fr 1fr">
           <div class="concept-card cc-amber">
             <div class="cc-title">Dev Message Log (pending)</div>
-            <div class="cc-sub">Integration log entry requires Ops action — missing data, pipeline error, or agent update issue</div>
+            <div class="cc-sub" style="color:var(--amber-d)">Integration log entry requires Ops action — missing data, pipeline error, or agent update issue</div>
           </div>
           <div class="concept-card" style="background:var(--red-l);border-color:#F09595">
-            <div class="cc-title" style="color:#501313">Customs rejection</div>
-            <div class="cc-sub" style="color:#A32D2D">Customs message rejected by Maco or external API — validation failure or system error</div>
+            <div class="cc-title" style="color:var(--text)">Customs rejection</div>
+            <div class="cc-sub" style="color:var(--text)">Customs message rejected by Maco or external API — validation failure or system error</div>
           </div>
         </div>
-        <div class="highlight-box"><strong>Why this matters:</strong> Without this team, integration errors are invisible until someone opens the shipment. With it, any Ops user can be first responder — the error handling workload is shared, not siloed.</div>`;
+        <div class="highlight-box"><strong>Why this matters:</strong> Without this team, integration errors are invisible until someone opens the shipment. With it, any user can be first responder — the error handling workload is shared, not siloed.</div>`;
     }
   },
   {
@@ -569,12 +796,12 @@ const steps = [
         <div class="model-label" style="margin-top:0">Old model</div>
         <div class="concept-card cc-gray" style="margin-bottom:14px">
           <div class="cc-title">Freight forwarder owns a shipment portfolio</div>
-          <div class="cc-sub">Each person is responsible for a set of shipments end-to-end. They check their own shipments for updates. Issues on someone else's shipment are not their concern. Absence = nothing gets done.</div>
+          <div class="cc-sub" style="color:var(--text2)">Each person is responsible for a set of shipments end-to-end. They check their own shipments for updates. Issues on someone else's shipment are not their concern. Absence = nothing gets done.</div>
         </div>
         <div class="model-label">New model</div>
         <div class="concept-card cc-teal" style="margin-bottom:14px">
-          <div class="cc-title">Ops users scan task queues by type</div>
-          <div class="cc-sub">A user opens "Import Booking" and works through every shipment with a booking task — regardless of who handles that shipment otherwise. The task queue is shared. Any qualified person can pick up the next item.</div>
+          <div class="cc-title">Users scan task queues by type</div>
+          <div class="cc-sub" style="color:var(--teal-d)">A user opens "Import Booking" and works through every shipment with a booking task — regardless of who handles that shipment otherwise. The task queue is shared. Any qualified person can pick up the next item.</div>
         </div>
         <div class="team-grid" style="grid-template-columns:repeat(5,1fr)">
           ${[
@@ -602,7 +829,7 @@ function renderPanel() {
   const s = steps[cur];
   document.getElementById('panel').innerHTML = `
     <div class="panel-head">
-      <div class="step-label">${s.label}</div>
+      <div class="step-label">Step ${cur + 1} of ${steps.length}</div>
       <div class="panel-title">${s.title}</div>
       <div class="panel-sub">${s.sub}</div>
     </div>
