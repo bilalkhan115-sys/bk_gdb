@@ -661,6 +661,53 @@ body {
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+/* ── Light theme ── */
+.light {
+  --bg:      #ffffff;
+  --bg2:     #f7f6f2;
+  --bg3:     #f0efe9;
+  --bg4:     #e8e7e1;
+  --border:  rgba(0,0,0,0.08);
+  --border2: rgba(0,0,0,0.15);
+  --border3: rgba(0,0,0,0.05);
+  --text:    #1a1a18;
+  --text2:   #5f5e5a;
+  --text3:   #8b8a85;
+
+  --green-l: #EAF3DE; --green-d: #27500A;
+  --blue-l:  #E6F1FB; --blue-d:  #042C53;
+  --amber-l: #FAEEDA; --amber-d: #412402;
+  --red-l:   #FCEBEB; --red-d:   #6B1212;
+  --purple-l:#EEEDFE; --purple-d:#26215C;
+  --teal-l:  #E1F5EE; --teal-d:  #04342C;
+}
+
+.light .pill-auto-full      { background: #EAF3DE; color: #27500A; }
+.light .pill-auto-manual    { background: var(--bg3); color: var(--text3); }
+.light .task-card:hover     { border-color: rgba(0,0,0,.25); }
+
+.light .topbar {
+  background: linear-gradient(to right, #1e1e1e 3000px, var(--bg) 460px);
+}
+
+.light .topbar-logo-banner {
+  display: flex;
+  align-items: center;
+  overflow: visible;
+}
+.light .logo {
+  color: #8a8880;
+}
+
+.light .logo span {
+  color: #3fb950;
+}
+
+.light .topbar-title {
+  color: #e8e6de;
+  border-left-color: rgba(255,255,255,0.12);
+  border-right-color: rgba(255,255,255,0.12);
+}
 </style>
 </head>
 <body>
@@ -672,12 +719,14 @@ body {
     <div class="topbar-left">
       <div class="logo">GDB <span>·</span> GloForEx</div>
       <div class="topbar-title">Live Workshop Log</div>
-      <img
-        src="https://gdblogistics.com/wp-content/uploads/2025/11/Logo-GDB-landscape.svg"
-        alt="GDB Logistics"
-        style="height:28px;width:auto;flex-shrink:0;margin-left:4px;opacity:0.9;"
-        onerror="this.style.display='none'"
-      />
+      <div class="topbar-logo-banner">
+        <img
+          src="https://gdblogistics.com/wp-content/uploads/2025/11/Logo-GDB-landscape.svg"
+          alt="GDB Logistics"
+          style="height:28px;width:auto;flex-shrink:0;opacity:0.9;display:block;"
+          onerror="this.style.display='none'"
+        />
+      </div>
     </div>
     <div class="topbar-right">
       <div class="day-switch">
@@ -689,6 +738,7 @@ body {
       <button class="btn-export" onclick="exportText()" title="Export plain-text summary">Export .txt</button>
       <button class="btn-export" onclick="exportJSON()" title="Save full JSON backup" style="border-color:var(--teal);color:var(--teal);">Backup</button>
       <button class="btn-export" onclick="importJSON()" title="Restore from JSON backup" style="border-color:var(--text3);color:var(--text3);">Restore</button>
+      <button id="theme-btn" onclick="toggleTheme()" style="font-family:var(--sans);font-size:12px;font-weight:500;padding:4px 10px;border-radius:4px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);cursor:pointer;margin-left:4px;transition:all .15s;">☀️ Light</button>
     </div>
   </div>
 
@@ -1594,6 +1644,25 @@ document.addEventListener('keydown', e => {
   }
 });
 
+// ── Theme ──────────────────────────────────────────────────────────────────
+function applyTheme(light) {
+  document.documentElement.classList.toggle('light', light);
+  const btn = document.getElementById('theme-btn');
+  if (btn) {
+    btn.textContent = light ? '🌙 Dark' : '☀️ Light';
+  }
+  localStorage.setItem('gloforex-theme', light ? 'light' : 'dark');
+}
+
+function toggleTheme() {
+  applyTheme(!document.documentElement.classList.contains('light'));
+}
+
+(function initTheme() {
+  const saved = localStorage.getItem('gloforex-theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyTheme(saved ? saved === 'light' : !prefersDark);
+})();
 // ── Init ───────────────────────────────────────────────────────────────────
 loadState();
 const firstBtn = document.querySelector('[data-stage="STG-1"]');
