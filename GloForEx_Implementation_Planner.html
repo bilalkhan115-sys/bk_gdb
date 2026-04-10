@@ -592,9 +592,12 @@ const SEED_TASKS = [
   { _seedId:'stg6-2', stage:'STG-6', name:'Create Carrier release confirmed task type',    req:'Automation status TBD — integration with carrier system not yet confirmed. Revisit after workshop.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ATA',offset:2,direction:'after'}, notes:'Integration source not yet confirmed — open item from workshop' },
 
   // STG-7
-  { _seedId:'stg7-1', stage:'STG-7', name:'Create Plan delivery task type',                req:'Manual task. Assign to Import Operations team. Coordination with customer and transport provider.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ATA',offset:2,direction:'after'}, notes:'' },
-  { _seedId:'stg7-2', stage:'STG-7', name:'Create Confirm delivery appointment task type', req:'Manual task. Confirmation once delivery slot agreed.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ATA',offset:3,direction:'after'}, notes:'' },
-  { _seedId:'stg7-3', stage:'STG-7', name:'Confirm Qargo integration scope',               req:'Clarify whether delivery data pushes from MF into Qargo or is re-entered. Define field mapping if integration is in scope.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'TBD — open item' },
+  { _seedId:'stg7-0', stage:'STG-7', name:'Create Pre-alert to customer task type',              req:'Exception-based manual task. Assign to Import Operations. All countries. Placement in STG-5 vs STG-7 TBD — confirm at workshop before configuring.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'Placement TBD at workshop' },
+  { _seedId:'stg7-1', stage:'STG-7', name:'Create Plan delivery task type',                      req:'Manual task. Assign to Import Operations team. Initial planning via OutSystems bulk tool — pushes planned date, time, and locations to MF. Per-shipment planning also possible directly in MF.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ATA',offset:2,direction:'after'}, notes:'' },
+  { _seedId:'stg7-3', stage:'STG-7', name:'Create Push delivery planning to Qargo task type',    req:'Manual task. Ops executes in MF — triggers API call to Qargo with planned delivery data. Task turns green on successful push. Remains TODO/overdue based on vessel milestone status, surfacing unplanned containers in dashboard. Confirm Qargo API field mapping before configuring.', owner:'IT', status:'ns', dep:{type:'task',taskRef:'Create Plan delivery task type'}, deadline:{milestone:'ATA',offset:2,direction:'after'}, notes:'' },
+  { _seedId:'stg7-4', stage:'STG-7', name:'Create Return empty container monitoring task type',  req:'Manual task. Assign to Import Operations. Ops confirms empty container returned to carrier depot within agreed timeframe. Linked to demurrage risk — confirm whether a deadline/overdue trigger is needed.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'' },
+  { _seedId:'stg7-5', stage:'STG-7', name:'Create Deconsolidation / devanning task type',        req:'Exception-based manual task. Applicable on warehouse deliveries before final delivery. Task scope, applicable shipment types, and trigger TBD at workshop — do not configure until confirmed.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'Scope and shipment types TBD at workshop' },
+  { _seedId:'stg7-2', stage:'STG-7', name:'Create Confirm delivery appointment task type',       req:'Manual task. Assign to Import Operations. Confirmation once delivery slot agreed with customer and transport provider. Sequencing relative to Push delivery planning to Qargo TBD at workshop.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ATA',offset:3,direction:'after'}, notes:'Sequencing vs Qargo push TBD at workshop' },
 
   // STG-8 (live log STG-8 maps to planner STG-9 for financial handling)
   { _seedId:'stg8-1', stage:'STG-9', name:'Create Record accrual task type',               req:'Manual task for Ops. Trigger: ATD (origin incoterms) or ATA (destination). Assign to Financial Handling team.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ATD',offset:2,direction:'after'}, notes:'' },
@@ -622,7 +625,7 @@ let importedLogData = null; // raw live log JSON after import
 
 function loadTasks() {
   try {
-    const saved = localStorage.getItem('gloforex_impl_tasks_v3');
+    const saved = localStorage.getItem('gloforex_impl_tasks_v4');
     const savedImport = localStorage.getItem('gloforex_impl_import');
     if (saved) {
       tasks = JSON.parse(saved);
@@ -640,7 +643,7 @@ function loadTasks() {
 }
 
 function saveTasks() {
-  try { localStorage.setItem('gloforex_impl_tasks_v3', JSON.stringify(tasks)); } catch(e) {}
+  try { localStorage.setItem('gloforex_impl_tasks_v4', JSON.stringify(tasks)); } catch(e) {}
 }
 
 // ── Import logic ───────────────────────────────────────────────────────────
