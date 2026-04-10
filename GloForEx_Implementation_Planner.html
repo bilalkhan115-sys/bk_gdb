@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GloForEx — Implementation Planner</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #ffffff;
+  --bg2: #f7f6f2;
+  --bg3: #f0efe9;
+  --border: rgba(0,0,0,0.09);
+  --border2: rgba(0,0,0,0.16);
+  --border3: rgba(0,0,0,0.05);
+  --text: #1a1a18;
+  --text2: #5f5e5a;
+  --text3: #8b8a85;
+
+  --purple: #534AB7; --purple-l: #EEEDFE; --purple-d: #3C3489;
+  --teal: #0F6E56;   --teal-l: #E1F5EE;   --teal-d: #085041;
+  --blue: #185FA5;   --blue-l: #E6F1FB;   --blue-d: #0C447C;
+  --amber: #854F0B;  --amber-l: #FAEEDA;  --amber-d: #633806;
+  --coral: #993C1D;  --coral-l: #FAECE7;  --coral-d: #712B13;
+  --red: #A32D2D;    --red-l: #FCEBEB;
+
+  --status-ns:   #f0efe9;
+  --status-ns-t: #5f5e5a;
+  --status-ip:   #E6F1FB;
+  --status-ip-t: #0C447C;
+  --status-done: #EAF3DE;
+  --status-done-t: #27500A;
+  --status-blk:  #FCEBEB;
+  --status-blk-t: #A32D2D;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14140f; --bg2: #1c1c16; --bg3: #232319;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --border3: rgba(255,255,255,0.04);
+    --text: #e8e6de; --text2: #9c9a92; --text3: #5f5e5a;
+    --purple-l: #26215C; --purple-d: #CECBF6;
+    --teal-l: #04342C;   --teal-d: #9FE1CB;
+    --blue-l: #042C53;   --blue-d: #B5D4F4;
+    --amber-l: #412402;  --amber-d: #FAC775;
+    --coral-l: #4A1B0C;  --coral-d: #F0997B;
+    --red-l: #501313;
+    --status-ns:   #232319; --status-ns-t: #9c9a92;
+    --status-ip:   #042C53; --status-ip-t: #B5D4F4;
+    --status-done: #173404; --status-done-t: #C0DD97;
+    --status-blk:  #501313; --status-blk-t: #FF9B9B;
+  }
+}
+
+body {
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── Layout ── */
+.layout { display: flex; height: 100vh; overflow: hidden; }
+
+.sidebar {
+  width: 220px; flex-shrink: 0;
+  background: var(--bg2);
+  border-right: 0.5px solid var(--border2);
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+}
+
+.main { flex: 1; overflow-y: auto; padding: 2rem 2rem 4rem; }
+
+/* ── Sidebar ── */
+.sidebar-header {
+  padding: 18px 16px 12px;
+  border-bottom: 0.5px solid var(--border2);
+}
+.sidebar-eyebrow {
+  font-size: 10px; font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--text3); margin-bottom: 5px;
+}
+.sidebar-title { font-size: 14px; font-weight: 500; color: var(--text); }
+
+.sidebar-section { padding: 10px 8px 6px; }
+.sidebar-label {
+  font-size: 10px; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--text3);
+  padding: 0 8px; margin-bottom: 4px;
+}
+
+.stage-btn {
+  width: 100%; display: flex; align-items: center; gap: 7px;
+  padding: 7px 8px; border-radius: 7px;
+  border: none; background: transparent; cursor: pointer;
+  font-family: inherit; font-size: 12px; color: var(--text2);
+  text-align: left; transition: all .12s;
+}
+.stage-btn:hover { background: var(--bg3); color: var(--text); }
+.stage-btn.active { background: var(--bg); color: var(--text); box-shadow: 0 0 0 0.5px var(--border2); }
+
+.stage-code {
+  font-size: 9px; font-weight: 700; padding: 2px 5px;
+  border-radius: 4px; flex-shrink: 0; letter-spacing: .03em;
+}
+
+.stage-progress {
+  margin-left: auto; font-size: 10px; color: var(--text3);
+  flex-shrink: 0;
+}
+
+/* ── Main header ── */
+.main-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 0.5px solid var(--border2);
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  flex-wrap: wrap;
+}
+.main-title-block {}
+.main-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); margin-bottom: 5px; }
+.main-title { font-size: 20px; font-weight: 500; }
+.main-sub { font-size: 13px; color: var(--text2); margin-top: 4px; }
+
+.header-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+.btn {
+  font-size: 12px; font-weight: 500; padding: 6px 14px;
+  border-radius: 8px; border: 0.5px solid var(--border2);
+  background: var(--bg); color: var(--text2);
+  cursor: pointer; transition: all .15s; font-family: inherit;
+  white-space: nowrap;
+}
+.btn:hover { background: var(--bg2); color: var(--text); }
+.btn.primary { background: var(--text); color: var(--bg); border-color: var(--text); }
+.btn.primary:hover { opacity: .85; }
+
+/* ── Filter bar ── */
+.filter-bar {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  margin-bottom: 1.25rem; align-items: center;
+}
+.filter-label { font-size: 11px; color: var(--text3); margin-right: 2px; }
+.filter-pill {
+  font-size: 11px; font-weight: 500; padding: 3px 11px;
+  border-radius: 14px; border: 0.5px solid var(--border2);
+  background: var(--bg); color: var(--text2);
+  cursor: pointer; transition: all .12s; font-family: inherit;
+}
+.filter-pill:hover { background: var(--bg2); }
+.filter-pill.active { background: var(--bg2); color: var(--text); border-color: var(--border2); }
+
+/* ── Progress strip ── */
+.progress-strip {
+  display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap;
+}
+.prog-card {
+  flex: 1; min-width: 100px;
+  background: var(--bg2); border-radius: 8px;
+  padding: 10px 13px;
+  border: 0.5px solid var(--border3);
+}
+.prog-val { font-size: 20px; font-weight: 500; color: var(--text); }
+.prog-label { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+/* ── Task cards ── */
+.cards-list { display: flex; flex-direction: column; gap: 8px; }
+
+.task-card {
+  border: 0.5px solid var(--border2);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: box-shadow .15s;
+}
+.task-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+
+.task-card-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 14px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.tc-stage {
+  font-size: 10px; font-weight: 700; padding: 2px 6px;
+  border-radius: 4px; flex-shrink: 0;
+}
+.tc-name { font-size: 13px; font-weight: 500; flex: 1; }
+.tc-status {
+  font-size: 11px; font-weight: 600; padding: 2px 9px;
+  border-radius: 12px; flex-shrink: 0; cursor: pointer;
+}
+.tc-owner {
+  font-size: 11px; color: var(--text3); flex-shrink: 0;
+  padding: 2px 8px; border-radius: 8px;
+  border: 0.5px solid var(--border);
+  background: var(--bg2);
+}
+.tc-expand {
+  font-size: 11px; color: var(--text3); flex-shrink: 0;
+  transition: transform .2s;
+}
+.task-card.open .tc-expand { transform: rotate(180deg); }
+
+.task-card-body {
+  display: none;
+  padding: 0 14px 14px;
+  border-top: 0.5px solid var(--border3);
+}
+.task-card.open .task-card-body { display: block; }
+
+.body-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px; margin-top: 12px;
+}
+
+.field-group { display: flex; flex-direction: column; gap: 4px; }
+.field-group.full { grid-column: 1 / -1; }
+
+.field-label {
+  font-size: 10px; font-weight: 600; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--text3);
+}
+
+.field-input, .field-select, .field-textarea {
+  font-size: 13px; font-family: inherit;
+  background: var(--bg2); border: 0.5px solid var(--border2);
+  border-radius: 6px; color: var(--text);
+  padding: 7px 10px; width: 100%;
+  transition: border-color .15s;
+}
+.field-input:focus, .field-select:focus, .field-textarea:focus {
+  outline: none; border-color: var(--text3);
+}
+.field-textarea { resize: vertical; min-height: 64px; line-height: 1.5; }
+
+.dep-row { display: flex; gap: 8px; align-items: flex-start; margin-top: 4px; }
+.dep-type-select { width: 140px; flex-shrink: 0; }
+.dep-detail { flex: 1; }
+.dep-doc-input { display: none; }
+.dep-doc-input.visible { display: block; }
+
+/* ── Status colours ── */
+.s-ns   { background: var(--status-ns);   color: var(--status-ns-t);   }
+.s-ip   { background: var(--status-ip);   color: var(--status-ip-t);   }
+.s-done { background: var(--status-done); color: var(--status-done-t); }
+.s-blk  { background: var(--status-blk);  color: var(--status-blk-t);  }
+
+/* ── Owner tag colours ── */
+.ow-it    { background: var(--purple-l); color: var(--purple-d); }
+.ow-ops   { background: var(--blue-l);   color: var(--blue-d);   }
+.ow-fin   { background: var(--coral-l);  color: var(--coral-d);  }
+.ow-vend  { background: var(--amber-l);  color: var(--amber-d);  }
+.ow-tbd   { background: var(--bg3);      color: var(--text3);    }
+
+/* ── Empty state ── */
+.empty-state {
+  text-align: center; padding: 3rem 1rem; color: var(--text3);
+  font-size: 14px;
+}
+
+/* ── Modal ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.35); z-index: 100;
+  align-items: center; justify-content: center; padding: 1rem;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--bg); border-radius: 12px;
+  border: 0.5px solid var(--border2);
+  width: 100%; max-width: 480px;
+  padding: 20px 22px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.12);
+}
+.modal-title { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+
+/* ── Summary panel ── */
+.summary-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.4); z-index: 200;
+  align-items: flex-start; justify-content: flex-end;
+}
+.summary-overlay.open { display: flex; }
+.summary-panel {
+  width: 420px; height: 100vh;
+  background: var(--bg); border-left: 0.5px solid var(--border2);
+  overflow-y: auto; padding: 24px 22px;
+}
+.summary-head {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 1.25rem;
+}
+.summary-title { font-size: 16px; font-weight: 500; }
+.summary-close {
+  font-size: 12px; padding: 4px 10px; border-radius: 6px;
+  border: 0.5px solid var(--border2); background: var(--bg2);
+  cursor: pointer; font-family: inherit; color: var(--text2);
+}
+
+.summary-section { margin-bottom: 1.25rem; }
+.summary-section-label {
+  font-size: 10px; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--text3);
+  margin-bottom: 8px; padding-bottom: 5px;
+  border-bottom: 0.5px solid var(--border3);
+}
+.summary-row {
+  display: flex; gap: 8px; align-items: flex-start;
+  padding: 6px 0; border-bottom: 0.5px solid var(--border3);
+  font-size: 12px;
+}
+.summary-row:last-child { border-bottom: none; }
+.sum-stage { flex-shrink: 0; font-size: 10px; font-weight: 700; padding: 1px 5px; border-radius: 3px; }
+.sum-task { flex: 1; color: var(--text2); }
+.sum-val { flex-shrink: 0; color: var(--text); font-weight: 500; }
+
+@media (max-width: 700px) {
+  .layout { flex-direction: column; height: auto; }
+  .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 0.5px solid var(--border2); }
+  .body-grid { grid-template-columns: 1fr; }
+  .summary-panel { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-eyebrow">GloForEx</div>
+      <div class="sidebar-title">Implementation planner</div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">All stages</div>
+      <button class="stage-btn active" onclick="selectStage('ALL', this)">
+        <span class="stage-code" style="background:var(--bg3);color:var(--text2)">ALL</span>
+        <span>All tasks</span>
+        <span class="stage-progress" id="prog-ALL"></span>
+      </button>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Operational stages</div>
+      <button class="stage-btn" onclick="selectStage('STG-1', this)">
+        <span class="stage-code" style="background:var(--purple-l);color:var(--purple-d)">STG-1</span>
+        <span>Booking intake</span>
+        <span class="stage-progress" id="prog-STG-1"></span>
+      </button>
+      <button class="stage-btn" onclick="selectStage('STG-2', this)">
+        <span class="stage-code" style="background:var(--purple-l);color:var(--purple-d)">STG-2</span>
+        <span>Shipment data</span>
+        <span class="stage-progress" id="prog-STG-2"></span>
+      </button>
+      <button class="stage-btn" onclick="selectStage('STG-3', this)">
+        <span class="stage-code" style="background:var(--teal-l);color:var(--teal-d)">STG-3</span>
+        <span>Doc verification</span>
+        <span class="stage-progress" id="prog-STG-3"></span>
+      </button>
+      <button class="stage-btn" onclick="selectStage('STG-4', this)">
+        <span class="stage-code" style="background:var(--teal-l);color:var(--teal-d)">STG-4</span>
+        <span>Customs processing</span>
+        <span class="stage-progress" id="prog-STG-4"></span>
+      </button>
+      <button class="stage-btn" onclick="selectStage('STG-5', this)">
+        <span class="stage-code" style="background:var(--blue-l);color:var(--blue-d)">STG-5</span>
+        <span>Arrival monitoring</span>
+        <span class="stage-progress" id="prog-STG-5"></span>
+      </button>
+      <button class="stage-btn" onclick="selectStage('STG-6', this)">
+        <span class="stage-code" style="background:var(--teal-l);color:var(--teal-d)">STG-6</span>
+        <span>Carrier release</span>
+        <span class="stage-progress" id="prog-STG-6"></span>
+      </button>
+      <button class="stage-btn" onclick="selectStage('STG-7', this)">
+        <span class="stage-code" style="background:var(--blue-l);color:var(--blue-d)">STG-7</span>
+        <span>Delivery planning</span>
+        <span class="stage-progress" id="prog-STG-7"></span>
+      </button>
+      <button class="stage-btn" onclick="selectStage('STG-8', this)">
+        <span class="stage-code" style="background:var(--blue-l);color:var(--blue-d)">STG-8</span>
+        <span>Operational handling</span>
+        <span class="stage-progress" id="prog-STG-8"></span>
+      </button>
+      <button class="stage-btn" onclick="selectStage('STG-9', this)">
+        <span class="stage-code" style="background:var(--coral-l);color:var(--coral-d)">STG-9</span>
+        <span>Financial handling</span>
+        <span class="stage-progress" id="prog-STG-9"></span>
+      </button>
+      <button class="stage-btn" onclick="selectStage('DEV', this)">
+        <span class="stage-code" style="background:var(--amber-l);color:var(--amber-d)">DEV</span>
+        <span>Dev message log</span>
+        <span class="stage-progress" id="prog-DEV"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+
+    <div class="main-header">
+      <div class="main-title-block">
+        <div class="main-eyebrow">GDB Logistics · GloForEx · Ocean Import</div>
+        <div class="main-title" id="main-title">All tasks</div>
+        <div class="main-sub" id="main-sub">Configuration requirements, dependencies and ownership for all operational stages</div>
+      </div>
+      <div class="header-actions">
+        <button class="btn" onclick="openSummary()">Summary ↗</button>
+        <button class="btn" onclick="exportCSV()">Export CSV</button>
+        <button class="btn primary" onclick="openAddModal()">+ Add task</button>
+      </div>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <span class="filter-label">Status:</span>
+      <button class="filter-pill active" onclick="setFilter('status','all',this)">All</button>
+      <button class="filter-pill" onclick="setFilter('status','ns',this)">Not started</button>
+      <button class="filter-pill" onclick="setFilter('status','ip',this)">In progress</button>
+      <button class="filter-pill" onclick="setFilter('status','done',this)">Done</button>
+      <button class="filter-pill" onclick="setFilter('status','blk',this)">Blocked</button>
+      &nbsp;
+      <span class="filter-label">Owner:</span>
+      <button class="filter-pill active" onclick="setFilter('owner','all',this)">All</button>
+      <button class="filter-pill" onclick="setFilter('owner','IT',this)">IT</button>
+      <button class="filter-pill" onclick="setFilter('owner','Ops',this)">Ops</button>
+      <button class="filter-pill" onclick="setFilter('owner','Finance',this)">Finance</button>
+      <button class="filter-pill" onclick="setFilter('owner','MF vendor',this)">MF vendor</button>
+      <button class="filter-pill" onclick="setFilter('owner','TBD',this)">TBD</button>
+    </div>
+
+    <!-- Progress strip -->
+    <div class="progress-strip" id="progress-strip"></div>
+
+    <!-- Cards -->
+    <div class="cards-list" id="cards-list"></div>
+
+  </div>
+</div>
+
+<!-- Add task modal -->
+<div class="modal-overlay" id="add-modal">
+  <div class="modal">
+    <div class="modal-title">Add configuration item</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="field-group">
+        <div class="field-label">Stage</div>
+        <select class="field-select" id="add-stage"></select>
+      </div>
+      <div class="field-group">
+        <div class="field-label">Task name</div>
+        <input class="field-input" id="add-name" placeholder="e.g. Configure validate booking task" />
+      </div>
+      <div class="field-group">
+        <div class="field-label">Configuration requirement</div>
+        <textarea class="field-textarea" id="add-req" placeholder="What needs to be set up in MF for this task to work?"></textarea>
+      </div>
+      <div class="field-group">
+        <div class="field-label">Owner</div>
+        <select class="field-select" id="add-owner">
+          <option value="TBD">TBD</option>
+          <option value="IT">IT</option>
+          <option value="Ops">Ops</option>
+          <option value="Finance">Finance</option>
+          <option value="MF vendor">MF vendor</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeAddModal()">Cancel</button>
+      <button class="btn primary" onclick="confirmAdd()">Add item</button>
+    </div>
+  </div>
+</div>
+
+<!-- Summary panel -->
+<div class="summary-overlay" id="summary-overlay" onclick="closeSummaryOnBg(event)">
+  <div class="summary-panel" id="summary-panel">
+    <div class="summary-head">
+      <div class="summary-title">Implementation summary</div>
+      <button class="summary-close" onclick="closeSummary()">Close</button>
+    </div>
+    <div id="summary-content"></div>
+  </div>
+</div>
+
+<script>
+// ── Data ─────────────────────────────────────────────────────────────────────
+
+const STAGE_META = {
+  'STG-1': { label:'Booking intake & validation',  bg:'#EEEDFE', color:'#3C3489' },
+  'STG-2': { label:'Shipment data completion',      bg:'#EEEDFE', color:'#3C3489' },
+  'STG-3': { label:'Document verification',         bg:'#E1F5EE', color:'#085041' },
+  'STG-4': { label:'Customs processing',            bg:'#E1F5EE', color:'#085041' },
+  'STG-5': { label:'Arrival monitoring',            bg:'#E6F1FB', color:'#0C447C' },
+  'STG-6': { label:'Carrier release',               bg:'#E1F5EE', color:'#085041' },
+  'STG-7': { label:'Delivery planning',             bg:'#E6F1FB', color:'#0C447C' },
+  'STG-8': { label:'Operational handling',          bg:'#E6F1FB', color:'#0C447C' },
+  'STG-9': { label:'Financial handling',            bg:'#FAECE7', color:'#712B13' },
+  'DEV':   { label:'Dev message log',               bg:'#FAEEDA', color:'#633806' },
+};
+
+const OWNER_CLS = { IT:'ow-it', Ops:'ow-ops', Finance:'ow-fin', 'MF vendor':'ow-vend', TBD:'ow-tbd' };
+const STATUS_META = {
+  ns:   { label:'Not started', cls:'s-ns'   },
+  ip:   { label:'In progress', cls:'s-ip'   },
+  done: { label:'Done',        cls:'s-done' },
+  blk:  { label:'Blocked',     cls:'s-blk'  },
+};
+
+// dep: { type: 'none' | 'task' | 'document', taskRef: string, docType: string }
+const SEED_TASKS = [
+  // STG-1
+  { stage:'STG-1', name:'Create Validate booking task type in MF',       req:'Define task type, set automation to auto-complete on API bookings where all fields present. Set to Pending for manual/exception bookings.', owner:'IT',        status:'ns', dep:{type:'none'}, deadline:{milestone:'ETD',offset:5,direction:'before'}, notes:'' },
+  { stage:'STG-1', name:'Create Request booking confirmation task type', req:'Manual task. Assign to Import Booking team. Configure as DE and NL only — FR excluded (country delta #1).', owner:'IT',        status:'ns', dep:{type:'none'}, deadline:{milestone:'ETD',offset:5,direction:'before'}, notes:'' },
+  { stage:'STG-1', name:'Create Agent booking communication task type',  req:'Exception-based manual task. Assign to Import Booking team. All countries.', owner:'IT',        status:'ns', dep:{type:'none'}, deadline:null, notes:'' },
+
+  // STG-2
+  { stage:'STG-2', name:'Create Check agent update task type',           req:'Automated/recurring. Configure to reset to Pending on each agent update from SnapLogic. API shipments only.', owner:'IT',        status:'ns', dep:{type:'task',taskRef:'Configure SnapLogic agent update pipeline'}, deadline:{milestone:'ETD',offset:3,direction:'before'}, notes:'' },
+  { stage:'STG-2', name:'Create Complete shipment data task type',       req:'Manual task. Non-API shipments only. Checklist: parties, transport, cargo, documents.', owner:'IT',        status:'ns', dep:{type:'none'}, deadline:{milestone:'ETD',offset:5,direction:'before'}, notes:'' },
+  { stage:'STG-2', name:'Configure SnapLogic agent update pipeline',     req:'Ensure SnapLogic triggers task reset in MF on each agent update message. Validate field mapping for all data points.', owner:'IT',        status:'ns', dep:{type:'none'}, deadline:null, notes:'' },
+
+  // STG-3
+  { stage:'STG-3', name:'Create Verify commercial invoice task type',    req:'Manual task assigned to Import Documentation team. All countries. Configure checklist fields in task.', owner:'IT',        status:'ns', dep:{type:'none'}, deadline:{milestone:'ETA',offset:5,direction:'before'}, notes:'' },
+  { stage:'STG-3', name:'Create Verify packing list task type',          req:'Manual task. All countries. If combined with commercial invoice, both completed together.', owner:'IT',        status:'ns', dep:{type:'none'}, deadline:{milestone:'ETA',offset:5,direction:'before'}, notes:'' },
+  { stage:'STG-3', name:'Create Verify HBL / TLX / seaway bill task',   req:'Manual task. Configure for document type variants (original BL / TLX / seaway bill). All countries.', owner:'IT',        status:'ns', dep:{type:'document',taskRef:'',docType:'HBL / TLX / Seaway Bill'}, deadline:{milestone:'ETA',offset:5,direction:'before'}, notes:'' },
+  { stage:'STG-3', name:'Create Seaway bill released task type',         req:'Fully automated. Auto-trigger on seaway bill release event. Gates downstream tasks.', owner:'IT',        status:'ns', dep:{type:'none'}, deadline:{milestone:'ETA',offset:3,direction:'before'}, notes:'' },
+  { stage:'STG-3', name:'Create Verify insurance certificate task type', req:'Exception-based. Conditional on incoterm and country rules. Country delta to be confirmed at workshop.', owner:'IT',        status:'ns', dep:{type:'none'}, deadline:{milestone:'ETA',offset:5,direction:'before'}, notes:'Country delta entries TBD' },
+  { stage:'STG-3', name:'Create Check customs declaration task type',    req:'Manual task. Pre-arrival check. All countries.', owner:'IT',        status:'ns', dep:{type:'none'}, deadline:{milestone:'ETA',offset:3,direction:'before'}, notes:'' },
+  { stage:'STG-3', name:'Create Request missing documents task type',    req:'Exception-based action task. All countries.', owner:'IT',        status:'ns', dep:{type:'none'}, deadline:null, notes:'' },
+
+  // STG-4
+  { stage:'STG-4', name:'Create Send customs documents to Maco task',   req:'Manual trigger in MF fires webhook to Maco. Auto-completes on execution. Resets to Pending on rejection via API.', owner:'IT',        status:'ns', dep:{type:'none'}, deadline:{milestone:'ETA',offset:2,direction:'before'}, notes:'' },
+  { stage:'STG-4', name:'Configure Maco webhook integration',            req:'Ensure MF webhook to Maco is active and field mapping is correct. Validate rejection callback resets task and triggers Dev Message Log.', owner:'MF vendor', status:'ns', dep:{type:'none'}, deadline:null, notes:'' },
+  { stage:'STG-4', name:'Create Customs clearance received task type',  req:'Fully automated. Auto-created and set to Completed on clearance confirmation from Maco. Acts as prerequisite gate for STG-6.', owner:'IT',        status:'ns', dep:{type:'task',taskRef:'Configure Maco webhook integration'}, deadline:{milestone:'ATA',offset:0,direction:'on'}, notes:'' },
+
+  // STG-5
+  { stage:'STG-5', name:'Configure MF live tracking for deepsea',       req:'Enable native MF live tracking for deepsea vessels. Confirm carrier data feeds are active for all relevant carriers.', owner:'MF vendor', status:'ns', dep:{type:'none'}, deadline:null, notes:'' },
+  { stage:'STG-5', name:'Create Monitor vessel ETA task type',           req:'Automated/recurring. Resets to Pending on each tracking update from MF live tracking. Ops reviews and completes.', owner:'IT',        status:'ns', dep:{type:'task',taskRef:'Configure MF live tracking for deepsea'}, deadline:null, notes:'' },
+  { stage:'STG-5', name:'Create Manual ETA check task type',             req:'Manual task. Inland/feeder legs only. Cadence to be confirmed at workshop.', owner:'IT',        status:'ns', dep:{type:'none'}, deadline:null, notes:'Check cadence TBD at workshop' },
+  { stage:'STG-5', name:'Create Confirm arrival at POD task type',       req:'Fully automated. Auto-completed on ATA event from MF live tracking. Gates STG-6 and STG-7.', owner:'IT',        status:'ns', dep:{type:'task',taskRef:'Configure MF live tracking for deepsea'}, deadline:{milestone:'ATA',offset:0,direction:'on'}, notes:'' },
+
+  // STG-6
+  { stage:'STG-6', name:'Create Request carrier release task type',      req:'Manual task. Assign to Import Documentation team. Triggered after customs clearance confirmed (STG-4 gate).', owner:'IT',        status:'ns', dep:{type:'task',taskRef:'Create Customs clearance received task type'}, deadline:{milestone:'ATA',offset:1,direction:'after'}, notes:'' },
+  { stage:'STG-6', name:'Create Carrier release confirmed task type',    req:'Automation status TBD — integration with carrier system not yet confirmed. Revisit after workshop.', owner:'IT',        status:'ns', dep:{type:'none'}, deadline:{milestone:'ATA',offset:2,direction:'after'}, notes:'Integration source not yet confirmed — open item from workshop' },
+
+  // STG-7
+  { stage:'STG-7', name:'Create Plan delivery task type',                req:'Manual task. Assign to Import Operations team. Coordination with customer and transport provider.', owner:'IT',        status:'ns', dep:{type:'none'}, deadline:{milestone:'ATA',offset:2,direction:'after'}, notes:'' },
+  { stage:'STG-7', name:'Create Confirm delivery appointment task type', req:'Manual task. Confirmation once delivery slot agreed.', owner:'IT',        status:'ns', dep:{type:'none'}, deadline:{milestone:'ATA',offset:3,direction:'after'}, notes:'' },
+  { stage:'STG-7', name:'Confirm Qargo integration scope',               req:'Clarify whether delivery data pushes from MF into Qargo or is re-entered. Define field mapping if integration is in scope.', owner:'IT',        status:'ns', dep:{type:'none'}, deadline:null, notes:'TBD — open item' },
+
+  // STG-8
+  { stage:'STG-8', name:'Create Operational follow-up task type',        req:'Exception-based. Boundary definition to be tightened at workshop before configuring.', owner:'IT',        status:'ns', dep:{type:'none'}, deadline:null, notes:'Task definition not yet finalised — pending workshop' },
+
+  // STG-9
+  { stage:'STG-9', name:'Create Record accrual task type',               req:'Manual task for Ops. Trigger: ATD (origin incoterms) or ATA (destination). Assign to Financial Handling team.', owner:'IT',        status:'ns', dep:{type:'none'}, deadline:{milestone:'ATD',offset:2,direction:'after'}, notes:'' },
+  { stage:'STG-9', name:'Create Invoice verification task type',         req:'Option A: Finance stays in Blue10. Option B: Finance active in MF. Task creation conditional on Option A/B decision.', owner:'IT',        status:'ns', dep:{type:'none'}, deadline:{milestone:'Document receipt',offset:3,direction:'after'}, notes:'Conditional on Option A/B decision — April 14' },
+  { stage:'STG-9', name:'Create Invoice approved task type',             req:'Option A: implicit. Option B: explicit Finance step. Conditional on Option A/B decision.', owner:'IT',        status:'ns', dep:{type:'none'}, deadline:{milestone:'Document receipt',offset:5,direction:'after'}, notes:'Conditional on Option A/B decision' },
+  { stage:'STG-9', name:'Create Dispute / credit note task type',        req:'Exception-based. Configuration scope differs between Option A and B.', owner:'IT',        status:'ns', dep:{type:'none'}, deadline:null, notes:'' },
+  { stage:'STG-9', name:'Provision Finance users in MF (Option B only)', req:'IT to configure Financial Handling workgroup. Assign Finance users. Define access scope (full vs scoped to FH tasks).', owner:'IT',        status:'ns', dep:{type:'none'}, deadline:null, notes:'Option B only' },
+  { stage:'STG-9', name:'Govern charge code list',                       req:'Confirm owner, authoritative system, and change process for charge codes. Needed before Record accrual task can be used.', owner:'Finance',   status:'ns', dep:{type:'none'}, deadline:null, notes:'Decision needed at workshop' },
+
+  // DEV
+  { stage:'DEV', name:'Validate Dev Message Log automation',             req:'Confirm Dev Message Log resets to Pending on all integration error conditions: SnapLogic pipeline failures, Maco rejections, missing fields.', owner:'IT',        status:'ns', dep:{type:'none'}, deadline:null, notes:'' },
+  { stage:'DEV', name:'Configure shipment closure gate',                 req:'Implement hard block or soft warning on shipment closure while accrual task is Pending. Scope: hard block vs soft warning — decision needed.', owner:'MF vendor', status:'ns', dep:{type:'none'}, deadline:null, notes:'Hard block vs soft warning — decision pending' },
+];
+
+// ── State ─────────────────────────────────────────────────────────────────────
+
+let tasks = [];
+let currentStage = 'ALL';
+let filterStatus = 'all';
+let filterOwner  = 'all';
+
+function loadTasks() {
+  try {
+    const saved = localStorage.getItem('gloforex_impl_tasks');
+    if (saved) {
+      tasks = JSON.parse(saved);
+    } else {
+      tasks = SEED_TASKS.map((t, i) => ({ id: 'task_' + i, ...t }));
+      saveTasks();
+    }
+  } catch(e) {
+    tasks = SEED_TASKS.map((t, i) => ({ id: 'task_' + i, ...t }));
+  }
+}
+
+function saveTasks() {
+  try { localStorage.setItem('gloforex_impl_tasks', JSON.stringify(tasks)); } catch(e) {}
+}
+
+// ── Render helpers ─────────────────────────────────────────────────────────────
+
+function stageColor(stage) {
+  return STAGE_META[stage] || { bg: '#f0efe9', color: '#5f5e5a' };
+}
+
+function renderDeadline(dl) {
+  if (!dl) return '';
+  const { milestone, offset, direction } = dl;
+  if (direction === 'on') return `<span style="font-size:10px;color:var(--text3)">On ${milestone}</span>`;
+  return `<span style="font-size:10px;color:var(--text3)">${offset}d ${direction} ${milestone}</span>`;
+}
+
+function renderDep(dep) {
+  if (!dep || dep.type === 'none') return '<span style="font-size:11px;color:var(--text3)">None</span>';
+  if (dep.type === 'task') return `<span style="font-size:11px;color:var(--text2)">↳ Task: <strong>${dep.taskRef || '—'}</strong></span>`;
+  if (dep.type === 'document') return `<span style="font-size:11px;color:var(--text2)">↳ Document: <strong>${dep.docType || '—'}</strong></span>`;
+  return '';
+}
+
+// ── Progress ──────────────────────────────────────────────────────────────────
+
+function updateProgress() {
+  const stages = ['ALL', ...Object.keys(STAGE_META)];
+  stages.forEach(s => {
+    const subset = s === 'ALL' ? tasks : tasks.filter(t => t.stage === s);
+    const done   = subset.filter(t => t.status === 'done').length;
+    const total  = subset.length;
+    const el = document.getElementById('prog-' + s);
+    if (el) el.textContent = total ? `${done}/${total}` : '';
+  });
+
+  // Strip
+  const all = tasks;
+  const ns   = all.filter(t => t.status === 'ns').length;
+  const ip   = all.filter(t => t.status === 'ip').length;
+  const done = all.filter(t => t.status === 'done').length;
+  const blk  = all.filter(t => t.status === 'blk').length;
+  document.getElementById('progress-strip').innerHTML = `
+    <div class="prog-card"><div class="prog-val">${all.length}</div><div class="prog-label">Total items</div></div>
+    <div class="prog-card"><div class="prog-val" style="color:var(--status-done-t)">${done}</div><div class="prog-label">Done</div></div>
+    <div class="prog-card"><div class="prog-val" style="color:var(--status-ip-t)">${ip}</div><div class="prog-label">In progress</div></div>
+    <div class="prog-card"><div class="prog-val" style="color:var(--status-blk-t)">${blk}</div><div class="prog-label">Blocked</div></div>
+    <div class="prog-card"><div class="prog-val" style="color:var(--text3)">${ns}</div><div class="prog-label">Not started</div></div>
+  `;
+}
+
+// ── Render cards ──────────────────────────────────────────────────────────────
+
+function renderCards() {
+  let visible = tasks;
+  if (currentStage !== 'ALL') visible = visible.filter(t => t.stage === currentStage);
+  if (filterStatus !== 'all')  visible = visible.filter(t => t.status === filterStatus);
+  if (filterOwner  !== 'all')  visible = visible.filter(t => t.owner  === filterOwner);
+
+  const container = document.getElementById('cards-list');
+
+  if (!visible.length) {
+    container.innerHTML = `<div class="empty-state">No items match the current filters.</div>`;
+    return;
+  }
+
+  container.innerHTML = visible.map(t => {
+    const sc = stageColor(t.stage);
+    const sm = STATUS_META[t.status] || STATUS_META.ns;
+    const oc = OWNER_CLS[t.owner] || 'ow-tbd';
+    return `
+    <div class="task-card" id="card-${t.id}">
+      <div class="task-card-head" onclick="toggleCard('${t.id}')">
+        <span class="tc-stage" style="background:${sc.bg};color:${sc.color}">${t.stage}</span>
+        <span class="tc-name">${t.name}</span>
+        ${t.deadline ? `<span style="font-size:10px;color:var(--text3);white-space:nowrap">${renderDeadlinePill(t.deadline)}</span>` : ''}
+        <span class="tc-owner ${oc}">${t.owner}</span>
+        <span class="tc-status ${sm.cls}" onclick="cycleStatus(event,'${t.id}')" title="Click to change status">${sm.label}</span>
+        <span class="tc-expand">▾</span>
+      </div>
+      <div class="task-card-body">
+        <div class="body-grid">
+          <div class="field-group full">
+            <div class="field-label">Configuration requirement</div>
+            <textarea class="field-textarea" onchange="updateField('${t.id}','req',this.value)">${t.req||''}</textarea>
+          </div>
+          <div class="field-group">
+            <div class="field-label">Owner</div>
+            <select class="field-select" onchange="updateField('${t.id}','owner',this.value)">
+              ${['TBD','IT','Ops','Finance','MF vendor'].map(o => `<option ${t.owner===o?'selected':''}>${o}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field-group">
+            <div class="field-label">Status</div>
+            <select class="field-select" onchange="updateField('${t.id}','status',this.value)">
+              ${Object.entries(STATUS_META).map(([k,v]) => `<option value="${k}" ${t.status===k?'selected':''}>${v.label}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field-group">
+            <div class="field-label">Overdue deadline</div>
+            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+              <select class="field-select" style="flex:1;min-width:130px" onchange="updateDeadlineMilestone('${t.id}',this.value)">
+                <option value="">— None —</option>
+                ${['ETD','ATD','ETA','ATA','Customs clearance','Document receipt'].map(m=>`<option ${t.deadline&&t.deadline.milestone===m?'selected':''}>${m}</option>`).join('')}
+              </select>
+              <select class="field-select" style="width:90px" onchange="updateDeadlineDir('${t.id}',this.value)">
+                ${['before','on','after'].map(d=>`<option value="${d}" ${t.deadline&&t.deadline.direction===d?'selected':''}>${d}</option>`).join('')}
+              </select>
+              <input class="field-input" type="number" min="0" max="30" style="width:60px" placeholder="days"
+                value="${t.deadline&&t.deadline.direction!=='on'?t.deadline.offset:''}"
+                onchange="updateDeadlineOffset('${t.id}',this.value)" />
+            </div>
+          </div>
+          <div class="field-group full">
+            <div class="field-label">Dependency</div>
+            <div class="dep-row">
+              <select class="field-select dep-type-select" id="dep-type-${t.id}" onchange="updateDepType('${t.id}',this.value)">
+                <option value="none"  ${(!t.dep||t.dep.type==='none')   ?'selected':''}>None</option>
+                <option value="task"  ${t.dep&&t.dep.type==='task'      ?'selected':''}>Depends on task</option>
+                <option value="document" ${t.dep&&t.dep.type==='document'?'selected':''}>Depends on document</option>
+              </select>
+              <div class="dep-detail">
+                <input class="field-input dep-task-input ${t.dep&&t.dep.type==='task'?'visible':''}"
+                  id="dep-task-${t.id}" placeholder="Task name this depends on"
+                  value="${t.dep&&t.dep.type==='task'?t.dep.taskRef:''}"
+                  onchange="updateDepDetail('${t.id}','taskRef',this.value)"
+                  style="${t.dep&&t.dep.type==='task'?'':'display:none'}" />
+                <div style="${t.dep&&t.dep.type==='document'?'':'display:none'}" id="dep-doc-wrap-${t.id}">
+                  <input class="field-input" placeholder="Document type (e.g. Original BL, Commercial invoice)"
+                    value="${t.dep&&t.dep.type==='document'?t.dep.docType:''}"
+                    onchange="updateDepDetail('${t.id}','docType',this.value)" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field-group full">
+            <div class="field-label">Notes</div>
+            <textarea class="field-textarea" style="min-height:48px" placeholder="Any outstanding questions, blockers, or context…"
+              onchange="updateField('${t.id}','notes',this.value)">${t.notes||''}</textarea>
+          </div>
+        </div>
+        <div style="margin-top:10px;display:flex;justify-content:flex-end">
+          <button class="btn" style="font-size:11px;color:var(--red)" onclick="deleteTask('${t.id}')">Remove item</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderDeadlinePill(dl) {
+  if (!dl) return '';
+  const { milestone, offset, direction } = dl;
+  if (direction === 'on') return `On ${milestone}`;
+  return `${offset}d ${direction} ${milestone}`;
+}
+
+// ── Interactions ──────────────────────────────────────────────────────────────
+
+function toggleCard(id) {
+  const card = document.getElementById('card-' + id);
+  if (card) card.classList.toggle('open');
+}
+
+function cycleStatus(e, id) {
+  e.stopPropagation();
+  const order = ['ns','ip','done','blk'];
+  const t = tasks.find(x => x.id === id);
+  if (!t) return;
+  t.status = order[(order.indexOf(t.status) + 1) % order.length];
+  saveTasks();
+  renderCards();
+  updateProgress();
+}
+
+function updateField(id, field, value) {
+  const t = tasks.find(x => x.id === id);
+  if (!t) return;
+  t[field] = value;
+  saveTasks();
+  if (field === 'status' || field === 'owner') { renderCards(); updateProgress(); }
+}
+
+function updateDeadlineMilestone(id, val) {
+  const t = tasks.find(x => x.id === id);
+  if (!t) return;
+  if (!val) { t.deadline = null; }
+  else {
+    if (!t.deadline) t.deadline = { milestone: val, offset: 1, direction: 'after' };
+    else t.deadline.milestone = val;
+  }
+  saveTasks();
+}
+function updateDeadlineDir(id, val) {
+  const t = tasks.find(x => x.id === id);
+  if (!t || !t.deadline) return;
+  t.deadline.direction = val;
+  saveTasks();
+}
+function updateDeadlineOffset(id, val) {
+  const t = tasks.find(x => x.id === id);
+  if (!t || !t.deadline) return;
+  t.deadline.offset = parseInt(val) || 0;
+  saveTasks();
+}
+
+function updateDepType(id, type) {
+  const t = tasks.find(x => x.id === id);
+  if (!t) return;
+  t.dep = { type, taskRef: '', docType: '' };
+  saveTasks();
+  const taskInput  = document.getElementById('dep-task-' + id);
+  const docWrap    = document.getElementById('dep-doc-wrap-' + id);
+  if (taskInput) taskInput.style.display  = type === 'task'     ? '' : 'none';
+  if (docWrap)   docWrap.style.display    = type === 'document' ? '' : 'none';
+}
+
+function updateDepDetail(id, field, value) {
+  const t = tasks.find(x => x.id === id);
+  if (!t || !t.dep) return;
+  t.dep[field] = value;
+  saveTasks();
+}
+
+function deleteTask(id) {
+  if (!confirm('Remove this item?')) return;
+  tasks = tasks.filter(x => x.id !== id);
+  saveTasks();
+  renderCards();
+  updateProgress();
+}
+
+// ── Stage / filter selection ──────────────────────────────────────────────────
+
+function selectStage(stage, btn) {
+  currentStage = stage;
+  document.querySelectorAll('.stage-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const meta = STAGE_META[stage];
+  document.getElementById('main-title').textContent = stage === 'ALL'
+    ? 'All tasks'
+    : `${stage} — ${meta ? meta.label : ''}`;
+  document.getElementById('main-sub').textContent = stage === 'ALL'
+    ? 'Configuration requirements, dependencies and ownership for all operational stages'
+    : 'Configuration requirements, dependencies and ownership for this stage';
+
+  renderCards();
+}
+
+function setFilter(type, value, btn) {
+  if (type === 'status') {
+    filterStatus = value;
+    document.querySelectorAll('.filter-bar .filter-pill').forEach((b,i) => {
+      if (i < 5) b.classList.toggle('active', b === btn);
+    });
+  } else {
+    filterOwner = value;
+    const pills = document.querySelectorAll('.filter-bar .filter-pill');
+    pills.forEach((b, i) => { if (i >= 6) b.classList.toggle('active', b === btn); });
+  }
+  renderCards();
+}
+
+// ── Add modal ─────────────────────────────────────────────────────────────────
+
+function openAddModal() {
+  const sel = document.getElementById('add-stage');
+  sel.innerHTML = Object.entries(STAGE_META).map(([k,v])=>`<option value="${k}">${k} — ${v.label}</option>`).join('');
+  if (currentStage !== 'ALL') sel.value = currentStage;
+  document.getElementById('add-modal').classList.add('open');
+}
+function closeAddModal() { document.getElementById('add-modal').classList.remove('open'); }
+function confirmAdd() {
+  const name  = document.getElementById('add-name').value.trim();
+  const stage = document.getElementById('add-stage').value;
+  const req   = document.getElementById('add-req').value.trim();
+  const owner = document.getElementById('add-owner').value;
+  if (!name) return;
+  tasks.push({ id:'task_'+ Date.now(), stage, name, req, owner, status:'ns', dep:{type:'none'}, deadline:null, notes:'' });
+  saveTasks();
+  renderCards();
+  updateProgress();
+  closeAddModal();
+  document.getElementById('add-name').value = '';
+  document.getElementById('add-req').value  = '';
+}
+
+// ── Summary ───────────────────────────────────────────────────────────────────
+
+function openSummary() {
+  const blocked  = tasks.filter(t => t.status === 'blk');
+  const ip       = tasks.filter(t => t.status === 'ip');
+  const notOwned = tasks.filter(t => t.owner === 'TBD');
+  const withNotes= tasks.filter(t => t.notes && t.notes.trim());
+
+  let html = '';
+
+  const section = (label, items, rowFn) => {
+    if (!items.length) return `<div class="summary-section"><div class="summary-section-label">${label}</div><div style="font-size:12px;color:var(--text3)">None</div></div>`;
+    return `<div class="summary-section"><div class="summary-section-label">${label} (${items.length})</div>${items.map(rowFn).join('')}</div>`;
+  };
+
+  const row = (t, valHtml) => {
+    const sc = stageColor(t.stage);
+    return `<div class="summary-row">
+      <span class="sum-stage" style="background:${sc.bg};color:${sc.color}">${t.stage}</span>
+      <span class="sum-task">${t.name}</span>
+      ${valHtml}
+    </div>`;
+  };
+
+  html += section('Blocked items', blocked,  t => row(t, `<span class="sum-val" style="color:var(--status-blk-t)">Blocked</span>`));
+  html += section('In progress',   ip,       t => row(t, `<span class="sum-val ow-${t.owner.toLowerCase().replace(' ','-')}">${t.owner}</span>`));
+  html += section('No owner assigned', notOwned, t => row(t, `<span class="sum-val" style="color:var(--text3)">TBD</span>`));
+  html += section('Items with notes', withNotes, t => row(t, `<span class="sum-val" style="color:var(--text2);font-size:11px;max-width:160px;text-align:right">${t.notes.substring(0,60)}${t.notes.length>60?'…':''}</span>`));
+
+  // Owner breakdown
+  const ownerCount = {};
+  tasks.forEach(t => { ownerCount[t.owner] = (ownerCount[t.owner]||0)+1; });
+  html += `<div class="summary-section"><div class="summary-section-label">Items by owner</div>`;
+  Object.entries(ownerCount).sort((a,b)=>b[1]-a[1]).forEach(([owner, count]) => {
+    const cls = OWNER_CLS[owner] || 'ow-tbd';
+    html += `<div class="summary-row"><span class="tc-owner ${cls}">${owner}</span><span class="sum-val">${count} items</span></div>`;
+  });
+  html += `</div>`;
+
+  document.getElementById('summary-content').innerHTML = html;
+  document.getElementById('summary-overlay').classList.add('open');
+}
+function closeSummary() { document.getElementById('summary-overlay').classList.remove('open'); }
+function closeSummaryOnBg(e) { if (e.target === document.getElementById('summary-overlay')) closeSummary(); }
+
+// ── Export CSV ────────────────────────────────────────────────────────────────
+
+function exportCSV() {
+  const headers = ['Stage','Task','Requirement','Owner','Status','Dependency type','Dependency detail','Deadline','Notes'];
+  const rows = tasks.map(t => {
+    const depDetail = t.dep.type === 'task' ? t.dep.taskRef : t.dep.type === 'document' ? t.dep.docType : '';
+    const dl = t.deadline ? (t.deadline.direction === 'on' ? `On ${t.deadline.milestone}` : `${t.deadline.offset}d ${t.deadline.direction} ${t.deadline.milestone}`) : '';
+    return [t.stage, t.name, t.req, t.owner, STATUS_META[t.status]?.label||t.status, t.dep.type, depDetail, dl, t.notes]
+      .map(v => `"${String(v||'').replace(/"/g,'""')}"`).join(',');
+  });
+  const csv = [headers.join(','), ...rows].join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+  a.download = 'gloforex_implementation_plan.csv';
+  a.click();
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+
+loadTasks();
+renderCards();
+updateProgress();
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeAddModal(); closeSummary(); } });
+</script>
+</body>
+</html>
