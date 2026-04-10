@@ -493,14 +493,34 @@ const rows = [
     auto:'full', team:'documentation', review:true,
     deadline: { milestone:'ATA', offset:2, direction:'after' } },
 
+{ tg:'STG-7', tgLabel:'Delivery planning', task:'Pre-alert to customer',
+    note:'Notify customer of imminent arrival and initiate delivery coordination. Placement STG-5 vs STG-7 TBD at workshop.',
+    auto:'exception', team:'operations', review:true,
+    deadline: null },
+
   { tg:'STG-7', tgLabel:'Delivery planning', task:'Plan delivery',
-    note:'Manual. Coordinate with customer and transport provider.',
+    note:'Initial planning executed in the bulk data updater, which pushes planned date, time, and locations to MF. Planning can be done in bulk but TMS push is per shipment.',
     auto:'manual', team:'operations',
     deadline: { milestone:'ATA', offset:2, direction:'after' } },
 
-  { tg:'STG-7', tgLabel:'Delivery planning', task:'Confirm delivery appointment',
-    note:'Manual confirmation once delivery slot is agreed.',
+  { tg:'STG-7', tgLabel:'Delivery planning', task:'Push delivery planning to Qargo',
+    note:'Ops executes task in MF, triggering API call that pushes planned delivery data to Qargo. Task turns green on successful push. Surfaces unplanned containers in the dashboard.',
     auto:'manual', team:'operations',
+    deadline: { milestone:'ATA', offset:2, direction:'after' } },
+
+  { tg:'STG-7', tgLabel:'Delivery planning', task:'Return empty container monitoring',
+    note:'Ops monitors and confirms empty container has been returned to carrier depot within the agreed timeframe. Linked to demurrage risk if delayed.',
+    auto:'manual', team:'operations',
+    deadline: null },
+
+  { tg:'STG-7', tgLabel:'Delivery planning', task:'Deconsolidation / devanning',
+    note:'Applicable where cargo is delivered to a warehouse before final delivery. Task scope, trigger, and applicable shipment types TBD at workshop.',
+    auto:'exception', team:'operations', review:true,
+    deadline: null },
+
+  { tg:'STG-7', tgLabel:'Delivery planning', task:'Confirm delivery appointment',
+    note:'Manual confirmation once delivery slot is agreed with customer or consignee. Sequencing relative to Qargo push TBD at workshop.',
+    auto:'manual', team:'operations', review:true,
     deadline: { milestone:'ATA', offset:3, direction:'after' } },
 
   { tg:'STG-8', tgLabel:'Operational handling', task:'Operational follow-up',
