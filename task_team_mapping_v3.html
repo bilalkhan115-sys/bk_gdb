@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operational Stage to Team Mapping — GDB Logistics</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Light (default) ── */
+:root {
+  --bg: #ffffff;
+  --bg2: #f7f6f2;
+  --bg3: #f0efe9;
+  --border: rgba(0,0,0,0.1);
+  --border2: rgba(0,0,0,0.18);
+  --border3: rgba(0,0,0,0.06);
+  --text: #1a1a18;
+  --text2: #5f5e5a;
+  --text3: #8b8a85;
+}
+
+/* ── Dark (class-driven) ── */
+html.dark {
+  --bg: #14140f;
+  --bg2: #1c1c16;
+  --bg3: #232319;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --border3: rgba(255,255,255,0.04);
+  --text: #e8e6de;
+  --text2: #9c9a92;
+  --text3: #5f5e5a;
+}
+
+/* Also respect OS preference when no explicit class is set */
+@media (prefers-color-scheme: dark) {
+  html:not(.light):not(.dark) {
+    --bg: #14140f;
+    --bg2: #1c1c16;
+    --bg3: #232319;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --border3: rgba(255,255,255,0.04);
+    --text: #e8e6de;
+    --text2: #9c9a92;
+    --text3: #5f5e5a;
+  }
+}
+
+body {
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 0;
+}
+
+/* ── Topbar ── */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px; height: 48px;
+  background: #1a1a14;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  position: sticky; top: 0; z-index: 50;
+}
+.topbar-left { display: flex; align-items: center; gap: 12px; }
+.topbar-logo-text {
+  font-family: -apple-system, "Segoe UI", monospace;
+  font-size: 12px; font-weight: 600; color: #8a8880; letter-spacing: .06em;
+}
+.topbar-logo-text span { color: #3fb950; }
+.topbar-title {
+  font-size: 13px; font-weight: 500; color: #e8e6de;
+  padding-left: 12px; border-left: 1px solid rgba(255,255,255,0.12);
+}
+.topbar-right { display: flex; align-items: center; gap: 8px; }
+.theme-btn {
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  font-size: 12px; font-weight: 500; padding: 4px 10px;
+  border-radius: 4px; border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.07); color: #9c9a92;
+  cursor: pointer; transition: all .15s; white-space: nowrap;
+}
+.theme-btn:hover { background: rgba(255,255,255,0.12); color: #e8e6de; }
+
+.page-body {
+  padding: 2rem 1rem;
+}
+
+.container { max-width: 1100px; margin: 0 auto; }
+
+.header {
+  margin-bottom: 1.75rem;
+  padding-bottom: 1rem;
+  border-bottom: 0.5px solid var(--border);
+}
+.header-eyebrow {
+  font-size: 11px; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--text3); margin-bottom: 6px;
+}
+.header-title { font-size: 22px; font-weight: 500; }
+.header-sub   { font-size: 14px; color: var(--text2); margin-top: 4px; }
+
+.legend {
+  /* Mirror table column widths: [badge 50] [stage 100] [task 170] [notes 1fr] [automation 160] [overdue 160] [team 150] */
+  display: grid;
+  grid-template-columns: 50px 100px 170px 1fr 160px 160px 150px;
+  align-items: start;
+  margin-bottom: 0.5rem;
+  padding: 0 14px;
+  min-width: 820px;
+}
+
+.legend-col-right {
+  grid-column: 6; /* Overdue after column */
+  display: grid; grid-template-columns: auto 1fr; gap: 4px 7px;
+  align-items: center;
+}
+.leg-item {
+  display: contents;
+}
+.leg-label {
+  font-size: 12px; color: var(--text2); white-space: nowrap;
+}
+.leg-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.leg-sep { display: none; }
+.review-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #EF9F27; display: inline-block; flex-shrink: 0;
+}
+
+.filter-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1rem; }
+.filter-btn {
+  font-size: 12px; font-weight: 500; padding: 4px 13px;
+  border-radius: 16px; border: 0.5px solid var(--border2);
+  background: var(--bg); color: var(--text2);
+  cursor: pointer; transition: all .15s; font-family: inherit;
+}
+.filter-btn:hover { background: var(--bg2); }
+.filter-btn.active {
+  color: var(--text); border-color: var(--border2);
+  background: var(--bg2);
+}
+
+.table-wrap {
+  border: 0.5px solid var(--border2);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+table {
+  width: 100%; border-collapse: collapse;
+  font-size: 13px; min-width: 820px;
+}
+
+thead th {
+  font-size: 11px; font-weight: 600; letter-spacing: .05em;
+  text-transform: uppercase; color: var(--text3);
+  padding: 9px 14px; text-align: left;
+  border-bottom: 0.5px solid var(--border2);
+  background: var(--bg2);
+  white-space: nowrap;
+}
+
+tbody tr { border-bottom: 0.5px solid var(--border3); transition: background .1s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--bg2); }
+tbody tr.hidden { display: none; }
+
+tbody tr.tg-header td {
+  padding: 9px 14px 7px;
+  font-size: 11px; font-weight: 600; letter-spacing: .04em;
+  color: var(--text3); text-transform: uppercase;
+  background: var(--bg3);
+  border-top: 0.5px solid var(--border);
+  border-bottom: 0.5px solid var(--border);
+}
+
+td { padding: 9px 14px; vertical-align: middle; line-height: 1.4; }
+
+.tg-badge {
+  font-size: 11px; font-weight: 600; padding: 3px 8px;
+  border-radius: 6px; display: inline-block; white-space: nowrap;
+}
+
+.task-name  { font-weight: 500; font-size: 13px; color: var(--text); }
+.task-note  { font-size: 12px; color: var(--text2); margin-top: 2px; line-height: 1.45; }
+
+.auto-pill {
+  font-size: 11px; padding: 2px 8px; border-radius: 8px;
+  white-space: nowrap; display: inline-block; font-weight: 500;
+}
+
+.team-tag {
+  font-size: 11px; font-weight: 600; padding: 3px 9px;
+  border-radius: 8px; white-space: nowrap; display: inline-block;
+}
+
+/* ── Deadline pill ── */
+.deadline-pill {
+  font-size: 11px; font-weight: 500; padding: 2px 8px;
+  border-radius: 8px; white-space: nowrap; display: inline-block;
+  background: var(--bg3); color: var(--text2);
+  border: 0.5px solid var(--border2);
+}
+.deadline-pill.dl-before {
+  background: #EAF3DE; color: #27500A;
+  border-color: #B0D880;
+}
+.deadline-pill.dl-after {
+  background: #E6F1FB; color: #0C447C;
+  border-color: #85B7EB;
+}
+.deadline-pill.dl-on {
+  background: #FAEEDA; color: #633806;
+  border-color: #EF9F27;
+}
+.deadline-tbd {
+  font-size: 11px; color: var(--text3);
+}
+
+html.dark .deadline-pill,
+html:not(.light):not(.dark) .deadline-pill { background: var(--bg3); border-color: var(--border2); }
+@media (prefers-color-scheme: dark) {
+  html:not(.light):not(.dark) .deadline-pill { background: var(--bg3); border-color: var(--border2); }
+}
+html.dark .deadline-pill.dl-before,
+html:not(.light):not(.dark) .deadline-pill.dl-before { background: #173404; color: #C0DD97; border-color: #3a6612; }
+@media (prefers-color-scheme: dark) {
+  html:not(.light):not(.dark) .deadline-pill.dl-before { background: #173404; color: #C0DD97; border-color: #3a6612; }
+}
+html.dark .deadline-pill.dl-after,
+html:not(.light):not(.dark) .deadline-pill.dl-after { background: #042C53; color: #B5D4F4; border-color: #185FA5; }
+@media (prefers-color-scheme: dark) {
+  html:not(.light):not(.dark) .deadline-pill.dl-after { background: #042C53; color: #B5D4F4; border-color: #185FA5; }
+}
+html.dark .deadline-pill.dl-on,
+html:not(.light):not(.dark) .deadline-pill.dl-on { background: #412402; color: #FAC775; border-color: #854F0B; }
+@media (prefers-color-scheme: dark) {
+  html:not(.light):not(.dark) .deadline-pill.dl-on { background: #412402; color: #FAC775; border-color: #854F0B; }
+}
+
+/* light mode colour tokens */
+.auto-full      { background: #EAF3DE; color: #27500A; }
+.auto-recurring { background: #E6F1FB; color: #0C447C; }
+.auto-manual    { background: var(--bg2); color: var(--text2); }
+.auto-exception { background: #FAEEDA; color: #633806; }
+
+.team-purple { background: #EEEDFE; color: #3C3489; }
+.team-teal   { background: #E1F5EE; color: #085041; }
+.team-blue   { background: #E6F1FB; color: #0C447C; }
+.team-amber  { background: #FAEEDA; color: #633806; }
+.team-coral  { background: #FAECE7; color: #712B13; }
+.team-gray   { background: var(--bg2); color: var(--text2); }
+
+html.dark .auto-full,
+html:not(.light):not(.dark) .auto-full { background: #173404; color: #C0DD97; }
+html.dark .auto-recurring,
+html:not(.light):not(.dark) .auto-recurring { background: #042C53; color: #B5D4F4; }
+html.dark .auto-exception,
+html:not(.light):not(.dark) .auto-exception { background: #412402; color: #FAC775; }
+html.dark .team-purple,
+html:not(.light):not(.dark) .team-purple { background: #26215C; color: #CECBF6; }
+html.dark .team-teal,
+html:not(.light):not(.dark) .team-teal { background: #04342C; color: #9FE1CB; }
+html.dark .team-blue,
+html:not(.light):not(.dark) .team-blue { background: #042C53; color: #B5D4F4; }
+html.dark .team-amber,
+html:not(.light):not(.dark) .team-amber { background: #412402; color: #FAC775; }
+html.dark .team-coral,
+html:not(.light):not(.dark) .team-coral { background: #4A1B0C; color: #F0997B; }
+@media (prefers-color-scheme: dark) {
+  html:not(.light):not(.dark) .auto-full      { background: #173404; color: #C0DD97; }
+  html:not(.light):not(.dark) .auto-recurring { background: #042C53; color: #B5D4F4; }
+  html:not(.light):not(.dark) .auto-exception { background: #412402; color: #FAC775; }
+  html:not(.light):not(.dark) .team-purple { background: #26215C; color: #CECBF6; }
+  html:not(.light):not(.dark) .team-teal   { background: #04342C; color: #9FE1CB; }
+  html:not(.light):not(.dark) .team-blue   { background: #042C53; color: #B5D4F4; }
+  html:not(.light):not(.dark) .team-amber  { background: #412402; color: #FAC775; }
+  html:not(.light):not(.dark) .team-coral  { background: #4A1B0C; color: #F0997B; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-logo-text">GDB <span>·</span> GloForEx</div>
+    <div class="topbar-title">Operational Stage to Team mapping</div>
+    <div>
+      <img src="https://gdblogistics.com/wp-content/uploads/2025/11/Logo-GDB-landscape.svg"
+        alt="GDB Logistics"
+        style="height:26px;width:auto;display:block;opacity:0.88;"
+        onerror="this.style.display='none'"/>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">☀️ Light</button>
+  </div>
+</div>
+
+<div class="page-body">
+<div class="container">
+
+  <div class="header">
+    <div class="header-eyebrow">GDB Logistics · MyFreight · Ocean Import</div>
+    <div class="header-title">Operational Stage to Team mapping</div>
+    <div class="header-sub">Operational stage tasks assigned to MF workgroup teams — all countries, Ocean Import</div>
+  </div>
+
+  <div class="filter-row">
+    <button class="filter-btn active" onclick="filterTeam('all',this)">All teams</button>
+    <button class="filter-btn" onclick="filterTeam('booking',this)">Import booking</button>
+    <button class="filter-btn" onclick="filterTeam('documentation',this)">Import documentation</button>
+    <button class="filter-btn" onclick="filterTeam('operations',this)">Import operations</button>
+    <button class="filter-btn" onclick="filterTeam('error',this)">Error handling</button>
+    <button class="filter-btn" onclick="filterTeam('financial',this)">Financial handling</button>
+  </div>
+
+  <div style="overflow-x:auto;">
+  <div class="legend">
+    <div style="grid-column:3/5;display:flex;align-items:center;gap:6px;padding-top:40px">
+      <span class="review-dot"></span>
+      <span class="leg-label">Open item — needs confirmation</span>
+    </div>
+
+    <div class="legend-col-right">
+      <span class="leg-dot" style="background:#639922"></span><span class="leg-label">Deadline: before milestone</span>
+      <span class="leg-dot" style="background:#378ADD"></span><span class="leg-label">Deadline: after milestone</span>
+      <span class="leg-dot" style="background:#EF9F27"></span><span class="leg-label">Deadline: on milestone</span>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:50px"></th>
+          <th style="width:100px">Stage</th>
+          <th style="width:170px">Task</th>
+          <th>Notes</th>
+          <th style="width:160px">Automation</th>
+          <th style="width:160px">Overdue after</th>
+          <th style="width:150px">Team</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  </div><!-- /.scroll-wrap -->
+
+</div>
+
+<script>
+const TEAMS = {
+  booking:       { label: 'Import booking',       cls: 'team-purple' },
+  documentation: { label: 'Import documentation', cls: 'team-teal'   },
+  operations:    { label: 'Import operations',    cls: 'team-blue'   },
+  error:         { label: 'Error handling',       cls: 'team-amber'  },
+  financial:     { label: 'Financial handling',   cls: 'team-coral'  },
+  tbd:           { label: 'TBD',                  cls: 'team-gray'   },
+};
+
+const AUTO = {
+  full:      { label: 'Fully automated',       cls: 'auto-full'      },
+  recurring: { label: 'Automated / recurring', cls: 'auto-recurring' },
+  manual:    { label: 'Manual',                cls: 'auto-manual'    },
+  exception: { label: 'Manual / exception',    cls: 'auto-exception' },
+};
+
+const TG_COLORS = {
+  TG1: { bg: '#EEEDFE', color: '#534AB7' },
+  TG2: { bg: '#EEEDFE', color: '#534AB7' },
+  TG3: { bg: '#E1F5EE', color: '#0F6E56' },
+  TG4: { bg: '#E1F5EE', color: '#0F6E56' },
+  TG5: { bg: '#E6F1FB', color: '#185FA5' },
+  TG6: { bg: '#E1F5EE', color: '#0F6E56' },
+  TG7: { bg: '#E6F1FB', color: '#185FA5' },
+  TG8: { bg: '#E6F1FB', color: '#185FA5' },
+  TG9: { bg: '#FAECE7', color: '#993C1D' },
+  DEV: { bg: '#FAEEDA', color: '#854F0B' },
+};
+
+// deadline: { milestone, offset, direction }
+// milestone: 'ETD' | 'ATD' | 'ETA' | 'ATA' | 'Customs clearance' | 'Document receipt'
+// direction: 'before' | 'after' | 'on'
+// offset: number of working days (0 = on milestone)
+
+const rows = [
+  { tg:'STG-1', tgLabel:'Booking intake & validation', task:'Validate booking',
+    note:'Auto-completed for API bookings with all fields present. Pending for manual/exception bookings. All countries.',
+    auto:'full', team:'booking',
+    deadline: { milestone:'ETD', offset:5, direction:'before' } },
+
+  { tg:'STG-1', tgLabel:'Booking intake & validation', task:'Request booking confirmation',
+    note:'DE and NL only. FR does not send booking confirmation (country delta #1).',
+    auto:'manual', team:'booking',
+    deadline: { milestone:'ETD', offset:5, direction:'before' } },
+
+  { tg:'STG-1', tgLabel:'Booking intake & validation', task:'Agent booking communication',
+    note:'All countries. Action task when agent communication is needed.',
+    auto:'exception', team:'booking',
+    deadline: null },
+
+  { tg:'STG-2', tgLabel:'Shipment data completion', task:'Check agent update',
+    note:'API shipments only. Resets to Pending on each agent update from SnapLogic.',
+    auto:'recurring', team:'booking',
+    deadline: { milestone:'ETD', offset:3, direction:'before' } },
+
+  { tg:'STG-2', tgLabel:'Shipment data completion', task:'Complete shipment data',
+    note:'Non-API shipments only. Full checklist: parties, transport, cargo, documents.',
+    auto:'manual', team:'booking',
+    deadline: { milestone:'ETD', offset:5, direction:'before' } },
+
+  { tg:'STG-2', tgLabel:'Shipment data completion', task:'Agent booking communication',
+    note:'Shared with TG1. Triggered when data is missing after agent update.',
+    auto:'exception', team:'booking',
+    deadline: null },
+
+  { tg:'STG-3', tgLabel:'Document verification', task:'Verify commercial invoice',
+    note:'Cross-check consignee, shipper, cargo description, value, currency, incoterm against MF data. All countries.',
+    auto:'manual', team:'documentation',
+    deadline: { milestone:'ETA', offset:5, direction:'before' } },
+
+  { tg:'STG-3', tgLabel:'Document verification', task:'Verify packing list',
+    note:'Cross-check package count, weight, cargo description against MF data. All countries.',
+    auto:'manual', team:'documentation',
+    deadline: { milestone:'ETA', offset:5, direction:'before' } },
+
+  { tg:'STG-3', tgLabel:'Document verification', task:'Verify HBL / TLX / seaway bill',
+    note:'Confirm document type matches shipment. Cross-check parties, POL/POD, container, cargo. All countries.',
+    auto:'manual', team:'documentation',
+    deadline: { milestone:'ETA', offset:5, direction:'before' } },
+
+  { tg:'STG-3', tgLabel:'Document verification', task:'Seaway bill released',
+    note:'Auto-triggered when seaway bill is confirmed released. Gates downstream document handling. All countries.',
+    auto:'full', team:'documentation',
+    deadline: { milestone:'ETA', offset:3, direction:'before' } },
+
+  { tg:'STG-3', tgLabel:'Document verification', task:'Verify insurance certificate',
+    note:'Conditional on incoterm and country rules. Country delta entries to be confirmed at workshop.',
+    auto:'exception', team:'documentation', review:true,
+    deadline: { milestone:'ETA', offset:5, direction:'before' } },
+
+  { tg:'STG-3', tgLabel:'Document verification', task:'Check customs declaration',
+    note:'Pre-arrival check that declaration is complete and accurate. All countries.',
+    auto:'manual', team:'documentation',
+    deadline: { milestone:'ETA', offset:3, direction:'before' } },
+
+  { tg:'STG-3', tgLabel:'Document verification', task:'Request missing documents',
+    note:'Action task when documents are absent or fail verification. All countries.',
+    auto:'exception', team:'documentation',
+    deadline: null },
+
+  { tg:'STG-4', tgLabel:'Customs processing', task:'Send customs documents to Maco',
+    note:'Ops executes task in MF, triggering webhook to Maco. Resets to Pending on customs rejection.',
+    auto:'manual', team:'documentation',
+    deadline: { milestone:'ETA', offset:2, direction:'before' } },
+
+  { tg:'STG-4', tgLabel:'Customs processing', task:'Customs clearance received',
+    note:'Auto-created and set to Completed on clearance confirmation from Maco. Acts as prerequisite gate.',
+    auto:'full', team:'documentation',
+    deadline: { milestone:'ATA', offset:0, direction:'on' } },
+
+  { tg:'STG-4', tgLabel:'Customs processing', task:'Customs rejection handling',
+    note:'Triggered on API rejection from Maco. Surfaces in Error Handling team via Dev Message Log.',
+    auto:'exception', team:'error',
+    deadline: { milestone:'ATA', offset:1, direction:'before' } },
+
+  { tg:'STG-5', tgLabel:'Arrival monitoring', task:'Monitor vessel ETA',
+    note:'MF native live tracking for deepsea vessels. Resets to Pending on each tracking update.',
+    auto:'recurring', team:'operations',
+    deadline: null },
+
+  { tg:'STG-5', tgLabel:'Arrival monitoring', task:'Manual ETA check',
+    note:'Inland / feeder legs only where live tracking is unavailable. Cadence TBD at workshop.',
+    auto:'manual', team:'operations', review:true,
+    deadline: null },
+
+  { tg:'STG-5', tgLabel:'Arrival monitoring', task:'Confirm arrival at POD',
+    note:'Auto-completed on ATA event from MF live tracking. Gates downstream stages.',
+    auto:'full', team:'operations',
+    deadline: { milestone:'ATA', offset:0, direction:'on' } },
+
+  { tg:'STG-6', tgLabel:'Carrier release', task:'Request carrier release',
+    note:'Manual trigger after customs clearance confirmed.',
+    auto:'manual', team:'documentation',
+    deadline: { milestone:'ATA', offset:1, direction:'after' } },
+
+  { tg:'STG-6', tgLabel:'Carrier release', task:'Carrier release confirmed',
+    note:'Auto-completed on release confirmation from carrier system. To be revisited during walkthrough.',
+    auto:'full', team:'documentation', review:true,
+    deadline: { milestone:'ATA', offset:2, direction:'after' } },
+
+  { tg:'STG-7', tgLabel:'Delivery planning', task:'Plan delivery',
+    note:'Manual. Coordinate with customer and transport provider.',
+    auto:'manual', team:'operations',
+    deadline: { milestone:'ATA', offset:2, direction:'after' } },
+
+  { tg:'STG-7', tgLabel:'Delivery planning', task:'Confirm delivery appointment',
+    note:'Manual confirmation once delivery slot is agreed.',
+    auto:'manual', team:'operations',
+    deadline: { milestone:'ATA', offset:3, direction:'after' } },
+
+  { tg:'STG-8', tgLabel:'Operational handling', task:'Operational follow-up',
+    note:'Exception-based. Any outstanding operational action not covered by other STGs. Definition to be tightened.',
+    auto:'exception', team:'operations', review:true,
+    deadline: null },
+
+  { tg:'STG-9', tgLabel:'Financial handling', task:'Record accrual',
+    note:'Ops logs expected costs: supplier, reference, charge code, expected amount, currency. Triggered on ATD or ATA.',
+    auto:'manual', team:'financial',
+    deadline: { milestone:'ATD', offset:2, direction:'after' } },
+
+  { tg:'STG-9', tgLabel:'Financial handling', task:'Invoice verification',
+    note:'Finance verifies agent invoice against accrual. Option A: in Blue10. Option B: in MF. TBD.',
+    auto:'manual', team:'financial', review:true,
+    deadline: { milestone:'Document receipt', offset:3, direction:'after' } },
+
+  { tg:'STG-9', tgLabel:'Financial handling', task:'Invoice approved',
+    note:'Confirmation that invoice matches accrual. Option A: implicit. Option B: explicit Finance step in MF. TBD.',
+    auto:'manual', team:'financial', review:true,
+    deadline: { milestone:'Document receipt', offset:5, direction:'after' } },
+
+  { tg:'STG-9', tgLabel:'Financial handling', task:'Dispute / credit note',
+    note:'Exception-based. Raised when invoice does not match accrual.',
+    auto:'exception', team:'financial',
+    deadline: null },
+
+  { tg:'DEV', tgLabel:'Dev Message Log', task:'Dev message log',
+    note:'Persistent on every shipment. Completed = informational only. Pending = error or missing data requires Ops action.',
+    auto:'recurring', team:'error',
+    deadline: null },
+];
+
+let activeTeam = 'all';
+
+function renderDeadline(dl) {
+  if (!dl) return `<span class="deadline-tbd">—</span>`;
+  const { milestone, offset, direction } = dl;
+  let cls = 'deadline-pill';
+  let label = '';
+  if (direction === 'before') {
+    cls += ' dl-before';
+    label = `${offset}d before ${milestone}`;
+  } else if (direction === 'after') {
+    cls += ' dl-after';
+    label = `${offset}d after ${milestone}`;
+  } else {
+    cls += ' dl-on';
+    label = `On ${milestone}`;
+  }
+  return `<span class="${cls}">${label}</span>`;
+}
+
+function render() {
+  const tbody = document.getElementById('tbody');
+  let html = '';
+  let lastTg = null;
+
+  rows.forEach(r => {
+    const match = activeTeam === 'all' || r.team === activeTeam;
+
+    if (r.tg !== lastTg) {
+      lastTg = r.tg;
+      const tgHasMatch = activeTeam === 'all' || rows.some(x => x.tg === r.tg && x.team === activeTeam);
+      html += `<tr class="tg-header${tgHasMatch ? '' : ' hidden'}"><td colspan="7">${r.tg} — ${r.tgLabel}</td></tr>`;
+    }
+
+    const c = TG_COLORS[r.tg] || { bg: '#f0f0f0', color: '#555' };
+    const auto = AUTO[r.auto];
+    const team = TEAMS[r.team];
+    const mark = r.review
+      ? `<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#EF9F27;margin-right:5px;vertical-align:middle;flex-shrink:0"></span>`
+      : '';
+
+    html += `<tr class="${match ? '' : 'hidden'}" data-team="${r.team}">
+      <td><span class="tg-badge" style="background:${c.bg};color:${c.color}">${r.tg}</span></td>
+      <td style="color:var(--text2);font-size:12px">${r.tgLabel}</td>
+      <td><div class="task-name">${mark}${r.task}</div></td>
+      <td><div class="task-note">${r.note}</div></td>
+      <td><span class="auto-pill ${auto.cls}">${auto.label}</span></td>
+      <td>${renderDeadline(r.deadline)}</td>
+      <td><span class="team-tag ${team.cls}">${team.label}</span></td>
+    </tr>`;
+  });
+
+  tbody.innerHTML = html;
+}
+
+function filterTeam(team, btn) {
+  activeTeam = team;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+// ── Theme ──────────────────────────────────────────────────────────────────
+function applyTheme(dark) {
+  document.documentElement.classList.toggle('dark', dark);
+  document.documentElement.classList.toggle('light', !dark);
+  const btn = document.getElementById('theme-btn');
+  if (btn) btn.textContent = dark ? '☀️ Light' : '🌙 Dark';
+  localStorage.setItem('ttm-theme', dark ? 'dark' : 'light');
+}
+function toggleTheme() {
+  applyTheme(!document.documentElement.classList.contains('dark'));
+}
+(function initTheme() {
+  const saved = localStorage.getItem('ttm-theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyTheme(saved ? saved === 'dark' : prefersDark);
+})();
+
+render();
+</script>
+
+</div><!-- /.page-body -->
+</body>
+</html>
