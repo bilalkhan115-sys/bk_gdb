@@ -145,6 +145,18 @@ body {
 .trigger-source-pill { font-family: var(--mono); font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 6px; background: var(--bg3); color: var(--text3); display: inline-block; margin-left: 6px; }
 .trigger-flag-pill   { font-family: var(--mono); font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 6px; background: var(--amber-l); color: var(--amber-d); display: inline-block; margin-left: 4px; }
 
+/* ── Deadline row in task card ── */
+.deadline-row { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border3); display: flex; gap: 6px; align-items: center; }
+.deadline-label { font-family: var(--mono); font-size: 10px; font-weight: 600; color: var(--text3); white-space: nowrap; letter-spacing: .04em; min-width: 52px; }
+.dl-pill { font-family: var(--mono); font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 8px; white-space: nowrap; display: inline-block; }
+.dl-before { background: #1a3a1a; color: #a7f3bc; }
+.dl-after  { background: var(--blue-l); color: var(--blue-d); }
+.dl-on     { background: var(--amber-l); color: var(--amber-d); }
+.dl-tbd    { font-family: var(--mono); font-size: 10px; color: var(--text3); }
+.light .dl-before { background: #EAF3DE; color: #27500A; }
+.light .dl-after  { background: #E6F1FB; color: #0C447C; }
+.light .dl-on     { background: #FAEEDA; color: #633806; }
+
 .task-change-note { font-size: 11px; color: var(--amber-d); font-style: italic; margin-top: 4px; padding-top: 4px; border-top: 1px solid var(--border3); }
 
 /* ── Modal (shared) ── */
@@ -216,7 +228,7 @@ body {
 .light .pill-auto-full   { background: #EAF3DE; color: #27500A; }
 .light .pill-auto-manual { background: var(--bg3); color: var(--text3); }
 .light .task-card:hover  { border-color: rgba(0,0,0,.25); }
-.light .topbar { background: linear-gradient(to right, #1e1e1e 700px, var(--bg) 1060px); }
+.light .topbar { background: linear-gradient(to right, #1e1e1e 600px, var(--bg) 860px); }
 .light .logo { color: #8a8880; }
 .light .logo span { color: #3fb950; }
 .light .topbar-title { color: #e8e6de; border-left-color: rgba(255,255,255,0.12); border-right-color: rgba(255,255,255,0.12); }
@@ -372,6 +384,32 @@ body {
         <div class="field-label">Trigger source</div>
         <input type="text" id="f-trigger-source" placeholder="e.g. SnapLogic, Maco API, Manual"/>
       </div>
+      <div class="field-row">
+        <div class="field">
+          <div class="field-label">Overdue after — milestone</div>
+          <select id="f-dl-milestone">
+            <option value="">— None —</option>
+            <option value="ETD">ETD</option>
+            <option value="ATD">ATD</option>
+            <option value="ETA">ETA</option>
+            <option value="ATA">ATA</option>
+            <option value="Customs clearance">Customs clearance</option>
+            <option value="Document receipt">Document receipt</option>
+          </select>
+        </div>
+        <div class="field">
+          <div class="field-label">Direction</div>
+          <select id="f-dl-direction">
+            <option value="before">Before</option>
+            <option value="after">After</option>
+            <option value="on">On</option>
+          </select>
+        </div>
+      </div>
+      <div class="field" style="max-width:160px">
+        <div class="field-label">Offset (working days)</div>
+        <input type="number" id="f-dl-offset" min="0" max="30" placeholder="e.g. 3"/>
+      </div>
       <div class="field" id="change-type-field">
         <div class="field-label">Change type</div>
         <div class="change-type-row" id="change-type-row">
@@ -451,83 +489,83 @@ const STAGES = {
     name: 'STG-1 — Booking intake & validation', team: 'Import Booking',
     desc: 'Initial booking received, validated, and confirmed. Covers both API (agent) and manual bookings.',
     tasks: [
-      { id:'stg1-1', name:'Validate booking',             auto:'auto-full',      notes:'Auto-completed for API bookings with all fields present. Pending for manual/exception bookings. All countries.',    trigger:{ event:'Booking created in MF via agent API (SnapLogic) or manual entry', source:'SnapLogic / Manual' } },
-      { id:'stg1-2', name:'Request booking confirmation', auto:'manual',         notes:'DE and NL only. FR does not send booking confirmation (country delta #1).',                                          trigger:{ event:'Manually triggered by Ops after booking validation', source:'Manual' } },
-      { id:'stg1-3', name:'Agent booking communication',  auto:'auto-exception', notes:'All countries. Action task when agent communication is needed.',                                                      trigger:{ event:'Manually triggered by Ops on exception — missing data or query requiring agent contact', source:'Manual' } },
+      { id:'stg1-1', name:'Validate booking',             auto:'auto-full',      notes:'Auto-completed for API bookings with all fields present. Pending for manual/exception bookings. All countries.',    trigger:{ event:'Booking created in MF via agent API (SnapLogic) or manual entry', source:'SnapLogic / Manual' }, deadline:{ milestone:'ETD', offset:5, direction:'before' } },
+      { id:'stg1-2', name:'Request booking confirmation', auto:'manual',         notes:'DE and NL only. FR does not send booking confirmation (country delta #1).',                                          trigger:{ event:'Manually triggered by Ops after booking validation', source:'Manual' }, deadline:{ milestone:'ETD', offset:5, direction:'before' } },
+      { id:'stg1-3', name:'Agent booking communication',  auto:'auto-exception', notes:'All countries. Action task when agent communication is needed.',                                                      trigger:{ event:'Manually triggered by Ops on exception — missing data or query requiring agent contact', source:'Manual' }, deadline:null },
     ]
   },
   'STG-2': {
     name: 'STG-2 — Shipment data completion', team: 'Import Booking',
     desc: 'Ensure all mandatory shipment data fields are complete before operational processing begins.',
     tasks: [
-      { id:'stg2-1', name:'Check agent update',          auto:'auto-recurring', notes:'API shipments only. Resets to Pending on each agent update from SnapLogic.',                                          trigger:{ event:'Inbound agent update received via SnapLogic — resets to Pending automatically on each update', source:'SnapLogic' } },
-      { id:'stg2-2', name:'Complete shipment data',      auto:'manual',         notes:'Non-API shipments only. Full checklist: parties, transport, cargo, documents.',                                        trigger:{ event:'Booking created manually — task set to Pending on creation', source:'Manual' } },
-      { id:'stg2-3', name:'Agent booking communication', auto:'auto-exception', notes:'Shared with STG-1. Triggered when data is missing after agent update.',                                                trigger:{ event:'Manually triggered by Ops after reviewing agent update — missing or incorrect data', source:'Manual' } },
-      { id:'stg2-4', name:'Seaway bill released',        auto:'auto-full',      notes:'OPEN ITEM: Placement in STG-2 or STG-3 TBC. Auto-triggered when seaway bill confirmed.',                              trigger:{ event:'Seaway bill release confirmed event', source:'SnapLogic', flag:'placement TBC' } },
+      { id:'stg2-1', name:'Check agent update',          auto:'auto-recurring', notes:'API shipments only. Resets to Pending on each agent update from SnapLogic.',                                          trigger:{ event:'Inbound agent update received via SnapLogic — resets to Pending automatically on each update', source:'SnapLogic' }, deadline:{ milestone:'ETD', offset:3, direction:'before' } },
+      { id:'stg2-2', name:'Complete shipment data',      auto:'manual',         notes:'Non-API shipments only. Full checklist: parties, transport, cargo, documents.',                                        trigger:{ event:'Booking created manually — task set to Pending on creation', source:'Manual' }, deadline:{ milestone:'ETD', offset:5, direction:'before' } },
+      { id:'stg2-3', name:'Agent booking communication', auto:'auto-exception', notes:'Shared with STG-1. Triggered when data is missing after agent update.',                                                trigger:{ event:'Manually triggered by Ops after reviewing agent update — missing or incorrect data', source:'Manual' }, deadline:null },
+      { id:'stg2-4', name:'Seaway bill released',        auto:'auto-full',      notes:'OPEN ITEM: Placement in STG-2 or STG-3 TBC. Auto-triggered when seaway bill confirmed.',                              trigger:{ event:'Seaway bill release confirmed event', source:'SnapLogic', flag:'placement TBC' }, deadline:null },
     ]
   },
   'STG-3': {
     name: 'STG-3 — Document verification', team: 'Import Documentation',
     desc: 'Verify all required shipping documents are received and correct before customs submission.',
     tasks: [
-      { id:'stg3-1', name:'Verify commercial invoice',       auto:'manual',         notes:'Cross-check consignee, shipper, cargo description, value, currency, incoterm against MF data. All countries. Expected document: [placeholder].',    trigger:{ event:'Agent update with document attachment (SnapLogic) OR manual document upload in MF — task resets to Pending on either event', source:'SnapLogic / Manual' } },
-      { id:'stg3-2', name:'Verify packing list',             auto:'manual',         notes:'Cross-check package count, weight, cargo description against MF data. Combined with invoice where applicable. All countries. Expected document: [placeholder].', trigger:{ event:'Agent update with document attachment (SnapLogic) OR manual document upload in MF — task resets to Pending on either event', source:'SnapLogic / Manual' } },
-      { id:'stg3-3', name:'Verify HBL / TLX / Seaway bill', auto:'manual',         notes:'OPEN ITEM: Document type depends on shipment. Cross-check parties, POL/POD, container, cargo. Expected document: [placeholder].',                  trigger:{ event:'Agent update with document attachment (SnapLogic) OR manual document upload in MF — task resets to Pending on either event', source:'SnapLogic / Manual' } },
-      { id:'stg3-4', name:'Verify insurance certificate',    auto:'auto-exception', notes:'OPEN ITEM: Conditional on incoterm and country rules. Country delta entries to be confirmed at workshop.',                                          trigger:{ event:'Manually triggered by Ops when insurance certificate required per incoterm or country rule', source:'Manual' } },
-      { id:'stg3-5', name:'Check customs declaration',       auto:'manual',         notes:'Pre-arrival check that declaration is complete and accurate. All countries.',                                                                         trigger:{ event:'Manually triggered by Ops — typically scheduled relative to ETD/ETA milestone', source:'Manual' } },
-      { id:'stg3-6', name:'Request missing documents',       auto:'auto-exception', notes:'Action task when documents are absent or fail verification. Triggers contact with agent or customer. All countries.',                                trigger:{ event:'Manually triggered by Ops on document verification failure — missing doc or content mismatch', source:'Manual' } },
+      { id:'stg3-1', name:'Verify commercial invoice',       auto:'manual',         notes:'Cross-check consignee, shipper, cargo description, value, currency, incoterm against MF data. All countries. Expected document: [placeholder].',    trigger:{ event:'Agent update with document attachment (SnapLogic) OR manual document upload in MF — task resets to Pending on either event', source:'SnapLogic / Manual' }, deadline:{ milestone:'ETA', offset:5, direction:'before' } },
+      { id:'stg3-2', name:'Verify packing list',             auto:'manual',         notes:'Cross-check package count, weight, cargo description against MF data. Combined with invoice where applicable. All countries. Expected document: [placeholder].', trigger:{ event:'Agent update with document attachment (SnapLogic) OR manual document upload in MF — task resets to Pending on either event', source:'SnapLogic / Manual' }, deadline:{ milestone:'ETA', offset:5, direction:'before' } },
+      { id:'stg3-3', name:'Verify HBL / TLX / Seaway bill', auto:'manual',         notes:'OPEN ITEM: Document type depends on shipment. Cross-check parties, POL/POD, container, cargo. Expected document: [placeholder].',                  trigger:{ event:'Agent update with document attachment (SnapLogic) OR manual document upload in MF — task resets to Pending on either event', source:'SnapLogic / Manual' }, deadline:{ milestone:'ETA', offset:5, direction:'before' } },
+      { id:'stg3-4', name:'Verify insurance certificate',    auto:'auto-exception', notes:'OPEN ITEM: Conditional on incoterm and country rules. Country delta entries to be confirmed at workshop.',                                          trigger:{ event:'Manually triggered by Ops when insurance certificate required per incoterm or country rule', source:'Manual' }, deadline:{ milestone:'ETA', offset:5, direction:'before' } },
+      { id:'stg3-5', name:'Check customs declaration',       auto:'manual',         notes:'Pre-arrival check that declaration is complete and accurate. All countries.',                                                                         trigger:{ event:'Manually triggered by Ops — typically scheduled relative to ETD/ETA milestone', source:'Manual' }, deadline:{ milestone:'ETA', offset:3, direction:'before' } },
+      { id:'stg3-6', name:'Request missing documents',       auto:'auto-exception', notes:'Action task when documents are absent or fail verification. Triggers contact with agent or customer. All countries.',                                trigger:{ event:'Manually triggered by Ops on document verification failure — missing doc or content mismatch', source:'Manual' }, deadline:null },
     ]
   },
   'STG-4': {
     name: 'STG-4 — Customs processing', team: 'Import Documentation',
     desc: 'Submit customs declaration and handle confirmation or rejection from Maco.',
     tasks: [
-      { id:'stg4-1', name:'Send customs documents to Maco', auto:'manual',         notes:'Ops executes task in MF triggering webhook to Maco. On rejection: task resets to Pending via Maco API — double-trigger alongside Dev Message Log.',   trigger:{ event:'Ops manually executes task → MF webhook fires to Maco. On rejection: Maco API resets task to Pending (double-trigger with Dev Message Log)', source:'Manual / Maco API' } },
-      { id:'stg4-2', name:'Customs clearance received',     auto:'auto-full',      notes:'Auto-created and immediately set to Completed on clearance confirmation from Maco. No Ops action required. Prerequisite gate for STG-6.',               trigger:{ event:'Customs clearance confirmation message received from Maco API', source:'Maco API' } },
-      { id:'stg4-3', name:'Customs rejection handling',     auto:'auto-exception', notes:'Triggered on API rejection from Maco. Surfaces in Error Handling team via Dev Message Log.',                                                            trigger:{ event:'Rejection message from Maco API — fires Dev Message Log to Pending and resets Send customs documents task', source:'Maco API' } },
+      { id:'stg4-1', name:'Send customs documents to Maco', auto:'manual',         notes:'Ops executes task in MF triggering webhook to Maco. On rejection: task resets to Pending via Maco API — double-trigger alongside Dev Message Log.',   trigger:{ event:'Ops manually executes task → MF webhook fires to Maco. On rejection: Maco API resets task to Pending (double-trigger with Dev Message Log)', source:'Manual / Maco API' }, deadline:{ milestone:'ETA', offset:2, direction:'before' } },
+      { id:'stg4-2', name:'Customs clearance received',     auto:'auto-full',      notes:'Auto-created and immediately set to Completed on clearance confirmation from Maco. No Ops action required. Prerequisite gate for STG-6.',               trigger:{ event:'Customs clearance confirmation message received from Maco API', source:'Maco API' }, deadline:{ milestone:'ATA', offset:0, direction:'on' } },
+      { id:'stg4-3', name:'Customs rejection handling',     auto:'auto-exception', notes:'Triggered on API rejection from Maco. Surfaces in Error Handling team via Dev Message Log.',                                                            trigger:{ event:'Rejection message from Maco API — fires Dev Message Log to Pending and resets Send customs documents task', source:'Maco API' }, deadline:{ milestone:'ATA', offset:1, direction:'before' } },
     ]
   },
   'STG-5': {
     name: 'STG-5 — Arrival monitoring', team: 'Import Operations',
     desc: 'Track vessel and confirm actual arrival at port of discharge.',
     tasks: [
-      { id:'stg5-1', name:'Monitor vessel ETA',    auto:'auto-recurring', notes:'MF native live tracking for deepsea vessels. Resets to Pending on each tracking update.',          trigger:{ event:'MF native live tracking update received for deepsea vessel — task resets to Pending on each update', source:'MF Live Tracking' } },
-      { id:'stg5-2', name:'Manual ETA check',      auto:'manual',         notes:'OPEN ITEM: Inland / feeder legs only. Cadence TBD at workshop.',                                   trigger:{ event:'Manually triggered by Ops on recurring cadence — cadence TBD at workshop', source:'Manual', flag:'cadence TBD' } },
-      { id:'stg5-3', name:'Confirm arrival at POD',auto:'auto-full',      notes:'Auto-completed on ATA event from MF live tracking. Gates downstream stages.',                       trigger:{ event:'ATA (Actual Time of Arrival) event received from MF live tracking', source:'MF Live Tracking' } },
+      { id:'stg5-1', name:'Monitor vessel ETA',    auto:'auto-recurring', notes:'MF native live tracking for deepsea vessels. Resets to Pending on each tracking update.',          trigger:{ event:'MF native live tracking update received for deepsea vessel — task resets to Pending on each update', source:'MF Live Tracking' }, deadline:null },
+      { id:'stg5-2', name:'Manual ETA check',      auto:'manual',         notes:'OPEN ITEM: Inland / feeder legs only. Cadence TBD at workshop.',                                   trigger:{ event:'Manually triggered by Ops on recurring cadence — cadence TBD at workshop', source:'Manual', flag:'cadence TBD' }, deadline:null },
+      { id:'stg5-3', name:'Confirm arrival at POD',auto:'auto-full',      notes:'Auto-completed on ATA event from MF live tracking. Gates downstream stages.',                       trigger:{ event:'ATA (Actual Time of Arrival) event received from MF live tracking', source:'MF Live Tracking' }, deadline:{ milestone:'ATA', offset:0, direction:'on' } },
     ]
   },
   'STG-6': {
     name: 'STG-6 — Carrier release', team: 'Import Documentation',
     desc: 'Request and confirm release of cargo from the carrier after customs clearance.',
     tasks: [
-      { id:'stg6-1', name:'Request carrier release',   auto:'manual',    notes:'Manual trigger after customs clearance confirmed. STG-4 Customs clearance received is prerequisite gate.',                                               trigger:{ event:'Manually triggered by Ops after Customs clearance received task is Completed (STG-4 gate)', source:'Manual' } },
-      { id:'stg6-2', name:'Carrier release confirmed', auto:'auto-full', notes:'OPEN ITEM: Intended as auto-completed on release confirmation from carrier system. Integration source not yet confirmed.',                                trigger:{ event:'Carrier release confirmation event — integration source not yet confirmed', source:'TBC', flag:'integration TBC' } },
+      { id:'stg6-1', name:'Request carrier release',   auto:'manual',    notes:'Manual trigger after customs clearance confirmed. STG-4 Customs clearance received is prerequisite gate.',                                               trigger:{ event:'Manually triggered by Ops after Customs clearance received task is Completed (STG-4 gate)', source:'Manual' }, deadline:{ milestone:'ATA', offset:1, direction:'after' } },
+      { id:'stg6-2', name:'Carrier release confirmed', auto:'auto-full', notes:'OPEN ITEM: Intended as auto-completed on release confirmation from carrier system. Integration source not yet confirmed.',                                trigger:{ event:'Carrier release confirmation event — integration source not yet confirmed', source:'TBC', flag:'integration TBC' }, deadline:{ milestone:'ATA', offset:2, direction:'after' } },
     ]
   },
   'STG-7': {
     name: 'STG-7 — Delivery planning', team: 'Import Operations',
     desc: 'Plan and confirm delivery of cargo to consignee. Gate: STG-6 Carrier release confirmed.',
     tasks: [
-      { id:'stg7-1', name:'Plan delivery',               auto:'manual', notes:'Manual. Coordinate with customer and transport provider. Gate: STG-6. Delivery data flows MF → Qargo via SnapLogic — integration scope to be confirmed for NL go-live.', trigger:{ event:'Manually triggered by Ops after Carrier release confirmed (STG-6 gate). Data flows MF → Qargo via SnapLogic', source:'Manual / SnapLogic → Qargo' } },
-      { id:'stg7-2', name:'Confirm delivery appointment',auto:'manual', notes:'Manual confirmation once delivery slot is agreed.',                                                                                                                          trigger:{ event:'Manually triggered by Ops after delivery slot confirmed with customer and transport provider', source:'Manual' } },
+      { id:'stg7-1', name:'Plan delivery',               auto:'manual', notes:'Manual. Coordinate with customer and transport provider. Gate: STG-6. Delivery data flows MF → Qargo via SnapLogic — integration scope to be confirmed for NL go-live.', trigger:{ event:'Manually triggered by Ops after Carrier release confirmed (STG-6 gate). Data flows MF → Qargo via SnapLogic', source:'Manual / SnapLogic → Qargo' }, deadline:{ milestone:'ATA', offset:2, direction:'after' } },
+      { id:'stg7-2', name:'Confirm delivery appointment',auto:'manual', notes:'Manual confirmation once delivery slot is agreed.',                                                                                                                          trigger:{ event:'Manually triggered by Ops after delivery slot confirmed with customer and transport provider', source:'Manual' }, deadline:{ milestone:'ATA', offset:3, direction:'after' } },
     ]
   },
   'STG-8': {
     name: 'STG-8 — Financial handling', team: 'Financial Handling',
     desc: 'Accrual recording, invoice verification, and financial closure. Finance-owned; see Option A / B one-pager.',
     tasks: [
-      { id:'stg8-1', name:'Record accrual',        auto:'manual',         notes:'Ops records: supplier, shipment ref, charge code, expected amount, currency.',                                                                          trigger:{ event:'ATD confirmed (origin incoterms) or ATA confirmed (destination incoterms) via MF live tracking. Trigger per incoterm TBD at workshop.', source:'MF Live Tracking', flag:'trigger per incoterm TBD' } },
-      { id:'stg8-2', name:'Debit note received',   auto:'auto-full',      notes:'Auto-completed when agent invoice received and forwarded to Blue10.',                                                                                   trigger:{ event:'Agent invoice received by MF and forwarded to Blue10', source:'Agent API / Blue10' } },
-      { id:'stg8-3', name:'Invoice verification',  auto:'manual',         notes:'OPTION B ONLY: Finance verifies invoice vs accrual inside MF.',                                                                                        trigger:{ event:'Option B: Invoice Verification task set to Pending in MF — held until Record accrual is Completed', source:'MF (Option B)', flag:'Option A/B pending' } },
-      { id:'stg8-4', name:'Invoice approved',      auto:'manual',         notes:'OPTION B ONLY: Finance approves matched invoice.',                                                                                                      trigger:{ event:'Option A: Finance approves in Blue10. Option B: Invoice Verification Completed with no dispute → Finance approval task Pending in MF.', source:'Blue10 / MF (Option B)', flag:'Option A/B pending' } },
-      { id:'stg8-5', name:'Dispute / credit note', auto:'auto-exception', notes:'OPTION B ONLY: Raised when invoice does not match accrual.',                                                                                           trigger:{ event:'Manually triggered by Finance on invoice mismatch during Invoice verification', source:'Manual' } },
+      { id:'stg8-1', name:'Record accrual',        auto:'manual',         notes:'Ops records: supplier, shipment ref, charge code, expected amount, currency.',                                                                          trigger:{ event:'ATD confirmed (origin incoterms) or ATA confirmed (destination incoterms) via MF live tracking. Trigger per incoterm TBD at workshop.', source:'MF Live Tracking', flag:'trigger per incoterm TBD' }, deadline:{ milestone:'ATD', offset:2, direction:'after' } },
+      { id:'stg8-2', name:'Debit note received',   auto:'auto-full',      notes:'Auto-completed when agent invoice received and forwarded to Blue10.',                                                                                   trigger:{ event:'Agent invoice received by MF and forwarded to Blue10', source:'Agent API / Blue10' }, deadline:null },
+      { id:'stg8-3', name:'Invoice verification',  auto:'manual',         notes:'OPTION B ONLY: Finance verifies invoice vs accrual inside MF.',                                                                                        trigger:{ event:'Option B: Invoice Verification task set to Pending in MF — held until Record accrual is Completed', source:'MF (Option B)', flag:'Option A/B pending' }, deadline:{ milestone:'Document receipt', offset:3, direction:'after' } },
+      { id:'stg8-4', name:'Invoice approved',      auto:'manual',         notes:'OPTION B ONLY: Finance approves matched invoice.',                                                                                                      trigger:{ event:'Option A: Finance approves in Blue10. Option B: Invoice Verification Completed with no dispute → Finance approval task Pending in MF.', source:'Blue10 / MF (Option B)', flag:'Option A/B pending' }, deadline:{ milestone:'Document receipt', offset:5, direction:'after' } },
+      { id:'stg8-5', name:'Dispute / credit note', auto:'auto-exception', notes:'OPTION B ONLY: Raised when invoice does not match accrual.',                                                                                           trigger:{ event:'Manually triggered by Finance on invoice mismatch during Invoice verification', source:'Manual' }, deadline:null },
     ]
   },
   'DEV': {
     name: 'DEV — Dev message log', team: 'Error Handling',
     desc: 'Persistent task on every shipment. Green/completed = informational only. Yellow/pending = integration error or missing data requires Ops action.',
     tasks: [
-      { id:'dev-1', name:'Dev message log', auto:'auto-recurring', notes:'Persistent on every shipment. Completed = informational only. Pending = error or missing data requires Ops action.', trigger:{ event:'SnapLogic pipeline error, missing/invalid data in agent update, or Maco API rejection — any of these resets task to Pending', source:'SnapLogic / Maco API' } },
+      { id:'dev-1', name:'Dev message log', auto:'auto-recurring', notes:'Persistent on every shipment. Completed = informational only. Pending = error or missing data requires Ops action.', trigger:{ event:'SnapLogic pipeline error, missing/invalid data in agent update, or Maco API rejection — any of these resets task to Pending', source:'SnapLogic / Maco API' }, deadline:null },
     ]
   },
   'GLOBAL': {
@@ -711,6 +749,17 @@ function renderStage(id) {
     ${parkHtml}`;
 }
 
+function deadlineHtml(deadline) {
+  if (!deadline) return `<div class="deadline-row"><span class="deadline-label">OVERDUE</span><span class="dl-tbd">—</span></div>`;
+  const { milestone, offset, direction } = deadline;
+  let cls = 'dl-pill ';
+  let label = '';
+  if (direction === 'before')     { cls += 'dl-before'; label = `${offset}d before ${milestone}`; }
+  else if (direction === 'after') { cls += 'dl-after';  label = `${offset}d after ${milestone}`; }
+  else                            { cls += 'dl-on';     label = `On ${milestone}`; }
+  return `<div class="deadline-row"><span class="deadline-label">OVERDUE</span><span class="${cls}">${label}</span></div>`;
+}
+
 function triggerHtml(trigger) {
   if (!trigger || !trigger.event) return '';
   return `<div class="task-trigger">
@@ -758,6 +807,7 @@ function renderTask(t, stageId) {
       ${notes ? `<span style="font-size:12px;color:var(--text2)">${escHtml(notes)}</span>` : ''}
     </div>
     ${triggerHtml(trig)}
+    ${deadlineHtml(change?.deadline !== undefined ? change.deadline : t.deadline)}
     ${isModified ? `<div class="task-change-note">${ctags}${change.changeNote ? escHtml(change.changeNote) : ''}</div>` : ''}
   </div>`;
 }
@@ -768,16 +818,14 @@ function renderAddedTask(t, stageId, idx) {
   <div class="task-card added">
     <div class="task-top">
       <div class="task-name-display">${escHtml(t.name)}</div>
-      <div class="task-actions">
-        <button class="task-action-btn edit-btn" onclick="openEditAddedTask('${stageId}',${idx})">Edit</button>
-        <button class="task-action-btn del-btn" onclick="deleteAddedTask('${stageId}',${idx})">Remove</button>
-      </div>
+      <div class="task-actions"><button class="task-action-btn del-btn" onclick="deleteAddedTask('${stageId}',${idx})">Remove</button></div>
     </div>
     <div class="task-meta">
       <span class="task-pill ${autoCls}">${autoLabel}</span>
       ${t.notes ? `<span style="font-size:12px;color:var(--text2)">${escHtml(t.notes)}</span>` : ''}
     </div>
     ${triggerHtml(t.trigger)}
+    ${deadlineHtml(t.deadline)}
     <div class="task-change-note" style="color:var(--green-d)">New task added in session${t.changeNote ? ' — ' + escHtml(t.changeNote) : ''}</div>
   </div>`;
 }
@@ -798,6 +846,10 @@ function openEditTask(taskId, stageId) {
   document.getElementById('f-trigger').value        = trig.event  || '';
   document.getElementById('f-trigger-source').value = trig.source || '';
   document.getElementById('f-changenote').value = existing.changeNote || '';
+  const dlSrc = existing.deadline !== undefined ? existing.deadline : (task.deadline || null);
+  document.getElementById('f-dl-milestone').value = dlSrc?.milestone || '';
+  document.getElementById('f-dl-direction').value = dlSrc?.direction || 'before';
+  document.getElementById('f-dl-offset').value    = dlSrc?.offset != null ? dlSrc.offset : '';
   document.getElementById('change-type-field').style.display = '';
   renderChangeTypeBtns();
   document.getElementById('task-modal').classList.add('open');
@@ -814,6 +866,9 @@ function openAddTask(stageId) {
   document.getElementById('f-trigger').value        = '';
   document.getElementById('f-trigger-source').value = '';
   document.getElementById('f-changenote').value = '';
+  document.getElementById('f-dl-milestone').value = '';
+  document.getElementById('f-dl-direction').value = 'before';
+  document.getElementById('f-dl-offset').value    = '';
   document.getElementById('change-type-field').style.display = 'none';
   document.getElementById('task-modal').classList.add('open');
 }
@@ -842,22 +897,25 @@ function saveTask() {
   const tSource = document.getElementById('f-trigger-source').value.trim();
   const trigger = tEvent ? { event: tEvent, source: tSource || 'Manual' } : undefined;
   const changenote = document.getElementById('f-changenote').value.trim();
+  const dlMilestone = document.getElementById('f-dl-milestone').value;
+  const dlDirection = document.getElementById('f-dl-direction').value;
+  const dlOffset    = document.getElementById('f-dl-offset').value;
+  const deadline = dlMilestone
+    ? { milestone: dlMilestone, direction: dlDirection, offset: dlOffset !== '' ? Number(dlOffset) : 0 }
+    : null;
   const stageId = editContext.stageId;
 
   if (editContext.mode === 'edit') {
     state.taskChanges[editContext.taskId] = {
-      name, auto, notes, trigger,
+      name, auto, notes, trigger, deadline,
       changeTypes: [...activeChangeTypes],
       changeNote: changenote,
       day: state.currentDay,
       status: 'modified'
     };
-  } else if (editContext.mode === 'edit-added') {
-    const existing = state.addedTasks[stageId][editContext.idx];
-    state.addedTasks[stageId][editContext.idx] = { ...existing, name, auto, team, notes, trigger, changeNote: changenote };
   } else {
     if (!state.addedTasks[stageId]) state.addedTasks[stageId] = [];
-    state.addedTasks[stageId].push({ id:'add-'+Date.now(), name, auto, team, notes, trigger, changeNote: changenote, day: state.currentDay });
+    state.addedTasks[stageId].push({ id:'add-'+Date.now(), name, auto, team, notes, trigger, deadline, changeNote: changenote, day: state.currentDay });
   }
   closeModal(); saveState(); updateSidebarBadges(); renderStage(stageId);
 }
@@ -873,23 +931,6 @@ function undeleteTask(taskId, stageId) {
   saveState(); updateSidebarBadges(); renderStage(stageId);
 }
 function deleteAddedTask(stageId, idx) { state.addedTasks[stageId].splice(idx,1); saveState(); updateSidebarBadges(); renderStage(stageId); }
-
-function openEditAddedTask(stageId, idx) {
-  const t = (state.addedTasks[stageId] || [])[idx];
-  if (!t) return;
-  editContext = { mode:'edit-added', stageId, idx };
-  activeChangeTypes = new Set();
-  document.getElementById('modal-title').textContent   = 'Edit added task';
-  document.getElementById('f-name').value              = t.name  || '';
-  document.getElementById('f-auto').value              = t.auto  || 'manual';
-  document.getElementById('f-team').value              = t.team  || STAGES[stageId]?.team || 'Import Booking';
-  document.getElementById('f-notes').value             = t.notes || '';
-  document.getElementById('f-trigger').value           = t.trigger?.event  || '';
-  document.getElementById('f-trigger-source').value    = t.trigger?.source || '';
-  document.getElementById('f-changenote').value        = t.changeNote || '';
-  document.getElementById('change-type-field').style.display = 'none';
-  document.getElementById('task-modal').classList.add('open');
-}
 
 // ── Parking lot ────────────────────────────────────────────────────────────
 function openParkModal(stageId, editIdx) {
@@ -1123,11 +1164,13 @@ function exportText() {
       if (c.changeTypes?.length) lines.push(`    Change type: ${c.changeTypes.join(', ')}`);
       if (c.changeNote) lines.push(`    Note: ${c.changeNote}`);
       if (c.trigger) lines.push(`    Trigger: ${c.trigger.event} [${c.trigger.source}]`);
+      if (c.deadline) { const d=c.deadline; lines.push(`    Overdue: ${d.direction==='on'?'On '+d.milestone:d.offset+'d '+d.direction+' '+d.milestone}`); }
     });
     added.forEach(t => {
       lines.push(`  [NEW] ${t.name}`);
       if (t.notes) lines.push(`    Notes: ${t.notes}`);
       if (t.trigger) lines.push(`    Trigger: ${t.trigger.event} [${t.trigger.source}]`);
+      if (t.deadline) { const d=t.deadline; lines.push(`    Overdue: ${d.direction==='on'?'On '+d.milestone:d.offset+'d '+d.direction+' '+d.milestone}`); }
       if (t.changeNote) lines.push(`    Reason: ${t.changeNote}`);
     });
   }
