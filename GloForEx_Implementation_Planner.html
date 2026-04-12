@@ -8,16 +8,9 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #ffffff;
-  --bg2: #f7f6f2;
-  --bg3: #f0efe9;
-  --border: rgba(0,0,0,0.09);
-  --border2: rgba(0,0,0,0.16);
-  --border3: rgba(0,0,0,0.05);
-  --text: #1a1a18;
-  --text2: #5f5e5a;
-  --text3: #8b8a85;
-
+  --bg: #ffffff; --bg2: #f7f6f2; --bg3: #f0efe9;
+  --border: rgba(0,0,0,0.09); --border2: rgba(0,0,0,0.16); --border3: rgba(0,0,0,0.05);
+  --text: #1a1a18; --text2: #5f5e5a; --text3: #8b8a85;
   --purple: #534AB7; --purple-l: #EEEDFE; --purple-d: #3C3489;
   --teal: #0F6E56;   --teal-l: #E1F5EE;   --teal-d: #085041;
   --blue: #185FA5;   --blue-l: #E6F1FB;   --blue-d: #0C447C;
@@ -25,20 +18,14 @@
   --coral: #993C1D;  --coral-l: #FAECE7;  --coral-d: #712B13;
   --red: #A32D2D;    --red-l: #FCEBEB;
   --green: #27500A;  --green-l: #EAF3DE;
-
-  --status-ns:   #f0efe9;  --status-ns-t: #5f5e5a;
-  --status-ip:   #E6F1FB;  --status-ip-t: #0C447C;
-  --status-done: #EAF3DE;  --status-done-t: #27500A;
-  --status-blk:  #FCEBEB;  --status-blk-t: #A32D2D;
+  --status-ns: #f0efe9; --status-ns-t: #5f5e5a;
+  --status-ip: #E6F1FB; --status-ip-t: #0C447C;
+  --status-done: #EAF3DE; --status-done-t: #27500A;
+  --status-blk: #FCEBEB; --status-blk-t: #A32D2D;
 }
-
-/* Dark vars — applied via .dark class (JS) or OS preference fallback */
-html.dark,
-html:not(.light):not(.dark) {
+html.dark, html:not(.light):not(.dark) {
   --bg: #14140f; --bg2: #1c1c16; --bg3: #232319;
-  --border: rgba(255,255,255,0.07);
-  --border2: rgba(255,255,255,0.13);
-  --border3: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.13); --border3: rgba(255,255,255,0.04);
   --text: #e8e6de; --text2: #9c9a92; --text3: #5f5e5a;
   --purple-l: #26215C; --purple-d: #CECBF6;
   --teal-l: #04342C;   --teal-d: #9FE1CB;
@@ -46,104 +33,88 @@ html:not(.light):not(.dark) {
   --amber-l: #412402;  --amber-d: #FAC775;
   --coral-l: #4A1B0C;  --coral-d: #F0997B;
   --red-l: #501313;    --green-l: #173404; --green: #C0DD97;
-  --status-ns:   #232319; --status-ns-t: #9c9a92;
-  --status-ip:   #042C53; --status-ip-t: #B5D4F4;
+  --status-ns: #232319; --status-ns-t: #9c9a92;
+  --status-ip: #042C53; --status-ip-t: #B5D4F4;
   --status-done: #173404; --status-done-t: #C0DD97;
-  --status-blk:  #501313; --status-blk-t: #FF9B9B;
+  --status-blk: #501313; --status-blk-t: #FF9B9B;
 }
 @media (prefers-color-scheme: light) {
   html:not(.light):not(.dark) {
     --bg: #ffffff; --bg2: #f7f6f2; --bg3: #f0efe9;
-    --border: rgba(0,0,0,0.09);
-    --border2: rgba(0,0,0,0.16);
-    --border3: rgba(0,0,0,0.05);
+    --border: rgba(0,0,0,0.09); --border2: rgba(0,0,0,0.16); --border3: rgba(0,0,0,0.05);
     --text: #1a1a18; --text2: #5f5e5a; --text3: #8b8a85;
-    --purple-l: #EEEDFE; --purple-d: #3C3489;
-    --teal-l: #E1F5EE;   --teal-d: #085041;
-    --blue-l: #E6F1FB;   --blue-d: #0C447C;
-    --amber-l: #FAEEDA;  --amber-d: #633806;
-    --coral-l: #FAECE7;  --coral-d: #712B13;
-    --red-l: #FCEBEB;    --green-l: #EAF3DE; --green: #27500A;
-    --status-ns:   #f0efe9; --status-ns-t: #5f5e5a;
-    --status-ip:   #E6F1FB; --status-ip-t: #0C447C;
-    --status-done: #EAF3DE; --status-done-t: #27500A;
-    --status-blk:  #FCEBEB; --status-blk-t: #A32D2D;
+    --purple-l: #EEEDFE; --purple-d: #3C3489; --teal-l: #E1F5EE; --teal-d: #085041;
+    --blue-l: #E6F1FB; --blue-d: #0C447C; --amber-l: #FAEEDA; --amber-d: #633806;
+    --coral-l: #FAECE7; --coral-d: #712B13; --red-l: #FCEBEB; --green-l: #EAF3DE; --green: #27500A;
+    --status-ns: #f0efe9; --status-ns-t: #5f5e5a; --status-ip: #E6F1FB; --status-ip-t: #0C447C;
+    --status-done: #EAF3DE; --status-done-t: #27500A; --status-blk: #FCEBEB; --status-blk-t: #A32D2D;
   }
 }
 html.light {
   --bg: #ffffff; --bg2: #f7f6f2; --bg3: #f0efe9;
-  --border: rgba(0,0,0,0.09);
-  --border2: rgba(0,0,0,0.16);
-  --border3: rgba(0,0,0,0.05);
+  --border: rgba(0,0,0,0.09); --border2: rgba(0,0,0,0.16); --border3: rgba(0,0,0,0.05);
   --text: #1a1a18; --text2: #5f5e5a; --text3: #8b8a85;
-  --purple-l: #EEEDFE; --purple-d: #3C3489;
-  --teal-l: #E1F5EE;   --teal-d: #085041;
-  --blue-l: #E6F1FB;   --blue-d: #0C447C;
-  --amber-l: #FAEEDA;  --amber-d: #633806;
-  --coral-l: #FAECE7;  --coral-d: #712B13;
-  --red-l: #FCEBEB;    --green-l: #EAF3DE; --green: #27500A;
-  --status-ns:   #f0efe9; --status-ns-t: #5f5e5a;
-  --status-ip:   #E6F1FB; --status-ip-t: #0C447C;
-  --status-done: #EAF3DE; --status-done-t: #27500A;
-  --status-blk:  #FCEBEB; --status-blk-t: #A32D2D;
+  --purple-l: #EEEDFE; --purple-d: #3C3489; --teal-l: #E1F5EE; --teal-d: #085041;
+  --blue-l: #E6F1FB; --blue-d: #0C447C; --amber-l: #FAEEDA; --amber-d: #633806;
+  --coral-l: #FAECE7; --coral-d: #712B13; --red-l: #FCEBEB; --green-l: #EAF3DE; --green: #27500A;
+  --status-ns: #f0efe9; --status-ns-t: #5f5e5a; --status-ip: #E6F1FB; --status-ip-t: #0C447C;
+  --status-done: #EAF3DE; --status-done-t: #27500A; --status-blk: #FCEBEB; --status-blk-t: #A32D2D;
 }
 
-/* ── Topbar ── */
 .topbar {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 16px; height: 48px;
-  background: #1a1a14;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  flex-shrink: 0;
+  padding: 0 16px; height: 48px; background: #1a1a14;
+  border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0;
 }
 .topbar-left { display: flex; align-items: center; gap: 12px; }
-.topbar-logo-text {
-  font-size: 12px; font-weight: 600; color: #8a8880; letter-spacing: .06em; font-family: inherit;
-}
+.topbar-logo-text { font-size: 12px; font-weight: 600; color: #8a8880; letter-spacing: .06em; }
 .topbar-logo-text span { color: #3fb950; }
-.topbar-divider {
-  font-size: 13px; font-weight: 500; color: #e8e6de;
-  padding-left: 12px; border-left: 1px solid rgba(255,255,255,0.12);
-}
+.topbar-divider { font-size: 13px; font-weight: 500; color: #e8e6de; padding-left: 12px; border-left: 1px solid rgba(255,255,255,0.12); }
 .topbar-right { display: flex; align-items: center; gap: 8px; }
-.theme-btn {
-  font-family: inherit; font-size: 12px; font-weight: 500; padding: 4px 10px;
-  border-radius: 4px; border: 1px solid rgba(255,255,255,0.15);
-  background: rgba(255,255,255,0.07); color: #9c9a92;
-  cursor: pointer; transition: all .15s;
-}
+.theme-btn { font-family: inherit; font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.07); color: #9c9a92; cursor: pointer; transition: all .15s; }
 .theme-btn:hover { background: rgba(255,255,255,0.12); color: #e8e6de; }
 
 body { font-family: -apple-system, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-
 .layout { display: flex; height: calc(100vh - 48px); overflow: hidden; }
-
 .sidebar { width: 220px; flex-shrink: 0; background: var(--bg2); border-right: 0.5px solid var(--border2); display: flex; flex-direction: column; overflow-y: auto; }
 .main { flex: 1; overflow-y: auto; padding: 2rem 2rem 4rem; }
 
 .sidebar-header { padding: 18px 16px 12px; border-bottom: 0.5px solid var(--border2); }
 .sidebar-eyebrow { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--text3); margin-bottom: 5px; }
 .sidebar-title { font-size: 14px; font-weight: 500; color: var(--text); }
-
 .sidebar-section { padding: 10px 8px 6px; }
 .sidebar-label { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); padding: 0 8px; margin-bottom: 4px; }
+
+/* Go-live dates panel in sidebar */
+.golive-panel { margin: 0 8px 8px; border-radius: 7px; border: 0.5px solid var(--border2); overflow: hidden; }
+.golive-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; font-size: 11px; border-bottom: 0.5px solid var(--border3); }
+.golive-row:last-child { border-bottom: none; }
+.golive-country { font-weight: 600; color: var(--text2); display: flex; align-items: center; gap: 5px; }
+.golive-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.golive-dot.nl { background: var(--green); }
+.golive-dot.tbd { background: var(--text3); }
+.golive-date { font-size: 10px; color: var(--text3); }
+.golive-date.set { color: var(--green); font-weight: 500; }
+
+/* Editable go-live date */
+.golive-date-wrap { display: flex; align-items: center; gap: 4px; flex: 1; justify-content: flex-end; }
+.golive-date-display { font-size: 10px; color: var(--text3); cursor: pointer; border-bottom: 1px dashed transparent; transition: border-color .15s, color .15s; white-space: nowrap; }
+.golive-date-display:hover { color: var(--text2); border-bottom-color: var(--border2); }
+.golive-date-display.is-set { color: var(--green); font-weight: 500; border-bottom-color: transparent; }
+.golive-date-display.is-set:hover { border-bottom-color: rgba(39,80,10,0.3); }
+.golive-date-input { font-size: 10px; font-family: inherit; background: var(--bg); border: 0.5px solid var(--border2); border-radius: 4px; color: var(--text); padding: 1px 5px; width: 90px; outline: none; }
+.golive-date-input:focus { border-color: var(--green); }
 
 .stage-btn { width: 100%; display: flex; align-items: center; gap: 7px; padding: 7px 8px; border-radius: 7px; border: none; background: transparent; cursor: pointer; font-family: inherit; font-size: 12px; color: var(--text2); text-align: left; transition: all .12s; }
 .stage-btn:hover { background: var(--bg3); color: var(--text); }
 .stage-btn.active { background: var(--bg); color: var(--text); box-shadow: 0 0 0 0.5px var(--border2); }
-
 .stage-code { font-size: 9px; font-weight: 700; padding: 2px 5px; border-radius: 4px; flex-shrink: 0; letter-spacing: .03em; }
 .stage-progress { margin-left: auto; font-size: 10px; color: var(--text3); flex-shrink: 0; }
 
-/* Import badge on sidebar stage */
-.stage-imported { margin-left: auto; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 8px; background: var(--green-l); color: var(--green); flex-shrink: 0; }
-
 .main-header { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 0.5px solid var(--border2); display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-.main-title-block {}
 .main-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); margin-bottom: 5px; }
 .main-title { font-size: 20px; font-weight: 500; }
 .main-sub { font-size: 13px; color: var(--text2); margin-top: 4px; }
-
 .header-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 
 .btn { font-size: 12px; font-weight: 500; padding: 6px 14px; border-radius: 8px; border: 0.5px solid var(--border2); background: var(--bg); color: var(--text2); cursor: pointer; transition: all .15s; font-family: inherit; white-space: nowrap; }
@@ -154,8 +125,7 @@ body { font-family: -apple-system, "Segoe UI", sans-serif; background: var(--bg)
 .btn.import-btn:hover { opacity: .85; }
 .btn.import-active { background: var(--green); color: #fff; border-color: var(--green); }
 
-/* Import banner */
-.import-banner { display: none; margin-bottom: 1.25rem; padding: 10px 14px; border-radius: 8px; background: var(--green-l); border: 0.5px solid var(--green); font-size: 12px; color: var(--green); display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+.import-banner { margin-bottom: 1.25rem; padding: 10px 14px; border-radius: 8px; background: var(--green-l); border: 0.5px solid var(--green); font-size: 12px; color: var(--green); display: flex; align-items: center; gap: 8px; justify-content: space-between; }
 .import-banner.hidden { display: none !important; }
 .import-banner-left { display: flex; align-items: center; gap: 8px; }
 .import-banner-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
@@ -165,9 +135,12 @@ body { font-family: -apple-system, "Segoe UI", sans-serif; background: var(--bg)
 .filter-pill { font-size: 11px; font-weight: 500; padding: 3px 11px; border-radius: 14px; border: 0.5px solid var(--border2); background: var(--bg); color: var(--text2); cursor: pointer; transition: all .12s; font-family: inherit; }
 .filter-pill:hover { background: var(--bg2); }
 .filter-pill.active { background: var(--bg2); color: var(--text); border-color: var(--border2); }
+.filter-pill.deferred-pill.active { background: var(--coral-l); color: var(--coral-d); border-color: var(--coral); }
 
 .progress-strip { display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; }
-.prog-card { flex: 1; min-width: 100px; background: var(--bg2); border-radius: 8px; padding: 10px 13px; border: 0.5px solid var(--border3); }
+.prog-card { flex: 1; min-width: 90px; background: var(--bg2); border-radius: 8px; padding: 10px 13px; border: 0.5px solid var(--border3); }
+.prog-card.ready-card { background: var(--status-done); border-color: rgba(39,80,10,0.15); }
+.prog-card.deferred-card { background: var(--coral-l); border-color: rgba(153,60,29,0.15); }
 .prog-val { font-size: 20px; font-weight: 500; color: var(--text); }
 .prog-label { font-size: 11px; color: var(--text3); margin-top: 2px; }
 
@@ -178,14 +151,23 @@ body { font-family: -apple-system, "Segoe UI", sans-serif; background: var(--bg)
 .task-card.imported-modified { border-color: var(--amber); border-left: 3px solid var(--amber); }
 .task-card.imported-added    { border-color: var(--green);  border-left: 3px solid var(--green); }
 .task-card.imported-deleted  { border-color: var(--red);    border-left: 3px solid var(--red); opacity: .6; }
+.task-card.is-deferred       { border-color: var(--coral);  border-left: 3px solid var(--coral); }
 
-.task-card-head { display: flex; align-items: center; gap: 10px; padding: 11px 14px; cursor: pointer; user-select: none; }
+.task-card-head { display: flex; align-items: center; gap: 8px; padding: 11px 14px; cursor: pointer; user-select: none; flex-wrap: wrap; }
 .tc-stage { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; flex-shrink: 0; }
-.tc-name { font-size: 13px; font-weight: 500; flex: 1; }
+.tc-name { font-size: 13px; font-weight: 500; flex: 1; min-width: 120px; }
 .tc-import-tag { font-size: 10px; font-weight: 600; padding: 1px 7px; border-radius: 8px; flex-shrink: 0; }
 .tag-modified { background: var(--amber-l); color: var(--amber-d); }
 .tag-added    { background: var(--green-l);  color: var(--green); }
 .tag-deleted  { background: var(--red-l);    color: var(--red); }
+.tc-deferred-tag { font-size: 10px; font-weight: 600; padding: 1px 7px; border-radius: 8px; background: var(--coral-l); color: var(--coral-d); flex-shrink: 0; }
+
+/* Country scope pills in header */
+.tc-countries { display: flex; gap: 3px; flex-shrink: 0; }
+.tc-country { font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px; letter-spacing: .04em; }
+.tc-country.active   { background: var(--blue-l); color: var(--blue-d); }
+.tc-country.inactive { background: var(--bg3); color: var(--text3); text-decoration: line-through; opacity: .6; }
+
 .tc-status { font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 12px; flex-shrink: 0; cursor: pointer; }
 .tc-owner { font-size: 11px; color: var(--text3); flex-shrink: 0; padding: 2px 8px; border-radius: 8px; border: 0.5px solid var(--border); background: var(--bg2); }
 .tc-expand { font-size: 11px; color: var(--text3); flex-shrink: 0; transition: transform .2s; }
@@ -193,6 +175,37 @@ body { font-family: -apple-system, "Segoe UI", sans-serif; background: var(--bg)
 
 .task-card-body { display: none; padding: 0 14px 14px; border-top: 0.5px solid var(--border3); }
 .task-card.open .task-card-body { display: block; }
+
+/* Country scope editor in body */
+.country-scope-section { margin-top: 12px; padding: 10px 12px; border-radius: 8px; background: var(--bg2); border: 0.5px solid var(--border3); }
+.country-scope-title { font-size: 10px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
+.country-rows { display: flex; flex-direction: column; gap: 8px; }
+.country-row { display: flex; align-items: center; gap: 10px; }
+.country-toggle { display: flex; gap: 4px; }
+.ctry-btn { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 6px; border: 0.5px solid var(--border2); background: var(--bg); color: var(--text3); cursor: pointer; font-family: inherit; transition: all .12s; }
+.ctry-btn.in-scope   { background: var(--blue-l); color: var(--blue-d); border-color: rgba(24,95,165,0.3); }
+.country-scope-detail { flex: 1; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.country-scope-mode { font-size: 11px; }
+.scope-mode-btn { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 10px; border: 0.5px solid var(--border2); background: transparent; color: var(--text3); cursor: pointer; font-family: inherit; transition: all .12s; }
+.scope-mode-btn.active { background: var(--amber-l); color: var(--amber-d); border-color: rgba(133,79,11,0.3); }
+.scope-mode-btn.active.scope-exc { background: var(--teal-l); color: var(--teal-d); border-color: rgba(15,110,86,0.3); }
+.country-row-note { font-size: 11px; color: var(--text3); font-style: italic; }
+
+/* Deferred section */
+.deferred-section { margin-top: 12px; padding: 10px 12px; border-radius: 8px; background: var(--coral-l); border: 0.5px solid rgba(153,60,29,0.2); }
+.deferred-title { font-size: 10px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--coral-d); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.deferred-toggle-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.deferred-toggle { position: relative; width: 32px; height: 18px; flex-shrink: 0; }
+.deferred-toggle input { opacity: 0; width: 0; height: 0; }
+.deferred-track { position: absolute; inset: 0; border-radius: 9px; background: var(--bg3); border: 0.5px solid var(--border2); cursor: pointer; transition: background .2s; }
+.deferred-track::after { content:''; position: absolute; width: 12px; height: 12px; border-radius: 50%; background: var(--text3); top: 2px; left: 2px; transition: transform .2s, background .2s; }
+.deferred-toggle input:checked + .deferred-track { background: var(--coral); border-color: var(--coral); }
+.deferred-toggle input:checked + .deferred-track::after { transform: translateX(14px); background: #fff; }
+.deferred-toggle-label { font-size: 12px; color: var(--text2); }
+.deferred-reason-row { display: flex; gap: 8px; align-items: flex-start; margin-top: 6px; flex-wrap: wrap; }
+.deferred-reason-row select, .deferred-reason-row textarea { font-family: inherit; font-size: 12px; background: var(--bg); border: 0.5px solid var(--border2); border-radius: 6px; color: var(--text); padding: 5px 8px; }
+.deferred-reason-row select { flex: 0 0 auto; }
+.deferred-reason-row textarea { flex: 1; min-width: 160px; min-height: 44px; resize: vertical; }
 
 .import-provenance { margin-top: 10px; padding: 8px 10px; border-radius: 6px; font-size: 11px; }
 .import-provenance.prov-modified { background: var(--amber-l); color: var(--amber-d); border: 0.5px solid rgba(133,79,11,0.2); }
@@ -208,7 +221,6 @@ body { font-family: -apple-system, "Segoe UI", sans-serif; background: var(--bg)
 .field-input, .field-select, .field-textarea { font-size: 13px; font-family: inherit; background: var(--bg2); border: 0.5px solid var(--border2); border-radius: 6px; color: var(--text); padding: 7px 10px; width: 100%; transition: border-color .15s; }
 .field-input:focus, .field-select:focus, .field-textarea:focus { outline: none; border-color: var(--text3); }
 .field-textarea { resize: vertical; min-height: 64px; line-height: 1.5; }
-
 .dep-row { display: flex; gap: 8px; align-items: flex-start; margin-top: 4px; }
 .dep-type-select { width: 140px; flex-shrink: 0; }
 
@@ -216,7 +228,6 @@ body { font-family: -apple-system, "Segoe UI", sans-serif; background: var(--bg)
 .s-ip   { background: var(--status-ip);   color: var(--status-ip-t);   }
 .s-done { background: var(--status-done); color: var(--status-done-t); }
 .s-blk  { background: var(--status-blk);  color: var(--status-blk-t);  }
-
 .ow-it    { background: var(--purple-l); color: var(--purple-d); }
 .ow-ops   { background: var(--blue-l);   color: var(--blue-d);   }
 .ow-fin   { background: var(--coral-l);  color: var(--coral-d);  }
@@ -225,14 +236,12 @@ body { font-family: -apple-system, "Segoe UI", sans-serif; background: var(--bg)
 
 .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text3); font-size: 14px; }
 
-/* ── Modals ── */
 .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.35); z-index: 100; align-items: center; justify-content: center; padding: 1rem; }
 .modal-overlay.open { display: flex; }
 .modal { background: var(--bg); border-radius: 12px; border: 0.5px solid var(--border2); width: 100%; max-width: 480px; padding: 20px 22px; box-shadow: 0 8px 32px rgba(0,0,0,.12); }
 .modal-title { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
 .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
 
-/* ── Import diff modal ── */
 .import-modal { max-width: 640px; max-height: 85vh; overflow: hidden; display: flex; flex-direction: column; padding: 0; }
 .import-modal-head { padding: 18px 22px 14px; border-bottom: 0.5px solid var(--border2); flex-shrink: 0; }
 .import-modal-title { font-size: 15px; font-weight: 500; }
@@ -242,17 +251,14 @@ body { font-family: -apple-system, "Segoe UI", sans-serif; background: var(--bg)
 .import-modal-stats { font-size: 12px; color: var(--text2); display: flex; gap: 12px; flex-wrap: wrap; }
 .import-stat { display: flex; align-items: center; gap: 4px; }
 .import-stat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-
 .diff-section { display: flex; flex-direction: column; gap: 6px; }
 .diff-section-label { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); margin-bottom: 2px; padding-bottom: 5px; border-bottom: 0.5px solid var(--border3); }
-
 .diff-row { border: 0.5px solid var(--border2); border-radius: 8px; padding: 10px 12px; font-size: 12px; }
 .diff-row.diff-modified { border-color: rgba(133,79,11,.35); background: rgba(133,79,11,.04); }
 .diff-row.diff-added    { border-color: rgba(39,80,10,.35);   background: rgba(39,80,10,.04); }
 .diff-row.diff-deleted  { border-color: rgba(163,45,45,.35);  background: rgba(163,45,45,.04); opacity: .8; }
-.diff-row.diff-decision { border-color: rgba(24,95,165,.3);  background: rgba(24,95,165,.04); }
-.diff-row.diff-parked   { border-color: rgba(133,79,11,.25); background: rgba(133,79,11,.03); }
-
+.diff-row.diff-decision { border-color: rgba(24,95,165,.3);   background: rgba(24,95,165,.04); }
+.diff-row.diff-parked   { border-color: rgba(133,79,11,.25);  background: rgba(133,79,11,.03); }
 .diff-row-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
 .diff-tag { font-size: 9px; font-weight: 700; padding: 1px 7px; border-radius: 10px; text-transform: uppercase; letter-spacing: .04em; flex-shrink: 0; }
 .diff-tag-modified { background: var(--amber-l); color: var(--amber-d); }
@@ -265,13 +271,11 @@ body { font-family: -apple-system, "Segoe UI", sans-serif; background: var(--bg)
 .diff-name.strikethrough { text-decoration: line-through; opacity: .6; }
 .diff-detail { font-size: 11px; color: var(--text2); line-height: 1.5; margin-top: 2px; }
 .diff-changenote { font-size: 11px; color: var(--text2); font-style: italic; margin-top: 3px; }
-
 .import-empty { font-size: 13px; color: var(--text3); text-align: center; padding: 1.5rem; font-style: italic; }
 
-/* ── Summary panel ── */
 .summary-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 200; align-items: flex-start; justify-content: flex-end; }
 .summary-overlay.open { display: flex; }
-.summary-panel { width: 420px; height: 100vh; background: var(--bg); border-left: 0.5px solid var(--border2); overflow-y: auto; padding: 24px 22px; }
+.summary-panel { width: 440px; height: 100vh; background: var(--bg); border-left: 0.5px solid var(--border2); overflow-y: auto; padding: 24px 22px; }
 .summary-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
 .summary-title { font-size: 16px; font-weight: 500; }
 .summary-close { font-size: 12px; padding: 4px 10px; border-radius: 6px; border: 0.5px solid var(--border2); background: var(--bg2); cursor: pointer; font-family: inherit; color: var(--text2); }
@@ -282,6 +286,34 @@ body { font-family: -apple-system, "Segoe UI", sans-serif; background: var(--bg)
 .sum-stage { flex-shrink: 0; font-size: 10px; font-weight: 700; padding: 1px 5px; border-radius: 3px; }
 .sum-task { flex: 1; color: var(--text2); }
 .sum-val { flex-shrink: 0; color: var(--text); font-weight: 500; }
+.sum-sub { font-size: 10px; color: var(--text3); font-style: italic; margin-top: 2px; }
+
+/* Tool section */
+.tool-section { margin-top: 12px; border-top: 0.5px solid var(--border3); padding-top: 10px; }
+.tool-section-toggle { display: flex; align-items: center; gap: 7px; cursor: pointer; user-select: none; font-size: 11px; font-weight: 600; color: var(--text3); padding: 4px 0; width: 100%; background: none; border: none; font-family: inherit; text-align: left; }
+.tool-section-toggle:hover { color: var(--text2); }
+.tool-section-toggle .tool-chevron { font-size: 9px; transition: transform .2s; margin-left: auto; }
+.tool-section-toggle.open .tool-chevron { transform: rotate(180deg); }
+.tool-section-body { display: none; margin-top: 10px; border: 0.5px solid var(--blue-l); border-left: 3px solid var(--blue); border-radius: 8px; overflow: hidden; background: var(--bg); }
+html.dark .tool-section-body { border-color: var(--blue-l); border-left-color: var(--blue-d); }
+.tool-section-body.open { display: block; }
+.tool-body-inner { padding: 11px 13px; display: flex; flex-direction: column; gap: 10px; }
+.tool-head { display: flex; align-items: center; gap: 8px; }
+.tool-icon { width: 22px; height: 22px; border-radius: 5px; background: var(--blue-l); color: var(--blue-d); display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; }
+.tool-name { font-size: 12px; font-weight: 600; color: var(--text); flex: 1; }
+.tool-tag { font-size: 10px; font-weight: 600; padding: 1px 8px; border-radius: 8px; background: var(--blue-l); color: var(--blue-d); flex-shrink: 0; }
+.tool-desc { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.tool-scope { display: flex; flex-wrap: wrap; gap: 6px; }
+.tool-scope-label { font-size: 10px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--text3); width: 100%; margin-bottom: 2px; }
+.tool-pill { font-size: 11px; font-weight: 500; padding: 2px 10px; border-radius: 10px; border: 0.5px solid var(--border2); background: var(--bg2); color: var(--text2); }
+.tool-pill.in  { background: var(--green-l); color: var(--green); border-color: rgba(39,80,10,0.2); }
+.tool-pill.out { background: var(--bg3); color: var(--text3); text-decoration: line-through; opacity: .75; }
+.tool-fac-note { font-size: 11px; color: var(--teal-d); background: var(--teal-l); border-radius: 6px; padding: 8px 11px; line-height: 1.6; border: 0.5px solid rgba(15,110,86,0.2); }
+.tool-fac-note strong { font-weight: 600; }
+.tool-footer { display: flex; align-items: center; justify-content: space-between; padding: 7px 13px; border-top: 0.5px solid var(--border3); background: var(--bg2); }
+.tool-footer-metas { display: flex; gap: 12px; }
+.tool-footer-meta { font-size: 10px; color: var(--text3); }
+.tool-footer-meta span { color: var(--text2); font-weight: 500; }
 
 @media (max-width: 700px) {
   .layout { flex-direction: column; height: auto; }
@@ -318,6 +350,24 @@ body { font-family: -apple-system, "Segoe UI", sans-serif; background: var(--bg)
     </div>
 
     <div class="sidebar-section">
+      <div class="sidebar-label">Go-live dates</div>
+      <div class="golive-panel">
+        <div class="golive-row">
+          <span class="golive-country"><span class="golive-dot nl"></span>NL</span>
+          <span class="golive-date set">June 2026</span>
+        </div>
+        <div class="golive-row" id="golive-row-FR">
+          <span class="golive-country"><span class="golive-dot tbd" id="golive-dot-FR"></span>FR</span>
+          <span class="golive-date-wrap" id="golive-wrap-FR"></span>
+        </div>
+        <div class="golive-row" id="golive-row-DE">
+          <span class="golive-country"><span class="golive-dot tbd" id="golive-dot-DE"></span>DE</span>
+          <span class="golive-date-wrap" id="golive-wrap-DE"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
       <div class="sidebar-label">All stages</div>
       <button class="stage-btn active" onclick="selectStage('ALL', this)">
         <span class="stage-code" style="background:var(--bg3);color:var(--text2)">ALL</span>
@@ -325,7 +375,6 @@ body { font-family: -apple-system, "Segoe UI", sans-serif; background: var(--bg)
         <span class="stage-progress" id="prog-ALL"></span>
       </button>
     </div>
-
     <div class="sidebar-section">
       <div class="sidebar-label">Operational stages</div>
       <button class="stage-btn" onclick="selectStage('STG-1', this)">
@@ -364,17 +413,12 @@ body { font-family: -apple-system, "Segoe UI", sans-serif; background: var(--bg)
         <span class="stage-progress" id="prog-STG-7"></span>
       </button>
       <button class="stage-btn" onclick="selectStage('STG-8', this)">
-        <span class="stage-code" style="background:var(--blue-l);color:var(--blue-d)">STG-8</span>
+        <span class="stage-code" style="background:var(--amber-l);color:var(--amber-d)">STG-8</span>
         <span>Financial handling</span>
         <span class="stage-progress" id="prog-STG-8"></span>
       </button>
-      <button class="stage-btn" onclick="selectStage('STG-9', this)">
-        <span class="stage-code" style="background:var(--coral-l);color:var(--coral-d)">STG-9</span>
-        <span>Fin. handling (pre)</span>
-        <span class="stage-progress" id="prog-STG-9"></span>
-      </button>
       <button class="stage-btn" onclick="selectStage('DEV', this)">
-        <span class="stage-code" style="background:var(--amber-l);color:var(--amber-d)">DEV</span>
+        <span class="stage-code" style="background:var(--coral-l);color:var(--coral-d)">DEV</span>
         <span>Dev message log</span>
         <span class="stage-progress" id="prog-DEV"></span>
       </button>
@@ -383,12 +427,11 @@ body { font-family: -apple-system, "Segoe UI", sans-serif; background: var(--bg)
 
   <!-- Main -->
   <div class="main">
-
     <div class="main-header">
       <div class="main-title-block">
         <div class="main-eyebrow">GDB Logistics · GloForEx · Ocean Import</div>
         <div class="main-title" id="main-title">All tasks</div>
-        <div class="main-sub" id="main-sub">Configuration requirements, dependencies and ownership for all operational stages</div>
+        <div class="main-sub" id="main-sub">Configuration requirements, country scope, and go-live readiness across all operational stages</div>
       </div>
       <div class="header-actions">
         <button class="btn" onclick="openSummary()">Summary ↗</button>
@@ -398,7 +441,6 @@ body { font-family: -apple-system, "Segoe UI", sans-serif; background: var(--bg)
       </div>
     </div>
 
-    <!-- Import banner -->
     <div class="import-banner hidden" id="import-banner">
       <div class="import-banner-left">
         <div class="import-banner-dot"></div>
@@ -410,7 +452,6 @@ body { font-family: -apple-system, "Segoe UI", sans-serif; background: var(--bg)
       </div>
     </div>
 
-    <!-- Filter bar -->
     <div class="filter-bar">
       <span class="filter-label">Status:</span>
       <button class="filter-pill active" onclick="setFilter('status','all',this)">All</button>
@@ -427,18 +468,19 @@ body { font-family: -apple-system, "Segoe UI", sans-serif; background: var(--bg)
       <button class="filter-pill" onclick="setFilter('owner','MF vendor',this)">MF vendor</button>
       <button class="filter-pill" onclick="setFilter('owner','TBD',this)">TBD</button>
       &nbsp;
+      <span class="filter-label">Go-live:</span>
+      <button class="filter-pill active" onclick="setFilter('deferred','all',this)">All</button>
+      <button class="filter-pill" onclick="setFilter('deferred','no',this)">Included</button>
+      <button class="filter-pill deferred-pill" onclick="setFilter('deferred','yes',this)">Deferred</button>
+      &nbsp;
       <span class="filter-label">Source:</span>
       <button class="filter-pill active" onclick="setFilter('imported','all',this)">All</button>
       <button class="filter-pill" onclick="setFilter('imported','yes',this)">From Live Log</button>
       <button class="filter-pill" onclick="setFilter('imported','no',this)">Pre-workshop</button>
     </div>
 
-    <!-- Progress strip -->
     <div class="progress-strip" id="progress-strip"></div>
-
-    <!-- Cards -->
     <div class="cards-list" id="cards-list"></div>
-
   </div>
 </div>
 
@@ -509,7 +551,7 @@ body { font-family: -apple-system, "Segoe UI", sans-serif; background: var(--bg)
 <input type="file" id="import-file-input" accept=".json" style="display:none"/>
 
 <script>
-// ── Stage meta ─────────────────────────────────────────────────────────────
+// ── Stage meta (STG-9 removed — financial tasks are in STG-8) ─────────────
 const STAGE_META = {
   'STG-1': { label:'Booking intake & validation',  bg:'#EEEDFE', color:'#3C3489' },
   'STG-2': { label:'Shipment data completion',      bg:'#EEEDFE', color:'#3C3489' },
@@ -518,32 +560,31 @@ const STAGE_META = {
   'STG-5': { label:'Arrival monitoring',            bg:'#E6F1FB', color:'#0C447C' },
   'STG-6': { label:'Carrier release',               bg:'#E1F5EE', color:'#085041' },
   'STG-7': { label:'Delivery planning',             bg:'#E6F1FB', color:'#0C447C' },
-  'STG-8': { label:'Financial handling',            bg:'#E6F1FB', color:'#0C447C' },
-  'STG-9': { label:'Financial handling (pre-imp.)', bg:'#FAECE7', color:'#712B13' },
-  'DEV':   { label:'Dev message log',               bg:'#FAEEDA', color:'#633806' },
+  'STG-8': { label:'Financial handling',            bg:'#FAEEDA', color:'#633806' },
+  'DEV':   { label:'Dev message log',               bg:'#FAECE7', color:'#712B13' },
 };
 
-// Live Log stage ID → Planner stage ID mapping
+// Live Log STG-8 maps to planner STG-8 (corrected — no STG-9)
 const LIVE_LOG_STAGE_MAP = {
   'STG-1':'STG-1','STG-2':'STG-2','STG-3':'STG-3','STG-4':'STG-4',
-  'STG-5':'STG-5','STG-6':'STG-6','STG-7':'STG-7','STG-8':'STG-9',
+  'STG-5':'STG-5','STG-6':'STG-6','STG-7':'STG-7','STG-8':'STG-8',
   'DEV':'DEV','GLOBAL':'ALL','PARKING':'ALL'
 };
 
-// Live Log task ID prefix → planner stage
-// stg1-1 → STG-1 task index 0; stg8-3 → STG-9 task index 2
+const ALL_COUNTRIES = ['FR','DE','NL'];
+
+// countryScope per task: { FR: { inScope: bool, mode: 'not-applicable'|'not-ready' }, DE: {...}, NL: {...} }
+// deferred: { active: bool, reason: ''|'automation'|'decision'|'other', comment: '' }
+
+function defaultCountryScope() {
+  return { FR:{inScope:true,mode:'not-applicable'}, DE:{inScope:true,mode:'not-applicable'}, NL:{inScope:true,mode:'not-applicable'} };
+}
+function defaultDeferred() { return { active:false, reason:'automation', comment:'' }; }
+
 function liveIdToStage(tid) {
-  if (tid.startsWith('stg')) {
-    const num = tid.replace('stg','').split('-')[0];
-    const s = 'STG-' + num;
-    return LIVE_LOG_STAGE_MAP[s] || s;
-  }
+  if (tid.startsWith('stg')) { const num = tid.replace('stg','').split('-')[0]; return LIVE_LOG_STAGE_MAP['STG-' + num] || ('STG-' + num); }
   if (tid.startsWith('dev')) return 'DEV';
   return null;
-}
-function liveIdToIndex(tid) {
-  const parts = tid.split('-');
-  return parseInt(parts[parts.length-1]) - 1;
 }
 
 const OWNER_CLS = { IT:'ow-it', Ops:'ow-ops', Finance:'ow-fin', 'MF vendor':'ow-vend', TBD:'ow-tbd' };
@@ -553,441 +594,498 @@ const STATUS_META = {
   done: { label:'Done',        cls:'s-done' },
   blk:  { label:'Blocked',     cls:'s-blk'  },
 };
+const DEFERRED_REASONS = {
+  automation: 'Automation not ready',
+  decision:   'Decision pending',
+  other:      'Other',
+};
 
-// ── Seed tasks with live-log-compatible IDs ────────────────────────────────
-// IDs follow stgN-M convention so they match Live Log export IDs
 const SEED_TASKS = [
   // STG-1
-  { _seedId:'stg1-1', stage:'STG-1', name:'Create Validate booking task type in MF',       req:'Define task type, set automation to auto-complete on API bookings where all fields present. Set to Pending for manual/exception bookings.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ETD',offset:5,direction:'before'}, notes:'' },
-  { _seedId:'stg1-2', stage:'STG-1', name:'Create Request booking confirmation task type', req:'Manual task. Assign to Import Booking team. Configure as DE and NL only — FR excluded (country delta #1).', owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ETD',offset:5,direction:'before'}, notes:'' },
-  { _seedId:'stg1-3', stage:'STG-1', name:'Create Agent booking communication task type',  req:'Exception-based manual task. Assign to Import Booking team. All countries.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'' },
-
+  { _seedId:'stg1-1', stage:'STG-1', name:'Create Validate booking task type in MF',
+    req:'Define task type, set automation to auto-complete on API bookings where all fields present. Set to Pending for manual/exception bookings.',
+    owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ETD',offset:5,direction:'before'}, notes:'',
+    countryScope:defaultCountryScope() },
+  { _seedId:'stg1-2', stage:'STG-1', name:'Create Request booking confirmation task type',
+    req:'Manual task. Assign to Import Booking team. Configure as DE and NL only — FR excluded (country delta #1).',
+    owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ETD',offset:5,direction:'before'}, notes:'',
+    countryScope:{FR:{inScope:false,mode:'not-applicable'},DE:{inScope:true,mode:'not-applicable'},NL:{inScope:true,mode:'not-applicable'}} },
+  { _seedId:'stg1-3', stage:'STG-1', name:'Create Agent booking communication task type',
+    req:'Exception-based manual task. Assign to Import Booking team. All countries.',
+    owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'',
+    countryScope:defaultCountryScope() },
   // STG-2
-  { _seedId:'stg2-1', stage:'STG-2', name:'Create Check agent update task type',           req:'Automated/recurring. Configure to reset to Pending on each agent update from SnapLogic. API shipments only.', owner:'IT', status:'ns', dep:{type:'task',taskRef:'Configure SnapLogic agent update pipeline'}, deadline:{milestone:'ETD',offset:3,direction:'before'}, notes:'' },
-  { _seedId:'stg2-2', stage:'STG-2', name:'Create Complete shipment data task type',       req:'Manual task. Non-API shipments only. Checklist: parties, transport, cargo, documents.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ETD',offset:5,direction:'before'}, notes:'' },
-  { _seedId:'stg2-3', stage:'STG-2', name:'Configure SnapLogic agent update pipeline',     req:'Ensure SnapLogic triggers task reset in MF on each agent update message. Validate field mapping for all data points.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'' },
-  { _seedId:'stg2-4', stage:'STG-2', name:'Create Seaway bill released task type',         req:'OPEN ITEM: Placement in STG-2 or STG-3 TBC. Auto-triggered when seaway bill confirmed.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'Placement TBC at workshop' },
-
+  { _seedId:'stg2-1', stage:'STG-2', name:'Create Check agent update task type',
+    req:'Automated/recurring. Configure to reset to Pending on each agent update from SnapLogic. API shipments only.',
+    owner:'IT', status:'ns', dep:{type:'task',taskRef:'Configure SnapLogic agent update pipeline'}, deadline:{milestone:'ETD',offset:3,direction:'before'}, notes:'',
+    countryScope:defaultCountryScope() },
+  { _seedId:'stg2-2', stage:'STG-2', name:'Create Complete shipment data task type',
+    req:'Manual task. Non-API shipments only. Checklist: parties, transport, cargo, documents.',
+    owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ETD',offset:5,direction:'before'}, notes:'',
+    countryScope:defaultCountryScope() },
+  { _seedId:'stg2-3', stage:'STG-2', name:'Configure SnapLogic agent update pipeline',
+    req:'Ensure SnapLogic triggers task reset in MF on each agent update message. Validate field mapping for all data points.',
+    owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'',
+    countryScope:defaultCountryScope() },
+  { _seedId:'stg2-4', stage:'STG-2', name:'Create Seaway bill released task type',
+    req:'OPEN ITEM: Placement in STG-2 or STG-3 TBC. Auto-triggered when seaway bill confirmed.',
+    owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'Placement TBC at workshop',
+    countryScope:defaultCountryScope() },
   // STG-3
-  { _seedId:'stg3-1', stage:'STG-3', name:'Create Verify commercial invoice task type',    req:'Manual task assigned to Import Documentation team. All countries. Configure checklist fields in task.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ETA',offset:5,direction:'before'}, notes:'' },
-  { _seedId:'stg3-2', stage:'STG-3', name:'Create Verify packing list task type',          req:'Manual task. All countries. If combined with commercial invoice, both completed together.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ETA',offset:5,direction:'before'}, notes:'' },
-  { _seedId:'stg3-3', stage:'STG-3', name:'Create Verify HBL / TLX / seaway bill task',   req:'Manual task. Configure for document type variants (original BL / TLX / seaway bill). All countries.', owner:'IT', status:'ns', dep:{type:'document',taskRef:'',docType:'HBL / TLX / Seaway Bill'}, deadline:{milestone:'ETA',offset:5,direction:'before'}, notes:'' },
-  { _seedId:'stg3-4', stage:'STG-3', name:'Create Verify insurance certificate task type', req:'Exception-based. Conditional on incoterm and country rules. Country delta to be confirmed at workshop.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ETA',offset:5,direction:'before'}, notes:'Country delta entries TBD' },
-  { _seedId:'stg3-5', stage:'STG-3', name:'Create Check customs declaration task type',    req:'Manual task. Pre-arrival check. All countries.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ETA',offset:3,direction:'before'}, notes:'' },
-  { _seedId:'stg3-6', stage:'STG-3', name:'Create Request missing documents task type',    req:'Exception-based action task. All countries.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'' },
-
+  { _seedId:'stg3-1', stage:'STG-3', name:'Create Verify commercial invoice task type',
+    req:'Manual task assigned to Import Documentation team. All countries. Configure checklist fields in task.',
+    owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ETA',offset:5,direction:'before'}, notes:'',
+    countryScope:defaultCountryScope() },
+  { _seedId:'stg3-2', stage:'STG-3', name:'Create Verify packing list task type',
+    req:'Manual task. All countries. If combined with commercial invoice, both completed together.',
+    owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ETA',offset:5,direction:'before'}, notes:'',
+    countryScope:defaultCountryScope() },
+  { _seedId:'stg3-3', stage:'STG-3', name:'Create Verify HBL / TLX / seaway bill task',
+    req:'Manual task. Configure for document type variants (original BL / TLX / seaway bill). All countries.',
+    owner:'IT', status:'ns', dep:{type:'document',taskRef:'',docType:'HBL / TLX / Seaway Bill'}, deadline:{milestone:'ETA',offset:5,direction:'before'}, notes:'',
+    countryScope:defaultCountryScope() },
+  { _seedId:'stg3-4', stage:'STG-3', name:'Create Verify insurance certificate task type',
+    req:'Exception-based. Conditional on incoterm and country rules. Country delta to be confirmed at workshop.',
+    owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ETA',offset:5,direction:'before'}, notes:'Country delta entries TBD',
+    countryScope:defaultCountryScope() },
+  { _seedId:'stg3-5', stage:'STG-3', name:'Create Check customs declaration task type',
+    req:'Manual task. Pre-arrival check. All countries. Note: customs systems differ per country — country-specific configuration required (e.g. Maco for NL).',
+    owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ETA',offset:3,direction:'before'}, notes:'',
+    countryScope:defaultCountryScope() },
+  { _seedId:'stg3-6', stage:'STG-3', name:'Create Request missing documents task type',
+    req:'Exception-based action task. All countries.',
+    owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'',
+    countryScope:defaultCountryScope() },
   // STG-4
-  { _seedId:'stg4-1', stage:'STG-4', name:'Create Send customs documents to Maco task',   req:'Manual trigger in MF fires webhook to Maco. Auto-completes on execution. Resets to Pending on rejection via API.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ETA',offset:2,direction:'before'}, notes:'' },
-  { _seedId:'stg4-2', stage:'STG-4', name:'Configure Maco webhook integration',            req:'Ensure MF webhook to Maco is active and field mapping is correct. Validate rejection callback resets task and triggers Dev Message Log.', owner:'MF vendor', status:'ns', dep:{type:'none'}, deadline:null, notes:'' },
-  { _seedId:'stg4-3', stage:'STG-4', name:'Create Customs clearance received task type',  req:'Fully automated. Auto-created and set to Completed on clearance confirmation from Maco. Acts as prerequisite gate for STG-6.', owner:'IT', status:'ns', dep:{type:'task',taskRef:'Configure Maco webhook integration'}, deadline:{milestone:'ATA',offset:0,direction:'on'}, notes:'' },
-
+  { _seedId:'stg4-1', stage:'STG-4', name:'Create Send customs documents task',
+    req:'Manual trigger in MF fires webhook to Customs. Auto-completes on execution. Resets to Pending on rejection via API. Note: Country-specific configuration required.',
+    owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ETA',offset:2,direction:'before'}, notes:'',
+    countryScope:defaultCountryScope() },
+  { _seedId:'stg4-2', stage:'STG-4', name:'Configure Customs webhook integration',
+    req:'Ensure MF webhook to Customs is active and field mapping is correct. Validate rejection callback resets task and triggers Dev Message Log.',
+    owner:'MF vendor', status:'ns', dep:{type:'none'}, deadline:null, notes:'',
+    countryScope:defaultCountryScope() },
+  { _seedId:'stg4-3', stage:'STG-4', name:'Create Customs clearance received task type',
+    req:'Fully automated. Auto-created and set to Completed on clearance confirmation from Customs. Acts as prerequisite gate for STG-6.',
+    owner:'IT', status:'ns', dep:{type:'task',taskRef:'Configure Customs webhook integration'}, deadline:{milestone:'ATA',offset:0,direction:'on'}, notes:'',
+    countryScope:defaultCountryScope() },
   // STG-5
-  { _seedId:'stg5-1', stage:'STG-5', name:'Configure MF live tracking for deepsea',       req:'Enable native MF live tracking for deepsea vessels. Confirm carrier data feeds are active for all relevant carriers.', owner:'MF vendor', status:'ns', dep:{type:'none'}, deadline:null, notes:'' },
-  { _seedId:'stg5-2', stage:'STG-5', name:'Create Monitor vessel ETA task type',           req:'Automated/recurring. Resets to Pending on each tracking update from MF live tracking. Ops reviews and completes.', owner:'IT', status:'ns', dep:{type:'task',taskRef:'Configure MF live tracking for deepsea'}, deadline:null, notes:'' },
-  { _seedId:'stg5-3', stage:'STG-5', name:'Create Manual ETA check task type',             req:'Manual task. Inland/feeder legs only. Cadence to be confirmed at workshop.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'Check cadence TBD at workshop' },
-  { _seedId:'stg5-3', stage:'STG-5', name:'Create Confirm arrival at POD task type',       req:'Fully automated. Auto-completed on ATA event from MF live tracking. Gates STG-6 and STG-7.', owner:'IT', status:'ns', dep:{type:'task',taskRef:'Configure MF live tracking for deepsea'}, deadline:{milestone:'ATA',offset:0,direction:'on'}, notes:'' },
-
+  { _seedId:'stg5-1', stage:'STG-5', name:'Configure MF live tracking for deepsea',
+    req:'Enable native MF live tracking for deepsea vessels. Confirm carrier data feeds are active for all relevant carriers.',
+    owner:'MF vendor', status:'ns', dep:{type:'none'}, deadline:null, notes:'',
+    countryScope:defaultCountryScope() },
+  { _seedId:'stg5-2', stage:'STG-5', name:'Create Monitor vessel ETA task type',
+    req:'Automated/recurring. Resets to Pending on each tracking update from MF live tracking. Ops reviews and completes.',
+    owner:'IT', status:'ns', dep:{type:'task',taskRef:'Configure MF live tracking for deepsea'}, deadline:null, notes:'',
+    countryScope:defaultCountryScope() },
+  { _seedId:'stg5-3', stage:'STG-5', name:'Create Manual ETA check task type',
+    req:'Manual task. Inland/feeder legs only. Cadence to be confirmed at workshop.',
+    owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'Check cadence TBD at workshop',
+    countryScope:defaultCountryScope() },
+  { _seedId:'stg5-4', stage:'STG-5', name:'Create Confirm arrival at POD task type',
+    req:'Fully automated. Auto-completed on ATA event from MF live tracking. Gates STG-6 and STG-7.',
+    owner:'IT', status:'ns', dep:{type:'task',taskRef:'Configure MF live tracking for deepsea'}, deadline:{milestone:'ATA',offset:0,direction:'on'}, notes:'',
+    countryScope:defaultCountryScope() },
   // STG-6
-  { _seedId:'stg6-1', stage:'STG-6', name:'Create Request carrier release task type',      req:'Manual task. Assign to Import Documentation team. Triggered after customs clearance confirmed (STG-4 gate).', owner:'IT', status:'ns', dep:{type:'task',taskRef:'Create Customs clearance received task type'}, deadline:{milestone:'ATA',offset:1,direction:'after'}, notes:'' },
-  { _seedId:'stg6-2', stage:'STG-6', name:'Create Carrier release confirmed task type',    req:'Automation status TBD — integration with carrier system not yet confirmed. Revisit after workshop.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ATA',offset:2,direction:'after'}, notes:'Integration source not yet confirmed — open item from workshop' },
-
+  { _seedId:'stg6-1', stage:'STG-6', name:'Create Request carrier release task type',
+    req:'Manual task. Assign to Import Documentation team. Triggered after customs clearance confirmed (STG-4 gate).',
+    owner:'IT', status:'ns', dep:{type:'task',taskRef:'Create Customs clearance received task type'}, deadline:{milestone:'ATA',offset:1,direction:'after'}, notes:'',
+    countryScope:defaultCountryScope() },
+  { _seedId:'stg6-2', stage:'STG-6', name:'Create Carrier release confirmed task type',
+    req:'Automation status TBD — integration with carrier system not yet confirmed. Revisit after workshop.',
+    owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ATA',offset:2,direction:'after'}, notes:'Integration source not yet confirmed — open item from workshop',
+    countryScope:defaultCountryScope() },
   // STG-7
-  { _seedId:'stg7-0', stage:'STG-7', name:'Create Pre-alert to customer task type',              req:'Exception-based manual task. Assign to Import Operations. All countries. Placement in STG-5 vs STG-7 TBD — confirm at workshop before configuring.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'Placement TBD at workshop' },
-  { _seedId:'stg7-1', stage:'STG-7', name:'Create Plan delivery task type',                      req:'Manual task. Assign to Import Operations team. Initial planning via OutSystems bulk tool — pushes planned date, time, and locations to MF. Per-shipment planning also possible directly in MF.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ATA',offset:2,direction:'after'}, notes:'' },
-  { _seedId:'stg7-3', stage:'STG-7', name:'Create Push delivery planning to Qargo task type',    req:'Manual task. Ops executes in MF — triggers API call to Qargo with planned delivery data. Task turns green on successful push. Remains TODO/overdue based on vessel milestone status, surfacing unplanned containers in dashboard. Confirm Qargo API field mapping before configuring.', owner:'IT', status:'ns', dep:{type:'task',taskRef:'Create Plan delivery task type'}, deadline:{milestone:'ATA',offset:2,direction:'after'}, notes:'' },
-  { _seedId:'stg7-4', stage:'STG-7', name:'Create Return empty container monitoring task type',  req:'Manual task. Assign to Import Operations. Ops confirms empty container returned to carrier depot within agreed timeframe. Linked to demurrage risk — confirm whether a deadline/overdue trigger is needed.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'' },
-  { _seedId:'stg7-5', stage:'STG-7', name:'Create Deconsolidation / devanning task type',        req:'Exception-based manual task. Applicable on warehouse deliveries before final delivery. Task scope, applicable shipment types, and trigger TBD at workshop — do not configure until confirmed.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'Scope and shipment types TBD at workshop' },
-  { _seedId:'stg7-2', stage:'STG-7', name:'Create Confirm delivery appointment task type',       req:'Manual task. Assign to Import Operations. Confirmation once delivery slot agreed with customer and transport provider. Sequencing relative to Push delivery planning to Qargo TBD at workshop.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ATA',offset:3,direction:'after'}, notes:'Sequencing vs Qargo push TBD at workshop' },
-
-  // STG-8 (live log STG-8 maps to planner STG-9 for financial handling)
-  { _seedId:'stg8-1', stage:'STG-9', name:'Create Record accrual task type',               req:'Manual task for Ops. Trigger: ATD (origin incoterms) or ATA (destination). Assign to Financial Handling team.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ATD',offset:2,direction:'after'}, notes:'' },
-  { _seedId:'stg8-2', stage:'STG-9', name:'Create Invoice verification task type',         req:'Option A: Finance stays in Blue10. Option B: Finance active in MF. Task creation conditional on Option A/B decision.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'Document receipt',offset:3,direction:'after'}, notes:'Conditional on Option A/B decision — April 14' },
-  { _seedId:'stg8-3', stage:'STG-9', name:'Create Invoice approved task type',             req:'Option A: implicit. Option B: explicit Finance step. Conditional on Option A/B decision.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'Document receipt',offset:5,direction:'after'}, notes:'Conditional on Option A/B decision' },
-  { _seedId:'stg8-4', stage:'STG-9', name:'Create Dispute / credit note task type',        req:'Exception-based. Configuration scope differs between Option A and B.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'' },
-  { _seedId:'stg8-5', stage:'STG-9', name:'Provision Finance users in MF (Option B only)', req:'IT to configure Financial Handling workgroup. Assign Finance users. Define access scope (full vs scoped to FH tasks).', owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'Option B only' },
-
-  // STG-8 (planner — operational handling, separate from financial)
-  { _seedId:'stg8-op', stage:'STG-8', name:'Create Operational follow-up task type',       req:'Exception-based. Boundary definition to be tightened at workshop before configuring.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'Task definition not yet finalised — pending workshop' },
-  { _seedId:'stg8-fin', stage:'STG-9', name:'Govern charge code list',                     req:'Confirm owner, authoritative system, and change process for charge codes. Needed before Record accrual task can be used.', owner:'Finance', status:'ns', dep:{type:'none'}, deadline:null, notes:'Decision needed at workshop' },
-
+  { _seedId:'stg7-0', stage:'STG-7', name:'Create Pre-alert to customer task type',
+    req:'Exception-based manual task. Assign to Import Operations. All countries. Placement in STG-5 vs STG-7 TBD — confirm at workshop before configuring.',
+    owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'Placement TBD at workshop',
+    countryScope:defaultCountryScope() },
+  { _seedId:'stg7-1', stage:'STG-7', name:'Create Plan delivery task type',
+    req:'Manual task. Assign to Import Operations team. Initial planning via OutSystems bulk tool — pushes planned date, time, and locations to MF.',
+    owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ATA',offset:2,direction:'after'}, notes:'',
+    countryScope:defaultCountryScope() },
+  { _seedId:'stg7-3', stage:'STG-7', name:'Create Push delivery planning to Qargo task type',
+    req:'Manual task. Ops executes in MF — triggers API call to Qargo with planned delivery data. Confirm Qargo API field mapping before configuring.',
+    owner:'IT', status:'ns', dep:{type:'task',taskRef:'Create Plan delivery task type'}, deadline:{milestone:'ATA',offset:2,direction:'after'}, notes:'',
+    countryScope:defaultCountryScope() },
+  { _seedId:'stg7-4', stage:'STG-7', name:'Create Return empty container monitoring task type',
+    req:'Manual task. Assign to Import Operations. Ops confirms empty container returned to carrier depot within agreed timeframe.',
+    owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'',
+    countryScope:defaultCountryScope() },
+  { _seedId:'stg7-5', stage:'STG-7', name:'Create Deconsolidation / devanning task type',
+    req:'Exception-based manual task. Applicable on warehouse deliveries before final delivery. Task scope, applicable shipment types, and trigger TBD at workshop.',
+    owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'Scope and shipment types TBD at workshop',
+    countryScope:defaultCountryScope() },
+  { _seedId:'stg7-2', stage:'STG-7', name:'Create Confirm delivery appointment task type',
+    req:'Manual task. Assign to Import Operations. Confirmation once delivery slot agreed with customer and transport provider. Sequencing relative to Push delivery planning to Qargo TBD at workshop.',
+    owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ATA',offset:3,direction:'after'}, notes:'Sequencing vs Qargo push TBD at workshop',
+    countryScope:defaultCountryScope() },
+  // STG-8 — operational + financial (merged, no STG-9)
+  { _seedId:'stg8-op', stage:'STG-8', name:'Create Operational follow-up task type',
+    req:'Exception-based. Boundary definition to be tightened at workshop before configuring.',
+    owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'Task definition not yet finalised — pending workshop',
+    countryScope:defaultCountryScope() },
+  { _seedId:'stg8-1', stage:'STG-8', name:'Create Record accrual task type',
+    req:'Manual task for Ops. Trigger: ATD (origin incoterms) or ATA (destination). Assign to Financial Handling team.',
+    owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'ATD',offset:2,direction:'after'}, notes:'',
+    countryScope:defaultCountryScope() },
+  { _seedId:'stg8-2', stage:'STG-8', name:'Create Invoice verification task type',
+    req:'Option A: Finance stays in Blue10. Option B: Finance active in MF. Task creation conditional on Option A/B decision.',
+    owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'Document receipt',offset:3,direction:'after'}, notes:'Conditional on Option A/B decision — April 14',
+    countryScope:defaultCountryScope() },
+  { _seedId:'stg8-3', stage:'STG-8', name:'Create Invoice approved task type',
+    req:'Option A: implicit. Option B: explicit Finance step. Conditional on Option A/B decision.',
+    owner:'IT', status:'ns', dep:{type:'none'}, deadline:{milestone:'Document receipt',offset:5,direction:'after'}, notes:'Conditional on Option A/B decision',
+    countryScope:defaultCountryScope() },
+  { _seedId:'stg8-4', stage:'STG-8', name:'Create Dispute / credit note task type',
+    req:'Exception-based. Configuration scope differs between Option A and B.',
+    owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'',
+    countryScope:defaultCountryScope() },
+  { _seedId:'stg8-5', stage:'STG-8', name:'Provision Finance users in MF (Option B only)',
+    req:'IT to configure Financial Handling workgroup. Assign Finance users. Define access scope (full vs scoped to FH tasks).',
+    owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'Option B only',
+    countryScope:defaultCountryScope() },
+  { _seedId:'stg8-fin', stage:'STG-8', name:'Govern charge code list',
+    req:'Confirm owner, authoritative system, and change process for charge codes. Needed before Record accrual task can be used.',
+    owner:'Finance', status:'ns', dep:{type:'none'}, deadline:null, notes:'Decision needed at workshop',
+    countryScope:defaultCountryScope() },
   // DEV
-  { _seedId:'dev-1', stage:'DEV', name:'Validate Dev Message Log automation',              req:'Confirm Dev Message Log resets to Pending on all integration error conditions: SnapLogic pipeline failures, Maco rejections, missing fields.', owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'' },
-  { _seedId:'dev-2', stage:'DEV', name:'Configure shipment closure gate',                  req:'Implement hard block or soft warning on shipment closure while accrual task is Pending. Scope: hard block vs soft warning — decision needed.', owner:'MF vendor', status:'ns', dep:{type:'none'}, deadline:null, notes:'Hard block vs soft warning — decision pending' },
+  { _seedId:'dev-1', stage:'DEV', name:'Validate Dev Message Log automation',
+    req:'Confirm Dev Message Log resets to Pending on all integration error conditions: SnapLogic pipeline failures, Customs rejections, missing fields.',
+    owner:'IT', status:'ns', dep:{type:'none'}, deadline:null, notes:'',
+    countryScope:defaultCountryScope() },
+  { _seedId:'dev-2', stage:'DEV', name:'Configure shipment closure gate',
+    req:'Implement hard block or soft warning on shipment closure while accrual task is Pending. Scope: hard block vs soft warning — decision needed.',
+    owner:'MF vendor', status:'ns', dep:{type:'none'}, deadline:null, notes:'Hard block vs soft warning — decision pending',
+    countryScope:defaultCountryScope() },
 ];
 
-// ── State ──────────────────────────────────────────────────────────────────
 let tasks = [];
 let currentStage = 'ALL';
 let filterStatus = 'all';
 let filterOwner  = 'all';
+let filterDeferred = 'all';
 let filterImported = 'all';
-let importedLogData = null; // raw live log JSON after import
+let importedLogData = null;
+
+function ensureTaskDefaults(t) {
+  if (!t.countryScope) t.countryScope = defaultCountryScope();
+  if (!t.deferred) t.deferred = defaultDeferred();
+  ALL_COUNTRIES.forEach(c => {
+    if (!t.countryScope[c]) t.countryScope[c] = {inScope:true, mode:'not-applicable'};
+    if (!t.countryScope[c].mode) t.countryScope[c].mode = 'not-applicable';
+  });
+  return t;
+}
 
 function loadTasks() {
   try {
-    const saved = localStorage.getItem('gloforex_impl_tasks_v4');
-    const savedImport = localStorage.getItem('gloforex_impl_import');
-    if (saved) {
-      tasks = JSON.parse(saved);
-    } else {
-      tasks = SEED_TASKS.map((t, i) => ({ id: 'task_' + i, ...t }));
-      saveTasks();
+    const saved = localStorage.getItem('gloforex_impl_tasks_v5');
+    const savedImport = localStorage.getItem('gloforex_impl_import_v5');
+    if (saved) { tasks = JSON.parse(saved).map(ensureTaskDefaults); }
+    else { tasks = SEED_TASKS.map((t, i) => ensureTaskDefaults({ id: 'task_' + i, ...t, deferred: defaultDeferred() })); saveTasks(); }
+    if (savedImport) { importedLogData = JSON.parse(savedImport); updateImportBanner(); }
+  } catch(e) { tasks = SEED_TASKS.map((t, i) => ensureTaskDefaults({ id: 'task_' + i, ...t, deferred: defaultDeferred() })); }
+}
+function saveTasks() { try { localStorage.setItem('gloforex_impl_tasks_v5', JSON.stringify(tasks)); } catch(e) {} }
+
+// ── Go-live dates (FR / DE editable, NL fixed) ────────────────────────────
+const GOLIVE_KEY = 'gloforex_golive_dates';
+let goliveDates = { FR: '', DE: '' };
+
+function loadGoliveDates() {
+  try { const s = localStorage.getItem(GOLIVE_KEY); if (s) goliveDates = { ...goliveDates, ...JSON.parse(s) }; } catch(e) {}
+  renderGoliveDates();
+}
+function saveGoliveDates() { try { localStorage.setItem(GOLIVE_KEY, JSON.stringify(goliveDates)); } catch(e) {} }
+
+function renderGoliveDates() {
+  ['FR','DE'].forEach(c => {
+    const wrap = document.getElementById('golive-wrap-' + c); if (!wrap) return;
+    const dot  = document.getElementById('golive-dot-' + c);
+    const val  = goliveDates[c] || '';
+    const isSet = val.trim() !== '';
+    if (dot) { dot.className = 'golive-dot ' + (isSet ? 'nl' : 'tbd'); }
+    wrap.innerHTML = `<span class="golive-date-display ${isSet?'is-set':''}"
+      title="Click to edit"
+      onclick="startEditGolive('${c}',this)">${isSet ? esc(val) : 'TBD — click to set'}</span>`;
+  });
+}
+
+function startEditGolive(country, displayEl) {
+  const wrap = document.getElementById('golive-wrap-' + country); if (!wrap) return;
+  const current = goliveDates[country] || '';
+  wrap.innerHTML = `<input class="golive-date-input" id="golive-input-${country}"
+    type="text" value="${esc(current)}" placeholder="e.g. Q3 2026"
+    onblur="commitGolive('${country}')"
+    onkeydown="if(event.key==='Enter')this.blur();if(event.key==='Escape'){goliveDates['${country}']=goliveDates['${country}']||'';renderGoliveDates();}" />`;
+  const inp = document.getElementById('golive-input-' + country);
+  if (inp) { inp.focus(); inp.select(); }
+}
+
+function commitGolive(country) {
+  const inp = document.getElementById('golive-input-' + country); if (!inp) return;
+  goliveDates[country] = inp.value.trim();
+  saveGoliveDates(); renderGoliveDates();
+}
+
+// ── Surgical card patch — updates header + classes without rebuilding or closing ──
+function patchCard(taskId) {
+  const t = tasks.find(x => x.id === taskId); if (!t) return;
+  const card = document.getElementById('card-' + taskId); if (!card) return;
+
+  const sc = stageColor(t.stage);
+  const sm = STATUS_META[t.status] || STATUS_META.ns;
+  const oc = OWNER_CLS[t.owner] || 'ow-tbd';
+  const is = t._importStatus;
+  const deferred = t.deferred?.active;
+
+  // Card border class
+  let cardClass = 'task-card' + (card.classList.contains('open') ? ' open' : '');
+  if (is==='modified') cardClass += ' imported-modified';
+  else if (is==='added'||is==='decision') cardClass += ' imported-added';
+  else if (is==='deleted') cardClass += ' imported-deleted';
+  if (deferred) cardClass += ' is-deferred';
+  card.className = cardClass;
+
+  // Country pills
+  const countriesEl = card.querySelector('.tc-countries');
+  if (countriesEl) {
+    countriesEl.innerHTML = ALL_COUNTRIES.map(c => {
+      const cs = t.countryScope?.[c]; const inScope = cs?.inScope !== false;
+      return `<span class="tc-country ${inScope?'active':'inactive'}">${c}</span>`;
+    }).join('');
+  }
+
+  // Deferred tag (may not exist yet — find insertion point)
+  const head = card.querySelector('.task-card-head');
+  if (head) {
+    let dTag = head.querySelector('.tc-deferred-tag');
+    if (deferred && !dTag) {
+      dTag = document.createElement('span');
+      dTag.className = 'tc-deferred-tag';
+      dTag.textContent = 'deferred';
+      // insert before owner badge
+      const ownerEl = head.querySelector('.tc-owner');
+      if (ownerEl) head.insertBefore(dTag, ownerEl); else head.appendChild(dTag);
+    } else if (!deferred && dTag) {
+      dTag.remove();
     }
-    if (savedImport) {
-      importedLogData = JSON.parse(savedImport);
-      updateImportBanner();
+
+    // Owner badge
+    const ownerEl = head.querySelector('.tc-owner');
+    if (ownerEl) { ownerEl.className = `tc-owner ${oc}`; ownerEl.textContent = t.owner; }
+
+    // Status badge
+    const statusEl = head.querySelector('.tc-status');
+    if (statusEl) { statusEl.className = `tc-status ${sm.cls}`; statusEl.textContent = sm.label; }
+  }
+
+  // Country scope editor body — rebuild in place so button states reflect new data
+  const scopeSection = card.querySelector('.country-scope-section');
+  if (scopeSection) {
+    scopeSection.querySelector('.country-rows').innerHTML = ALL_COUNTRIES.map(c => {
+      const cs = t.countryScope?.[c] || {inScope:true, mode:'not-applicable'};
+      const inScope = cs.inScope !== false;
+      return `<div class="country-row">
+        <div class="country-toggle">
+          <button class="ctry-btn ${inScope?'in-scope':''}" onclick="toggleCountry('${t.id}','${c}')">${c}</button>
+        </div>
+        <div class="country-scope-detail">
+          ${!inScope ? `
+            <button class="scope-mode-btn ${cs.mode==='not-applicable'?'active scope-exc':''}" onclick="setCountryMode('${t.id}','${c}','not-applicable')">Not applicable</button>
+            <button class="scope-mode-btn ${cs.mode==='not-ready'?'active':''}" onclick="setCountryMode('${t.id}','${c}','not-ready')">Not yet ready</button>
+            <span class="country-row-note">${cs.mode==='not-applicable'?'Excluded from scope — country delta':'Needed but not ready for go-live'}</span>
+          ` : '<span class="country-row-note" style="color:var(--blue-d);font-style:normal">In scope</span>'}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Deferred section body — rebuild toggle label and show/hide reason row
+  const deferredSection = card.querySelector('.deferred-section');
+  if (deferredSection) {
+    const labelEl = deferredSection.querySelector('.deferred-toggle-label');
+    if (labelEl) labelEl.innerHTML = deferred
+      ? '<strong style="color:var(--coral-d)">Deferred</strong> — excluded from go-live'
+      : 'Included in go-live';
+
+    let reasonRow = deferredSection.querySelector('.deferred-reason-row');
+    if (deferred && !reasonRow) {
+      reasonRow = document.createElement('div');
+      reasonRow.className = 'deferred-reason-row';
+      reasonRow.innerHTML = `
+        <select onchange="setDeferredReason('${t.id}',this.value)">
+          <option value="automation" ${t.deferred?.reason==='automation'?'selected':''}>Automation not ready</option>
+          <option value="decision"  ${t.deferred?.reason==='decision'?'selected':''}>Decision pending</option>
+          <option value="other"     ${t.deferred?.reason==='other'?'selected':''}>Other</option>
+        </select>
+        <textarea placeholder="Additional context (optional)…" onchange="setDeferredComment('${t.id}',this.value)">${esc(t.deferred?.comment||'')}</textarea>`;
+      deferredSection.appendChild(reasonRow);
+    } else if (!deferred && reasonRow) {
+      reasonRow.remove();
     }
-  } catch(e) {
-    tasks = SEED_TASKS.map((t, i) => ({ id: 'task_' + i, ...t }));
   }
 }
 
-function saveTasks() {
-  try { localStorage.setItem('gloforex_impl_tasks_v4', JSON.stringify(tasks)); } catch(e) {}
+// ── Country scope helpers ─────────────────────────────────────────────────
+function toggleCountry(taskId, country) {
+  const t = tasks.find(x => x.id === taskId); if (!t) return;
+  t.countryScope[country].inScope = !t.countryScope[country].inScope;
+  saveTasks(); patchCard(taskId); updateProgress();
+}
+function setCountryMode(taskId, country, mode) {
+  const t = tasks.find(x => x.id === taskId); if (!t) return;
+  t.countryScope[country].mode = mode;
+  saveTasks(); patchCard(taskId); updateProgress();
 }
 
-// ── Import logic ───────────────────────────────────────────────────────────
-
-function triggerImport() {
-  document.getElementById('import-file-input').click();
+// ── Deferred helpers ──────────────────────────────────────────────────────
+function toggleDeferred(taskId, val) {
+  const t = tasks.find(x => x.id === taskId); if (!t) return;
+  if (!t.deferred) t.deferred = defaultDeferred();
+  t.deferred.active = val;
+  saveTasks(); patchCard(taskId); updateProgress();
+}
+function setDeferredReason(taskId, reason) {
+  const t = tasks.find(x => x.id === taskId); if (!t) return;
+  t.deferred.reason = reason; saveTasks();
+}
+function setDeferredComment(taskId, comment) {
+  const t = tasks.find(x => x.id === taskId); if (!t) return;
+  t.deferred.comment = comment; saveTasks();
 }
 
+// ── Import ────────────────────────────────────────────────────────────────
+function triggerImport() { document.getElementById('import-file-input').click(); }
 document.getElementById('import-file-input').addEventListener('change', function(e) {
-  const file = e.target.files[0];
-  if (!file) return;
+  const file = e.target.files[0]; if (!file) return;
   const reader = new FileReader();
-  reader.onload = ev => {
-    try {
-      const data = JSON.parse(ev.target.result);
-      openImportPreview(data);
-    } catch(err) {
-      alert('Could not parse file — make sure this is a valid GloForEx Live Log backup (.json).');
-    }
-    e.target.value = '';
-  };
+  reader.onload = ev => { try { const data = JSON.parse(ev.target.result); openImportPreview(data); } catch(err) { alert('Could not parse file — make sure this is a valid GloForEx Live Log backup (.json).'); } e.target.value = ''; };
   reader.readAsText(file);
 });
 
-// Build a flat list of changes to preview
 function buildImportDiff(data) {
   const diff = [];
-
-  // 1. Task modifications and deletions from taskChanges
-  const taskChanges = data.taskChanges || {};
-  for (const [liveId, change] of Object.entries(taskChanges)) {
-    const stage = liveIdToStage(liveId);
-    if (!stage) continue;
-    const isDeleted = change.status === 'deleted';
-    diff.push({
-      type: isDeleted ? 'deleted' : 'modified',
-      liveId,
-      stage,
-      name: change.name || liveId,
-      changeNote: change.changeNote || '',
-      changeTypes: change.changeTypes || [],
-      trigger: change.trigger || null,
-      notes: change.notes || '',
-      auto: change.auto || '',
-      day: change.day || null,
-    });
+  for (const [liveId, change] of Object.entries(data.taskChanges || {})) {
+    const stage = liveIdToStage(liveId); if (!stage) continue;
+    diff.push({ type: change.status === 'deleted' ? 'deleted' : 'modified', liveId, stage, name: change.name || liveId, changeNote: change.changeNote || '', changeTypes: change.changeTypes || [], trigger: change.trigger || null, notes: change.notes || '', day: change.day || null });
   }
-
-  // 2. Added tasks from addedTasks
-  const addedTasks = data.addedTasks || {};
-  for (const [liveSid, taskArr] of Object.entries(addedTasks)) {
+  for (const [liveSid, taskArr] of Object.entries(data.addedTasks || {})) {
     const stage = LIVE_LOG_STAGE_MAP[liveSid] || liveSid;
-    for (const t of (taskArr || [])) {
-      diff.push({
-        type: 'added',
-        liveId: t.id || ('add-' + Math.random()),
-        stage,
-        liveSid,
-        name: t.name,
-        changeNote: t.changeNote || '',
-        notes: t.notes || '',
-        auto: t.auto || 'manual',
-        trigger: t.trigger || null,
-        team: t.team || '',
-        day: t.day || null,
-      });
-    }
+    for (const t of (taskArr || [])) { diff.push({ type: 'added', liveId: t.id || ('add-'+Math.random()), stage, liveSid, name: t.name, changeNote: t.changeNote || '', notes: t.notes || '', auto: t.auto || 'manual', trigger: t.trigger || null, team: t.team || '', day: t.day || null }); }
   }
-
-  // 3. Decisions (surfaced as notes context, not tasks, but shown in diff)
-  const decisions = data.decisions || {};
-  for (const [liveSid, decArr] of Object.entries(decisions)) {
+  for (const [liveSid, decArr] of Object.entries(data.decisions || {})) {
     const stage = LIVE_LOG_STAGE_MAP[liveSid] || liveSid;
-    for (const d of (decArr || [])) {
-      if (!d.text) continue;
-      diff.push({
-        type: 'decision',
-        stage,
-        name: d.text,
-        day: d.day || null,
-        time: d.time || '',
-      });
-    }
+    for (const d of (decArr || [])) { if (!d.text) continue; diff.push({ type: 'decision', stage, name: d.text, day: d.day || null, time: d.time || '' }); }
   }
-
-  // 4. Parked items (informational)
-  const parkedItems = data.parkedItems || {};
-  for (const [liveSid, parkArr] of Object.entries(parkedItems)) {
+  for (const [liveSid, parkArr] of Object.entries(data.parkedItems || {})) {
     const stage = LIVE_LOG_STAGE_MAP[liveSid] || liveSid;
-    for (const p of (parkArr || [])) {
-      if (!p.text) continue;
-      diff.push({
-        type: 'parked',
-        stage,
-        name: p.text,
-        owner: p.owner || '',
-        when: p.when || 'TBD',
-        day: p.day || null,
-      });
-    }
+    for (const p of (parkArr || [])) { if (!p.text) continue; diff.push({ type: 'parked', stage, name: p.text, owner: p.owner || '', when: p.when || 'TBD', day: p.day || null }); }
   }
-
   return diff;
 }
 
 let pendingImportData = null;
-
 function openImportPreview(data) {
   pendingImportData = data;
   const diff = buildImportDiff(data);
-
-  const modified = diff.filter(d => d.type === 'modified').length;
-  const deleted  = diff.filter(d => d.type === 'deleted').length;
-  const added    = diff.filter(d => d.type === 'added').length;
-  const decisions= diff.filter(d => d.type === 'decision').length;
-  const parked   = diff.filter(d => d.type === 'parked').length;
-
-  // Stats
+  const modified = diff.filter(d=>d.type==='modified').length, deleted = diff.filter(d=>d.type==='deleted').length,
+        added = diff.filter(d=>d.type==='added').length, decisions = diff.filter(d=>d.type==='decision').length,
+        parked = diff.filter(d=>d.type==='parked').length;
   document.getElementById('import-modal-stats').innerHTML = [
     modified  ? `<span class="import-stat"><span class="import-stat-dot" style="background:var(--amber)"></span>${modified} modified</span>` : '',
     deleted   ? `<span class="import-stat"><span class="import-stat-dot" style="background:var(--red)"></span>${deleted} removed</span>` : '',
     added     ? `<span class="import-stat"><span class="import-stat-dot" style="background:var(--green)"></span>${added} added</span>` : '',
     decisions ? `<span class="import-stat"><span class="import-stat-dot" style="background:var(--blue)"></span>${decisions} decisions</span>` : '',
     parked    ? `<span class="import-stat"><span class="import-stat-dot" style="background:var(--amber-d)"></span>${parked} parked</span>` : '',
-  ].filter(Boolean).join('') || '<span style="color:var(--text3)">No changes detected in this backup.</span>';
-
-  document.getElementById('import-modal-sub').textContent =
-    `${modified + deleted + added} task changes · ${decisions} decisions · from ${data.currentDay > 1 ? 'Day ' + data.currentDay : 'workshop log'}`;
-
-  // Body
+  ].filter(Boolean).join('') || '<span style="color:var(--text3)">No changes detected.</span>';
+  document.getElementById('import-modal-sub').textContent = `${modified+deleted+added} task changes · ${decisions} decisions · from workshop log`;
   const body = document.getElementById('import-modal-body');
   if (!diff.length) { body.innerHTML = `<div class="import-empty">No changes, decisions, or new tasks found in this backup file.</div>`; }
   else {
     let html = '';
     const byType = (type, label, tagCls, rowCls) => {
-      const items = diff.filter(d => d.type === type);
-      if (!items.length) return '';
+      const items = diff.filter(d=>d.type===type); if (!items.length) return '';
       const sc = m => STAGE_META[m] || { bg:'#eee', color:'#555' };
-      return `<div class="diff-section">
-        <div class="diff-section-label">${label} (${items.length})</div>
-        ${items.map(d => {
-          const s = sc(d.stage);
-          const stageTag = d.stage && STAGE_META[d.stage] ? `<span class="diff-stage-tag" style="background:${s.bg};color:${s.color}">${d.stage}</span>` : '';
-          const ctags = (d.changeTypes||[]).map(ct => `<span style="font-size:9px;font-weight:600;padding:1px 6px;border-radius:8px;margin-right:3px;background:var(--amber-l);color:var(--amber-d)">${ct}</span>`).join('');
-          let detail = '';
-          if (type === 'modified' || type === 'deleted') {
-            if (d.notes) detail += `<div class="diff-detail">Notes: ${esc(d.notes)}</div>`;
-            if (d.changeNote) detail += `<div class="diff-changenote">→ ${esc(d.changeNote)}</div>`;
-            if (d.trigger && d.trigger.event) detail += `<div class="diff-detail" style="color:var(--text3)">Trigger: ${esc(d.trigger.event)} [${esc(d.trigger.source||'')}]</div>`;
-            if (d.day) detail += `<div class="diff-detail" style="color:var(--text3)">Day ${d.day}</div>`;
-          } else if (type === 'added') {
-            if (d.notes) detail += `<div class="diff-detail">${esc(d.notes)}</div>`;
-            if (d.changeNote) detail += `<div class="diff-changenote">Reason: ${esc(d.changeNote)}</div>`;
-            if (d.trigger && d.trigger.event) detail += `<div class="diff-detail" style="color:var(--text3)">Trigger: ${esc(d.trigger.event)} [${esc(d.trigger.source||'')}]</div>`;
-            if (d.day) detail += `<div class="diff-detail" style="color:var(--text3)">Day ${d.day}</div>`;
-          } else if (type === 'decision') {
-            if (d.day) detail += `<div class="diff-detail" style="color:var(--text3)">Day ${d.day}${d.time ? ' · ' + d.time : ''}</div>`;
-          } else if (type === 'parked') {
-            detail += `<div class="diff-detail">Resolve: ${esc(d.when)}${d.owner ? ' · Owner: ' + esc(d.owner) : ''}</div>`;
-          }
-          return `<div class="diff-row ${rowCls}">
-            <div class="diff-row-head">
-              <span class="diff-tag ${tagCls}">${label.split(' ')[0].toLowerCase()}</span>
-              ${stageTag}
-              <span class="diff-name${type==='deleted'?' strikethrough':''}">${esc(d.name)}</span>
-              ${ctags}
-            </div>
-            ${detail}
-          </div>`;
-        }).join('')}
-      </div>`;
+      return `<div class="diff-section"><div class="diff-section-label">${label} (${items.length})</div>${items.map(d => {
+        const s = sc(d.stage); const stageTag = STAGE_META[d.stage] ? `<span class="diff-stage-tag" style="background:${s.bg};color:${s.color}">${d.stage}</span>` : '';
+        const ctags = (d.changeTypes||[]).map(ct => `<span style="font-size:9px;font-weight:600;padding:1px 6px;border-radius:8px;margin-right:3px;background:var(--amber-l);color:var(--amber-d)">${ct}</span>`).join('');
+        let detail = '';
+        if (type==='modified'||type==='deleted') { if (d.notes) detail+=`<div class="diff-detail">Notes: ${esc(d.notes)}</div>`; if (d.changeNote) detail+=`<div class="diff-changenote">→ ${esc(d.changeNote)}</div>`; if (d.day) detail+=`<div class="diff-detail" style="color:var(--text3)">Day ${d.day}</div>`; }
+        else if (type==='added') { if (d.notes) detail+=`<div class="diff-detail">${esc(d.notes)}</div>`; if (d.changeNote) detail+=`<div class="diff-changenote">Reason: ${esc(d.changeNote)}</div>`; if (d.day) detail+=`<div class="diff-detail" style="color:var(--text3)">Day ${d.day}</div>`; }
+        else if (type==='decision') { if (d.day) detail+=`<div class="diff-detail" style="color:var(--text3)">Day ${d.day}${d.time?' · '+d.time:''}</div>`; }
+        else if (type==='parked') { detail+=`<div class="diff-detail">Resolve: ${esc(d.when)}${d.owner?' · Owner: '+esc(d.owner):''}</div>`; }
+        return `<div class="diff-row ${rowCls}"><div class="diff-row-head"><span class="diff-tag ${tagCls}">${label.split(' ')[0].toLowerCase()}</span>${stageTag}<span class="diff-name${type==='deleted'?' strikethrough':''}">${esc(d.name)}</span>${ctags}</div>${detail}</div>`;
+      }).join('')}</div>`;
     };
-    html += byType('modified', 'Modified tasks', 'diff-tag-modified', 'diff-modified');
-    html += byType('deleted',  'Removed tasks',  'diff-tag-deleted',  'diff-deleted');
-    html += byType('added',    'Added tasks',     'diff-tag-added',    'diff-added');
-    html += byType('decision', 'Decisions logged','diff-tag-decision', 'diff-decision');
-    html += byType('parked',   'Parked items',    'diff-tag-parked',   'diff-parked');
+    html += byType('modified','Modified tasks','diff-tag-modified','diff-modified');
+    html += byType('deleted','Removed tasks','diff-tag-deleted','diff-deleted');
+    html += byType('added','Added tasks','diff-tag-added','diff-added');
+    html += byType('decision','Decisions logged','diff-tag-decision','diff-decision');
+    html += byType('parked','Parked items','diff-tag-parked','diff-parked');
     body.innerHTML = html;
   }
-
-  // Change confirm button label
-  const hasApplicable = (modified + deleted + added) > 0;
-  document.getElementById('import-confirm-btn').textContent = hasApplicable ? 'Apply import' : 'OK (no task changes)';
-
+  document.getElementById('import-confirm-btn').textContent = (modified+deleted+added)>0 ? 'Apply import' : 'OK (no task changes)';
   document.getElementById('import-modal').classList.add('open');
 }
-
-function closeImportModal() {
-  document.getElementById('import-modal').classList.remove('open');
-  pendingImportData = null;
-}
-
-function confirmImport() {
-  if (!pendingImportData) { closeImportModal(); return; }
-  applyImport(pendingImportData);
-  closeImportModal();
-}
+function closeImportModal() { document.getElementById('import-modal').classList.remove('open'); pendingImportData = null; }
+function confirmImport() { if (!pendingImportData) { closeImportModal(); return; } applyImport(pendingImportData); closeImportModal(); }
 
 function applyImport(data) {
   importedLogData = data;
-  try { localStorage.setItem('gloforex_impl_import', JSON.stringify(data)); } catch(e) {}
-
-  // Start from the canonical seed, then apply changes
-  let base = SEED_TASKS.map((t, i) => ({ id: 'task_' + i, ...t, _importStatus: null }));
-
-  const taskChanges = data.taskChanges || {};
-  const addedTasks  = data.addedTasks  || {};
-  const decisions   = data.decisions   || {};
-
-  // Build a lookup: seedId → task (for modifications)
-  const byId = {};
-  base.forEach(t => { if (t._seedId) byId[t._seedId] = t; });
-
-  // Apply modifications/deletions from taskChanges
-  for (const [liveId, change] of Object.entries(taskChanges)) {
-    // Normalise stg8-X → matches seed _seedId 'stg8-X'
-    const task = byId[liveId];
-    if (!task) continue;
-
-    if (change.status === 'deleted') {
-      task._importStatus = 'deleted';
-    } else {
-      // Apply fields from live log change
-      if (change.name  && change.name  !== task.name)  task.name  = change.name;
+  try { localStorage.setItem('gloforex_impl_import_v5', JSON.stringify(data)); } catch(e) {}
+  let base = SEED_TASKS.map((t, i) => ensureTaskDefaults({ id: 'task_'+i, ...t, deferred: defaultDeferred(), _importStatus: null }));
+  const byId = {}; base.forEach(t => { if (t._seedId) byId[t._seedId] = t; });
+  for (const [liveId, change] of Object.entries(data.taskChanges || {})) {
+    const task = byId[liveId]; if (!task) continue;
+    if (change.status === 'deleted') { task._importStatus = 'deleted'; }
+    else {
+      if (change.name && change.name !== task.name) task.name = change.name;
       if (change.notes && change.notes !== task.notes) task.notes = change.notes;
-      if (change.auto)  task._automation = change.auto;
-      if (change.trigger) task._triggerNote = change.trigger.event
-        ? `${change.trigger.event} [${change.trigger.source || ''}]` : '';
-      if (change.changeNote) {
-        task.notes = (task.notes ? task.notes + ' | ' : '') + change.changeNote;
-      }
-      if (change.changeTypes && change.changeTypes.length) {
-        task.notes = (task.notes ? task.notes : '') + (task.notes ? ' | ' : '') + 'Changes: ' + change.changeTypes.join(', ');
-      }
+      if (change.changeNote) task.notes = (task.notes ? task.notes + ' | ' : '') + change.changeNote;
+      if (change.changeTypes?.length) task.notes = (task.notes||'') + (task.notes?' | ':'') + 'Changes: ' + change.changeTypes.join(', ');
       task._importStatus = 'modified';
     }
   }
-
-  // Apply decisions as notes to each stage's first task (or a dedicated note row)
-  // Build decision summary per stage
   const decisionsByStage = {};
-  for (const [liveSid, decArr] of Object.entries(decisions)) {
-    const stage = LIVE_LOG_STAGE_MAP[liveSid] || liveSid;
+  for (const [liveSid, decArr] of Object.entries(data.decisions || {})) {
+    const stage = LIVE_LOG_STAGE_MAP[liveSid]||liveSid;
     if (!decisionsByStage[stage]) decisionsByStage[stage] = [];
     decArr.forEach(d => decisionsByStage[stage].push(d.text));
   }
-
-  // Add decision summary tasks (informational)
   const decisionTasks = [];
   for (const [stage, decs] of Object.entries(decisionsByStage)) {
-    if (!STAGE_META[stage] || !decs.length) continue;
-    decisionTasks.push({
-      id: 'import_dec_' + stage,
-      _seedId: null,
-      stage,
-      name: `[Workshop decisions] ${decs.length} decision${decs.length > 1 ? 's' : ''} logged`,
-      req: decs.map((d, i) => `${i+1}. ${d}`).join('\n'),
-      owner: 'TBD',
-      status: 'ns',
-      dep: { type: 'none' },
-      deadline: null,
-      notes: 'Automatically created from Live Log decisions. Review and convert to action tasks as needed.',
-      _importStatus: 'decision',
-    });
+    if (!STAGE_META[stage]||!decs.length) continue;
+    decisionTasks.push(ensureTaskDefaults({ id:'import_dec_'+stage, _seedId:null, stage, name:`[Workshop decisions] ${decs.length} decision${decs.length>1?'s':''} logged`, req:decs.map((d,i)=>`${i+1}. ${d}`).join('\n'), owner:'TBD', status:'ns', dep:{type:'none'}, deadline:null, notes:'Automatically created from Live Log decisions. Review and convert to action tasks as needed.', _importStatus:'decision', deferred:defaultDeferred() }));
   }
-
-  // Parked items as info tasks
   const parkedTasks = [];
-  const parkedItems = data.parkedItems || {};
-  for (const [liveSid, parkArr] of Object.entries(parkedItems)) {
-    const stage = LIVE_LOG_STAGE_MAP[liveSid] || liveSid;
-    if (!STAGE_META[stage] || !parkArr.length) continue;
-    parkArr.forEach((p, i) => {
-      parkedTasks.push({
-        id: 'import_park_' + liveSid + '_' + i,
-        _seedId: null,
-        stage,
-        name: `[Parked] ${p.text}`,
-        req: `Owner: ${p.owner || 'TBD'} · Resolve: ${p.when || 'TBD'}`,
-        owner: p.owner ? (p.owner.includes('IT') ? 'IT' : p.owner.includes('Finance') ? 'Finance' : p.owner.includes('Ops') ? 'Ops' : 'TBD') : 'TBD',
-        status: 'ns',
-        dep: { type: 'none' },
-        deadline: null,
-        notes: `Parked item from workshop Day ${p.day || '?'}. ${p.when === 'Post-workshop' ? 'Resolve post-workshop.' : ''}`,
-        _importStatus: 'parked',
-      });
-    });
+  for (const [liveSid, parkArr] of Object.entries(data.parkedItems || {})) {
+    const stage = LIVE_LOG_STAGE_MAP[liveSid]||liveSid; if (!STAGE_META[stage]||!parkArr.length) continue;
+    parkArr.forEach((p,i) => { parkedTasks.push(ensureTaskDefaults({ id:'import_park_'+liveSid+'_'+i, _seedId:null, stage, name:`[Parked] ${p.text}`, req:`Owner: ${p.owner||'TBD'} · Resolve: ${p.when||'TBD'}`, owner:p.owner?(p.owner.includes('IT')?'IT':p.owner.includes('Finance')?'Finance':p.owner.includes('Ops')?'Ops':'TBD'):'TBD', status:'ns', dep:{type:'none'}, deadline:null, notes:`Parked item from workshop Day ${p.day||'?'}.`, _importStatus:'parked', deferred:defaultDeferred() })); });
   }
-
-  // Add new tasks from addedTasks
   const newTasks = [];
-  for (const [liveSid, taskArr] of Object.entries(addedTasks)) {
-    const stage = LIVE_LOG_STAGE_MAP[liveSid] || liveSid;
-    if (!STAGE_META[stage]) continue;
-    (taskArr || []).forEach((t, i) => {
-      newTasks.push({
-        id: 'import_add_' + liveSid + '_' + i,
-        _seedId: t.id || null,
-        stage,
-        name: t.name,
-        req: [
-          t.notes || '',
-          t.trigger ? `Trigger: ${t.trigger.event} [${t.trigger.source || ''}]` : '',
-          t.changeNote ? `Reason: ${t.changeNote}` : '',
-        ].filter(Boolean).join('\n'),
-        owner: guessOwner(t.team),
-        status: 'ns',
-        dep: { type: 'none' },
-        deadline: null,
-        notes: t.notes || '',
-        _importStatus: 'added',
-      });
-    });
+  for (const [liveSid, taskArr] of Object.entries(data.addedTasks || {})) {
+    const stage = LIVE_LOG_STAGE_MAP[liveSid]||liveSid; if (!STAGE_META[stage]) continue;
+    (taskArr||[]).forEach((t,i) => { newTasks.push(ensureTaskDefaults({ id:'import_add_'+liveSid+'_'+i, _seedId:t.id||null, stage, name:t.name, req:[t.notes||'',t.trigger?`Trigger: ${t.trigger.event} [${t.trigger.source||''}]`:'',t.changeNote?`Reason: ${t.changeNote}`:''].filter(Boolean).join('\n'), owner:guessOwner(t.team), status:'ns', dep:{type:'none'}, deadline:null, notes:t.notes||'', _importStatus:'added', deferred:defaultDeferred() })); });
   }
-
-  // Compose final task list: base (with modifications) + new + decisions + parked
-  tasks = [
-    ...base,
-    ...newTasks,
-    ...decisionTasks,
-    ...parkedTasks,
-  ];
-
-  saveTasks();
-  updateImportBanner();
-  renderCards();
-  updateProgress();
+  tasks = [...base, ...newTasks, ...decisionTasks, ...parkedTasks];
+  saveTasks(); updateImportBanner(); renderCards(); updateProgress();
 }
 
 function guessOwner(team) {
   if (!team) return 'TBD';
   if (team.includes('Financial')) return 'Finance';
-  if (team.includes('Booking') || team.includes('Documentation') || team.includes('Operations')) return 'Ops';
+  if (team.includes('Booking')||team.includes('Documentation')||team.includes('Operations')) return 'Ops';
   if (team.includes('Error')) return 'IT';
   return 'TBD';
 }
-
 function updateImportBanner() {
   const banner = document.getElementById('import-banner');
   if (importedLogData) {
     banner.classList.remove('hidden');
-    const totalImported = tasks.filter(t => t._importStatus).length;
-    document.getElementById('import-banner-text').textContent =
-      `Live Log imported · ${totalImported} tasks reflect workshop decisions.`;
+    const tot = tasks.filter(t=>t._importStatus).length;
+    document.getElementById('import-banner-text').textContent = `Live Log imported · ${tot} tasks reflect workshop decisions.`;
     document.getElementById('import-btn').classList.add('import-active');
     document.getElementById('import-btn').textContent = '↓ Re-import';
   } else {
@@ -996,83 +1094,129 @@ function updateImportBanner() {
     document.getElementById('import-btn').textContent = '↓ Import from Live Log';
   }
 }
-
-function showImportDiff() {
-  if (importedLogData) openImportPreview(importedLogData);
-}
-
+function showImportDiff() { if (importedLogData) openImportPreview(importedLogData); }
 function clearImport() {
   if (!confirm('Clear the imported Live Log data and revert to the seed task list?')) return;
   importedLogData = null;
-  try { localStorage.removeItem('gloforex_impl_import'); } catch(e) {}
-  tasks = SEED_TASKS.map((t, i) => ({ id: 'task_' + i, ...t }));
-  saveTasks();
-  updateImportBanner();
-  renderCards();
-  updateProgress();
+  try { localStorage.removeItem('gloforex_impl_import_v5'); } catch(e) {}
+  tasks = SEED_TASKS.map((t,i) => ensureTaskDefaults({ id:'task_'+i, ...t, deferred:defaultDeferred() }));
+  saveTasks(); updateImportBanner(); renderCards(); updateProgress();
 }
 
-// ── Progress ───────────────────────────────────────────────────────────────
+// ── Progress ──────────────────────────────────────────────────────────────
+function isGoLiveReady(t) { return t.status === 'done' && !(t.deferred && t.deferred.active); }
+function isDeferred(t) { return !!(t.deferred && t.deferred.active); }
+
 function updateProgress() {
   const stages = ['ALL', ...Object.keys(STAGE_META)];
   stages.forEach(s => {
-    const subset = s === 'ALL' ? tasks : tasks.filter(t => t.stage === s);
-    const done = subset.filter(t => t.status === 'done').length;
+    const subset = s==='ALL' ? tasks : tasks.filter(t=>t.stage===s);
+    const done = subset.filter(t=>t.status==='done').length;
     const total = subset.length;
-    const el = document.getElementById('prog-' + s);
+    const el = document.getElementById('prog-'+s);
     if (el) el.textContent = total ? `${done}/${total}` : '';
   });
-
   const all = tasks;
-  const ns   = all.filter(t => t.status === 'ns').length;
-  const ip   = all.filter(t => t.status === 'ip').length;
-  const done = all.filter(t => t.status === 'done').length;
-  const blk  = all.filter(t => t.status === 'blk').length;
-  const imp  = all.filter(t => t._importStatus).length;
+  const ns=all.filter(t=>t.status==='ns').length, ip=all.filter(t=>t.status==='ip').length,
+        done=all.filter(t=>t.status==='done').length, blk=all.filter(t=>t.status==='blk').length,
+        ready=all.filter(isGoLiveReady).length, deferred=all.filter(isDeferred).length,
+        imp=all.filter(t=>t._importStatus).length;
   document.getElementById('progress-strip').innerHTML = `
     <div class="prog-card"><div class="prog-val">${all.length}</div><div class="prog-label">Total items</div></div>
-    <div class="prog-card"><div class="prog-val" style="color:var(--status-done-t)">${done}</div><div class="prog-label">Done</div></div>
+    <div class="prog-card ready-card"><div class="prog-val" style="color:var(--status-done-t)">${ready}</div><div class="prog-label">Go-live ready</div></div>
+    <div class="prog-card deferred-card"><div class="prog-val" style="color:var(--coral-d)">${deferred}</div><div class="prog-label">Deferred</div></div>
     <div class="prog-card"><div class="prog-val" style="color:var(--status-ip-t)">${ip}</div><div class="prog-label">In progress</div></div>
     <div class="prog-card"><div class="prog-val" style="color:var(--status-blk-t)">${blk}</div><div class="prog-label">Blocked</div></div>
     <div class="prog-card"><div class="prog-val" style="color:var(--text3)">${ns}</div><div class="prog-label">Not started</div></div>
-    ${imp ? `<div class="prog-card"><div class="prog-val" style="color:var(--green)">${imp}</div><div class="prog-label">From log</div></div>` : ''}
-  `;
+    ${imp ? `<div class="prog-card"><div class="prog-val" style="color:var(--green)">${imp}</div><div class="prog-label">From log</div></div>` : ''}`;
 }
 
-// ── Render cards ───────────────────────────────────────────────────────────
+// ── Render cards ──────────────────────────────────────────────────────────
 function renderCards() {
   let visible = tasks;
-  if (currentStage !== 'ALL') visible = visible.filter(t => t.stage === currentStage);
-  if (filterStatus !== 'all')   visible = visible.filter(t => t.status === filterStatus);
-  if (filterOwner  !== 'all')   visible = visible.filter(t => t.owner  === filterOwner);
-  if (filterImported === 'yes') visible = visible.filter(t => !!t._importStatus);
-  if (filterImported === 'no')  visible = visible.filter(t => !t._importStatus);
-
+  if (currentStage !== 'ALL') visible = visible.filter(t=>t.stage===currentStage);
+  if (filterStatus !== 'all')   visible = visible.filter(t=>t.status===filterStatus);
+  if (filterOwner  !== 'all')   visible = visible.filter(t=>t.owner===filterOwner);
+  if (filterDeferred === 'yes') visible = visible.filter(t=>isDeferred(t));
+  if (filterDeferred === 'no')  visible = visible.filter(t=>!isDeferred(t));
+  if (filterImported === 'yes') visible = visible.filter(t=>!!t._importStatus);
+  if (filterImported === 'no')  visible = visible.filter(t=>!t._importStatus);
   const container = document.getElementById('cards-list');
   if (!visible.length) { container.innerHTML = `<div class="empty-state">No items match the current filters.</div>`; return; }
 
   container.innerHTML = visible.map(t => {
-    const sc = stageColor(t.stage);
-    const sm = STATUS_META[t.status] || STATUS_META.ns;
-    const oc = OWNER_CLS[t.owner] || 'ow-tbd';
-    const is = t._importStatus;
+    const sc = stageColor(t.stage); const sm = STATUS_META[t.status]||STATUS_META.ns;
+    const oc = OWNER_CLS[t.owner]||'ow-tbd'; const is = t._importStatus;
+    const deferred = t.deferred?.active;
 
-    // Import tag
-    let importTag = '';
-    let cardClass = '';
-    if (is === 'modified')  { importTag = `<span class="tc-import-tag tag-modified">modified</span>`;  cardClass = 'imported-modified'; }
-    if (is === 'added')     { importTag = `<span class="tc-import-tag tag-added">new</span>`;           cardClass = 'imported-added'; }
-    if (is === 'deleted')   { importTag = `<span class="tc-import-tag tag-deleted">removed</span>`;    cardClass = 'imported-deleted'; }
-    if (is === 'decision')  { importTag = `<span class="tc-import-tag tag-added" style="background:var(--blue-l);color:var(--blue-d)">decision</span>`; cardClass = 'imported-added'; }
-    if (is === 'parked')    { importTag = `<span class="tc-import-tag tag-modified">parked</span>`;     cardClass = 'imported-modified'; }
+    let importTag = '', cardClass = '';
+    if (is==='modified') { importTag=`<span class="tc-import-tag tag-modified">modified</span>`; cardClass='imported-modified'; }
+    if (is==='added')    { importTag=`<span class="tc-import-tag tag-added">new</span>`; cardClass='imported-added'; }
+    if (is==='deleted')  { importTag=`<span class="tc-import-tag tag-deleted">removed</span>`; cardClass='imported-deleted'; }
+    if (is==='decision') { importTag=`<span class="tc-import-tag tag-added" style="background:var(--blue-l);color:var(--blue-d)">decision</span>`; cardClass='imported-added'; }
+    if (is==='parked')   { importTag=`<span class="tc-import-tag tag-modified">parked</span>`; cardClass='imported-modified'; }
+    if (deferred) cardClass = 'is-deferred';
 
-    // Provenance block inside card body
+    // Country pills for header
+    const countriesHtml = `<div class="tc-countries">${ALL_COUNTRIES.map(c => {
+      const cs = t.countryScope?.[c]; const inScope = cs?.inScope !== false;
+      return `<span class="tc-country ${inScope?'active':'inactive'}">${c}</span>`;
+    }).join('')}</div>`;
+
+    let deferredTagHtml = deferred ? `<span class="tc-deferred-tag">deferred</span>` : '';
+
     let provenanceHtml = '';
-    if (is === 'modified') provenanceHtml = `<div class="import-provenance prov-modified"><div class="prov-label">Modified from workshop log</div><div class="prov-detail">${t.notes ? esc(t.notes) : 'Task scope or trigger updated based on workshop decisions.'}</div></div>`;
-    if (is === 'added')    provenanceHtml = `<div class="import-provenance prov-added"><div class="prov-label">New task — added during workshop</div><div class="prov-detail">${t.notes ? esc(t.notes) : 'Task created from Live Log addedTasks.'}</div></div>`;
-    if (is === 'deleted')  provenanceHtml = `<div class="import-provenance prov-deleted"><div class="prov-label">Removed during workshop</div><div class="prov-detail">This task was removed in the workshop session. Keep for reference or delete from the planner.</div></div>`;
-    if (is === 'decision') provenanceHtml = `<div class="import-provenance prov-added"><div class="prov-label">Decisions logged for this stage</div><div class="prov-detail">Review and convert to specific action tasks as needed.</div></div>`;
-    if (is === 'parked')   provenanceHtml = `<div class="import-provenance prov-modified"><div class="prov-label">Parked item from workshop</div><div class="prov-detail">Requires resolution — assign owner and track to completion.</div></div>`;
+    if (is==='modified') provenanceHtml=`<div class="import-provenance prov-modified"><div class="prov-label">Modified from workshop log</div><div class="prov-detail">${t.notes?esc(t.notes):'Task scope or trigger updated based on workshop decisions.'}</div></div>`;
+    if (is==='added')    provenanceHtml=`<div class="import-provenance prov-added"><div class="prov-label">New task — added during workshop</div><div class="prov-detail">${t.notes?esc(t.notes):''}</div></div>`;
+    if (is==='deleted')  provenanceHtml=`<div class="import-provenance prov-deleted"><div class="prov-label">Removed during workshop</div><div class="prov-detail">Keep for reference or remove from planner.</div></div>`;
+    if (is==='decision') provenanceHtml=`<div class="import-provenance prov-added"><div class="prov-label">Decisions logged for this stage</div><div class="prov-detail">Review and convert to specific action tasks as needed.</div></div>`;
+    if (is==='parked')   provenanceHtml=`<div class="import-provenance prov-modified"><div class="prov-label">Parked item from workshop</div><div class="prov-detail">Requires resolution — assign owner and track to completion.</div></div>`;
+
+    // Country scope editor
+    const countryScopeEditorHtml = `
+    <div class="country-scope-section">
+      <div class="country-scope-title">Country scope</div>
+      <div class="country-rows">
+        ${ALL_COUNTRIES.map(c => {
+          const cs = t.countryScope?.[c] || {inScope:true, mode:'not-applicable'};
+          const inScope = cs.inScope !== false;
+          return `<div class="country-row">
+            <div class="country-toggle">
+              <button class="ctry-btn ${inScope?'in-scope':''}" onclick="toggleCountry('${t.id}','${c}')">${c}</button>
+            </div>
+            <div class="country-scope-detail">
+              ${!inScope ? `
+                <button class="scope-mode-btn ${cs.mode==='not-applicable'?'active scope-exc':''}" onclick="setCountryMode('${t.id}','${c}','not-applicable')">Not applicable</button>
+                <button class="scope-mode-btn ${cs.mode==='not-ready'?'active':''}" onclick="setCountryMode('${t.id}','${c}','not-ready')">Not yet ready</button>
+                <span class="country-row-note">${cs.mode==='not-applicable'?'Excluded from scope — country delta':'Needed but not ready for go-live'}</span>
+              ` : '<span class="country-row-note" style="color:var(--blue-d);font-style:normal">In scope</span>'}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+
+    // Deferred section
+    const deferredHtml = `
+    <div class="deferred-section">
+      <div class="deferred-title">Go-live status</div>
+      <div class="deferred-toggle-row">
+        <label class="deferred-toggle">
+          <input type="checkbox" ${deferred?'checked':''} onchange="toggleDeferred('${t.id}',this.checked)"/>
+          <span class="deferred-track"></span>
+        </label>
+        <span class="deferred-toggle-label">${deferred ? '<strong style="color:var(--coral-d)">Deferred</strong> — excluded from go-live' : 'Included in go-live'}</span>
+      </div>
+      ${deferred ? `
+      <div class="deferred-reason-row">
+        <select onchange="setDeferredReason('${t.id}',this.value)">
+          <option value="automation" ${t.deferred?.reason==='automation'?'selected':''}>Automation not ready</option>
+          <option value="decision"  ${t.deferred?.reason==='decision'?'selected':''}>Decision pending</option>
+          <option value="other"     ${t.deferred?.reason==='other'?'selected':''}>Other</option>
+        </select>
+        <textarea placeholder="Additional context (optional)…" onchange="setDeferredComment('${t.id}',this.value)">${esc(t.deferred?.comment||'')}</textarea>
+      </div>` : ''}
+    </div>`;
 
     return `
     <div class="task-card ${cardClass}" id="card-${t.id}">
@@ -1080,6 +1224,8 @@ function renderCards() {
         <span class="tc-stage" style="background:${sc.bg};color:${sc.color}">${t.stage}</span>
         <span class="tc-name"${is==='deleted'?' style="text-decoration:line-through;opacity:.6"':''}>${esc(t.name)}</span>
         ${t.deadline ? `<span style="font-size:10px;color:var(--text3);white-space:nowrap">${renderDeadlinePill(t.deadline)}</span>` : ''}
+        ${countriesHtml}
+        ${deferredTagHtml}
         ${importTag}
         <span class="tc-owner ${oc}">${t.owner}</span>
         <span class="tc-status ${sm.cls}" onclick="cycleStatus(event,'${t.id}')" title="Click to change status">${sm.label}</span>
@@ -1094,26 +1240,26 @@ function renderCards() {
           <div class="field-group">
             <div class="field-label">Owner</div>
             <select class="field-select" onchange="updateField('${t.id}','owner',this.value)">
-              ${['TBD','IT','Ops','Finance','MF vendor'].map(o => `<option ${t.owner===o?'selected':''}>${o}</option>`).join('')}
+              ${['TBD','IT','Ops','Finance','MF vendor'].map(o=>`<option ${t.owner===o?'selected':''}>${o}</option>`).join('')}
             </select>
           </div>
           <div class="field-group">
             <div class="field-label">Status</div>
             <select class="field-select" onchange="updateField('${t.id}','status',this.value)">
-              ${Object.entries(STATUS_META).map(([k,v]) => `<option value="${k}" ${t.status===k?'selected':''}>${v.label}</option>`).join('')}
+              ${Object.entries(STATUS_META).map(([k,v])=>`<option value="${k}" ${t.status===k?'selected':''}>${v.label}</option>`).join('')}
             </select>
           </div>
           <div class="field-group">
             <div class="field-label">Deadline</div>
             <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
-              <select class="field-select" style="flex:1;min-width:130px" onchange="updateDeadlineMilestone('${t.id}',this.value)">
+              <select class="field-select" style="flex:1;min-width:120px" onchange="updateDeadlineMilestone('${t.id}',this.value)">
                 <option value="">— None —</option>
                 ${['ETD','ATD','ETA','ATA','Customs clearance','Document receipt'].map(m=>`<option ${t.deadline&&t.deadline.milestone===m?'selected':''}>${m}</option>`).join('')}
               </select>
-              <select class="field-select" style="width:90px" onchange="updateDeadlineDir('${t.id}',this.value)">
+              <select class="field-select" style="width:80px" onchange="updateDeadlineDir('${t.id}',this.value)">
                 ${['before','on','after'].map(d=>`<option value="${d}" ${t.deadline&&t.deadline.direction===d?'selected':''}>${d}</option>`).join('')}
               </select>
-              <input class="field-input" type="number" min="0" max="30" style="width:60px" placeholder="days"
+              <input class="field-input" type="number" min="0" max="30" style="width:55px" placeholder="days"
                 value="${t.deadline&&t.deadline.direction!=='on'?t.deadline.offset:''}"
                 onchange="updateDeadlineOffset('${t.id}',this.value)" />
             </div>
@@ -1122,8 +1268,8 @@ function renderCards() {
             <div class="field-label">Dependency</div>
             <div class="dep-row">
               <select class="field-select dep-type-select" onchange="updateDepType('${t.id}',this.value)">
-                <option value="none"  ${(!t.dep||t.dep.type==='none')   ?'selected':''}>None</option>
-                <option value="task"  ${t.dep&&t.dep.type==='task'      ?'selected':''}>Depends on task</option>
+                <option value="none"  ${(!t.dep||t.dep.type==='none')?'selected':''}>None</option>
+                <option value="task"  ${t.dep&&t.dep.type==='task'?'selected':''}>Depends on task</option>
                 <option value="document" ${t.dep&&t.dep.type==='document'?'selected':''}>Depends on document</option>
               </select>
               <div style="flex:1">
@@ -1145,7 +1291,10 @@ function renderCards() {
               onchange="updateField('${t.id}','notes',this.value)">${esc(t.notes||'')}</textarea>
           </div>
         </div>
+        ${countryScopeEditorHtml}
+        ${deferredHtml}
         ${provenanceHtml}
+        ${t._seedId==='stg7-1' ? toolSectionHtml(t.id) : ''}
         <div style="margin-top:10px;display:flex;justify-content:flex-end">
           <button class="btn" style="font-size:11px;color:var(--red)" onclick="deleteTask('${t.id}')">Remove item</button>
         </div>
@@ -1154,148 +1303,205 @@ function renderCards() {
   }).join('');
 }
 
+function toolSectionHtml(id) {
+  return `
+  <div class="tool-section">
+    <button class="tool-section-toggle" id="tool-toggle-${id}" onclick="toggleToolSection('${id}')">
+      <span style="color:var(--blue-d);font-size:10px">⚙</span>
+      Supporting tools
+      <span style="font-size:10px;font-weight:400;color:var(--text3);margin-left:4px">Data Updater</span>
+      <span class="tool-chevron">▾</span>
+    </button>
+    <div class="tool-section-body" id="tool-body-${id}">
+      <div class="tool-body-inner">
+        <div class="tool-head">
+          <div class="tool-icon">⚙️</div>
+          <div class="tool-name">Data Updater — bulk delivery input</div>
+          <span class="tool-tag">Parallel workstream</span>
+        </div>
+        <div class="tool-desc">Connected directly to the MF API. Allows bulk updating of delivery fields across multiple shipments at once — addresses the gap where the MF UI handles single-shipment input well but becomes slow at volume.</div>
+        <div class="tool-scope">
+          <div class="tool-scope-label">Fields in scope</div>
+          <span class="tool-pill in">Pickup reference</span>
+          <span class="tool-pill in">Pickup date</span>
+          <span class="tool-pill in">Delivery location</span>
+          <span class="tool-pill in">Delivery appointment</span>
+          <span class="tool-pill in">Inland reference</span>
+          <span class="tool-pill out">Carrier release</span>
+          <span class="tool-pill out">Financial fields</span>
+          <span class="tool-pill out">Customs data</span>
+        </div>
+        <div class="tool-fac-note"><strong>Facilitator note:</strong> Mention briefly after STG-7 task structure is confirmed. No decision needed — already in development. Don't open for discussion.</div>
+      </div>
+      <div class="tool-footer">
+        <div class="tool-footer-metas">
+          <div class="tool-footer-meta">Owner <span>IT / Ops</span></div>
+          <div class="tool-footer-meta">Status <span>In development</span></div>
+          <div class="tool-footer-meta">Integration <span>MF API</span></div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
 function renderDeadlinePill(dl) {
   if (!dl) return '';
   const { milestone, offset, direction } = dl;
-  if (direction === 'on') return `On ${milestone}`;
+  if (direction==='on') return `On ${milestone}`;
   return `${offset}d ${direction} ${milestone}`;
 }
+function stageColor(stage) { return STAGE_META[stage]||{ bg:'#f0efe9', color:'#5f5e5a' }; }
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-function stageColor(stage) {
-  return STAGE_META[stage] || { bg: '#f0efe9', color: '#5f5e5a' };
-}
-
-function esc(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-// ── Interactions ───────────────────────────────────────────────────────────
 function toggleCard(id) { const c = document.getElementById('card-'+id); if (c) c.classList.toggle('open'); }
 
 function cycleStatus(e, id) {
   e.stopPropagation();
   const order = ['ns','ip','done','blk'];
-  const t = tasks.find(x => x.id === id); if (!t) return;
+  const t = tasks.find(x=>x.id===id); if (!t) return;
   t.status = order[(order.indexOf(t.status)+1) % order.length];
-  saveTasks(); renderCards(); updateProgress();
+  saveTasks(); patchCard(id); updateProgress();
 }
 
 function updateField(id, field, value) {
-  const t = tasks.find(x => x.id === id); if (!t) return;
+  const t = tasks.find(x=>x.id===id); if (!t) return;
   t[field] = value; saveTasks();
-  if (field === 'status' || field === 'owner') { renderCards(); updateProgress(); }
+  if (field==='status'||field==='owner') { patchCard(id); updateProgress(); }
 }
 
 function updateDeadlineMilestone(id, val) {
-  const t = tasks.find(x => x.id === id); if (!t) return;
-  if (!val) { t.deadline = null; } else { if (!t.deadline) t.deadline = { milestone:val, offset:1, direction:'after' }; else t.deadline.milestone = val; }
+  const t = tasks.find(x=>x.id===id); if (!t) return;
+  if (!val) { t.deadline=null; } else { if (!t.deadline) t.deadline={milestone:val,offset:1,direction:'after'}; else t.deadline.milestone=val; }
   saveTasks();
 }
-function updateDeadlineDir(id, val) { const t = tasks.find(x => x.id === id); if (!t||!t.deadline) return; t.deadline.direction = val; saveTasks(); }
-function updateDeadlineOffset(id, val) { const t = tasks.find(x => x.id === id); if (!t||!t.deadline) return; t.deadline.offset = parseInt(val)||0; saveTasks(); }
+function updateDeadlineDir(id, val) { const t=tasks.find(x=>x.id===id); if (!t||!t.deadline) return; t.deadline.direction=val; saveTasks(); }
+function updateDeadlineOffset(id, val) { const t=tasks.find(x=>x.id===id); if (!t||!t.deadline) return; t.deadline.offset=parseInt(val)||0; saveTasks(); }
 
 function updateDepType(id, type) {
-  const t = tasks.find(x => x.id === id); if (!t) return;
-  t.dep = { type, taskRef:'', docType:'' }; saveTasks();
-  const ti = document.getElementById('dep-task-'+id);
-  const dw = document.getElementById('dep-doc-wrap-'+id);
-  if (ti) ti.style.display = type==='task'?'':'none';
-  if (dw) dw.style.display = type==='document'?'':'none';
+  const t=tasks.find(x=>x.id===id); if (!t) return;
+  t.dep={type,taskRef:'',docType:''}; saveTasks();
+  const ti=document.getElementById('dep-task-'+id); const dw=document.getElementById('dep-doc-wrap-'+id);
+  if (ti) ti.style.display=type==='task'?'':'none';
+  if (dw) dw.style.display=type==='document'?'':'none';
 }
-function updateDepDetail(id, field, value) { const t = tasks.find(x => x.id === id); if (!t||!t.dep) return; t.dep[field] = value; saveTasks(); }
+function updateDepDetail(id, field, value) { const t=tasks.find(x=>x.id===id); if (!t||!t.dep) return; t.dep[field]=value; saveTasks(); }
 
 function deleteTask(id) {
   if (!confirm('Remove this item?')) return;
-  tasks = tasks.filter(x => x.id !== id); saveTasks(); renderCards(); updateProgress();
+  tasks=tasks.filter(x=>x.id!==id); saveTasks(); renderCards(); updateProgress();
 }
 
-// ── Stage / filter ─────────────────────────────────────────────────────────
 function selectStage(stage, btn) {
   currentStage = stage;
-  document.querySelectorAll('.stage-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.stage-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   const meta = STAGE_META[stage];
   document.getElementById('main-title').textContent = stage==='ALL' ? 'All tasks' : `${stage} — ${meta?meta.label:''}`;
   document.getElementById('main-sub').textContent = stage==='ALL'
-    ? 'Configuration requirements, dependencies and ownership for all operational stages'
-    : 'Configuration requirements, dependencies and ownership for this stage';
+    ? 'Configuration requirements, country scope, and go-live readiness across all operational stages'
+    : 'Configuration requirements, country scope, and go-live readiness for this stage';
   renderCards();
 }
 
 function setFilter(type, value, btn) {
-  const filterBtns = document.querySelectorAll('.filter-bar .filter-pill');
-  if (type === 'status') {
-    filterStatus = value;
-    filterBtns.forEach((b,i) => { if (i < 5) b.classList.toggle('active', b===btn); });
-  } else if (type === 'owner') {
-    filterOwner = value;
-    filterBtns.forEach((b,i) => { if (i >= 6 && i <= 11) b.classList.toggle('active', b===btn); });
-  } else if (type === 'imported') {
-    filterImported = value;
-    filterBtns.forEach((b,i) => { if (i >= 13) b.classList.toggle('active', b===btn); });
-  }
+  const pills = document.querySelectorAll('.filter-bar .filter-pill');
+  if (type==='status') { filterStatus=value; pills.forEach((b,i)=>{if(i<5)b.classList.toggle('active',b===btn);}); }
+  else if (type==='owner') { filterOwner=value; pills.forEach((b,i)=>{if(i>=6&&i<=11)b.classList.toggle('active',b===btn);}); }
+  else if (type==='deferred') { filterDeferred=value; pills.forEach((b,i)=>{if(i>=13&&i<=15)b.classList.toggle('active',b===btn);}); }
+  else if (type==='imported') { filterImported=value; pills.forEach((b,i)=>{if(i>=17)b.classList.toggle('active',b===btn);}); }
   renderCards();
 }
 
-// ── Add modal ──────────────────────────────────────────────────────────────
 function openAddModal() {
-  const sel = document.getElementById('add-stage');
-  sel.innerHTML = Object.entries(STAGE_META).map(([k,v])=>`<option value="${k}">${k} — ${v.label}</option>`).join('');
-  if (currentStage !== 'ALL') sel.value = currentStage;
+  const sel=document.getElementById('add-stage');
+  sel.innerHTML=Object.entries(STAGE_META).map(([k,v])=>`<option value="${k}">${k} — ${v.label}</option>`).join('');
+  if (currentStage!=='ALL') sel.value=currentStage;
   document.getElementById('add-modal').classList.add('open');
 }
 function closeAddModal() { document.getElementById('add-modal').classList.remove('open'); }
 function confirmAdd() {
-  const name  = document.getElementById('add-name').value.trim();
-  const stage = document.getElementById('add-stage').value;
-  const req   = document.getElementById('add-req').value.trim();
-  const owner = document.getElementById('add-owner').value;
+  const name=document.getElementById('add-name').value.trim(); const stage=document.getElementById('add-stage').value;
+  const req=document.getElementById('add-req').value.trim(); const owner=document.getElementById('add-owner').value;
   if (!name) return;
-  tasks.push({ id:'task_'+Date.now(), stage, name, req, owner, status:'ns', dep:{type:'none'}, deadline:null, notes:'' });
+  tasks.push(ensureTaskDefaults({ id:'task_'+Date.now(), stage, name, req, owner, status:'ns', dep:{type:'none'}, deadline:null, notes:'', deferred:defaultDeferred() }));
   saveTasks(); renderCards(); updateProgress(); closeAddModal();
-  document.getElementById('add-name').value = '';
-  document.getElementById('add-req').value  = '';
+  document.getElementById('add-name').value=''; document.getElementById('add-req').value='';
 }
 
-// ── Summary ────────────────────────────────────────────────────────────────
 function openSummary() {
-  const blocked   = tasks.filter(t => t.status==='blk');
-  const ip        = tasks.filter(t => t.status==='ip');
-  const notOwned  = tasks.filter(t => t.owner==='TBD');
-  const withNotes = tasks.filter(t => t.notes && t.notes.trim());
-  const imported  = tasks.filter(t => t._importStatus);
-
+  const blocked=tasks.filter(t=>t.status==='blk'), ip=tasks.filter(t=>t.status==='ip'),
+        notOwned=tasks.filter(t=>t.owner==='TBD'), deferred=tasks.filter(isDeferred),
+        imported=tasks.filter(t=>t._importStatus);
   const section = (label, items, rowFn) => {
     if (!items.length) return `<div class="summary-section"><div class="summary-section-label">${label}</div><div style="font-size:12px;color:var(--text3)">None</div></div>`;
     return `<div class="summary-section"><div class="summary-section-label">${label} (${items.length})</div>${items.map(rowFn).join('')}</div>`;
   };
-  const row = (t, valHtml) => {
-    const sc = stageColor(t.stage);
-    return `<div class="summary-row"><span class="sum-stage" style="background:${sc.bg};color:${sc.color}">${t.stage}</span><span class="sum-task">${esc(t.name)}</span>${valHtml}</div>`;
-  };
+  const row = (t, valHtml, subHtml='') => { const sc=stageColor(t.stage); return `<div class="summary-row"><span class="sum-stage" style="background:${sc.bg};color:${sc.color}">${t.stage}</span><div style="flex:1"><div class="sum-task">${esc(t.name)}</div>${subHtml?`<div class="sum-sub">${subHtml}</div>`:''}</div>${valHtml}</div>`; };
 
   let html = '';
-  if (imported.length) {
-    html += `<div class="summary-section"><div class="summary-section-label">From workshop log (${imported.length})</div>`;
-    imported.forEach(t => {
-      const tagLabel = { modified:'modified', added:'new', deleted:'removed', decision:'decision', parked:'parked' }[t._importStatus] || '';
-      const sc = stageColor(t.stage);
-      html += `<div class="summary-row"><span class="sum-stage" style="background:${sc.bg};color:${sc.color}">${t.stage}</span><span class="sum-task">${esc(t.name)}</span><span class="sum-val" style="font-size:10px">${tagLabel}</span></div>`;
+
+  // Go-live overview
+  const frDate = goliveDates.FR || ''; const deDate = goliveDates.DE || '';
+  html += `<div class="summary-section"><div class="summary-section-label">Go-live dates</div>
+    <div style="display:flex;flex-direction:column;gap:4px;font-size:12px">
+      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:0.5px solid var(--border3)"><span style="font-weight:600">NL</span><span style="color:var(--green);font-weight:500">June 2026</span></div>
+      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:0.5px solid var(--border3)"><span style="font-weight:600">FR</span>${frDate ? `<span style="color:var(--green);font-weight:500">${esc(frDate)}</span>` : `<span style="color:var(--text3)">TBD — set in sidebar</span>`}</div>
+      <div style="display:flex;justify-content:space-between;padding:4px 0"><span style="font-weight:600">DE</span>${deDate ? `<span style="color:var(--green);font-weight:500">${esc(deDate)}</span>` : `<span style="color:var(--text3)">TBD — set in sidebar</span>`}</div>
+    </div>
+    <div style="margin-top:8px;font-size:11px;color:var(--text3);font-style:italic">All tasks activate simultaneously across countries at go-live, unless explicitly deferred.</div>
+  </div>`;
+
+  // Readiness overview
+  const readyCount=tasks.filter(isGoLiveReady).length, deferredCount=deferred.length, total=tasks.length;
+  html += `<div class="summary-section"><div class="summary-section-label">Readiness</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <div style="padding:10px;border-radius:7px;background:var(--status-done);border:0.5px solid rgba(39,80,10,0.1)">
+        <div style="font-size:18px;font-weight:500;color:var(--status-done-t)">${readyCount}/${total}</div>
+        <div style="font-size:10px;color:var(--status-done-t);opacity:.7;margin-top:2px">Go-live ready</div>
+      </div>
+      <div style="padding:10px;border-radius:7px;background:var(--coral-l);border:0.5px solid rgba(153,60,29,0.1)">
+        <div style="font-size:18px;font-weight:500;color:var(--coral-d)">${deferredCount}</div>
+        <div style="font-size:10px;color:var(--coral-d);opacity:.7;margin-top:2px">Deferred</div>
+      </div>
+    </div>
+  </div>`;
+
+  if (deferred.length) {
+    html += `<div class="summary-section"><div class="summary-section-label">Deferred items (${deferred.length})</div>`;
+    deferred.forEach(t => {
+      const r = t.deferred?.reason ? DEFERRED_REASONS[t.deferred.reason] || t.deferred.reason : '';
+      const comment = t.deferred?.comment;
+      html += row(t, `<span class="sum-val" style="color:var(--coral-d);font-size:10px">${r}</span>`, comment?esc(comment):'');
     });
     html += '</div>';
   }
-  html += section('Blocked items', blocked,  t => row(t, `<span class="sum-val" style="color:var(--status-blk-t)">Blocked</span>`));
-  html += section('In progress',   ip,       t => row(t, `<span class="sum-val">${t.owner}</span>`));
-  html += section('No owner',      notOwned, t => row(t, `<span class="sum-val" style="color:var(--text3)">TBD</span>`));
-  html += section('Items with notes', withNotes, t => row(t, `<span class="sum-val" style="color:var(--text2);font-size:11px;max-width:150px;text-align:right">${esc(t.notes.substring(0,50))}${t.notes.length>50?'…':''}</span>`));
 
-  const ownerCount = {};
-  tasks.forEach(t => { ownerCount[t.owner] = (ownerCount[t.owner]||0)+1; });
+  // Country scope exceptions
+  const withExclusions = tasks.filter(t => ALL_COUNTRIES.some(c => t.countryScope?.[c]?.inScope===false));
+  if (withExclusions.length) {
+    html += `<div class="summary-section"><div class="summary-section-label">Country scope exceptions (${withExclusions.length})</div>`;
+    withExclusions.forEach(t => {
+      const excl = ALL_COUNTRIES.filter(c => t.countryScope?.[c]?.inScope===false);
+      const modes = excl.map(c => { const m = t.countryScope[c].mode; return `${c}: ${m==='not-applicable'?'not applicable':'not yet ready'}`; }).join(' · ');
+      html += row(t, `<span class="sum-val" style="font-size:10px">${excl.join(', ')}</span>`, modes);
+    });
+    html += '</div>';
+  }
+
+  if (imported.length) {
+    html += `<div class="summary-section"><div class="summary-section-label">From workshop log (${imported.length})</div>`;
+    imported.forEach(t => { const lbl={modified:'modified',added:'new',deleted:'removed',decision:'decision',parked:'parked'}[t._importStatus]||''; html += row(t, `<span class="sum-val" style="font-size:10px">${lbl}</span>`); });
+    html += '</div>';
+  }
+
+  html += section('Blocked items', blocked, t=>row(t, `<span class="sum-val" style="color:var(--status-blk-t)">Blocked</span>`));
+  html += section('In progress',   ip,      t=>row(t, `<span class="sum-val">${t.owner}</span>`));
+  html += section('No owner',      notOwned,t=>row(t, `<span class="sum-val" style="color:var(--text3)">TBD</span>`));
+
+  const ownerCount={};
+  tasks.forEach(t=>{ownerCount[t.owner]=(ownerCount[t.owner]||0)+1;});
   html += `<div class="summary-section"><div class="summary-section-label">Items by owner</div>`;
-  Object.entries(ownerCount).sort((a,b)=>b[1]-a[1]).forEach(([owner,count]) => {
-    const cls = OWNER_CLS[owner]||'ow-tbd';
-    html += `<div class="summary-row"><span class="tc-owner ${cls}">${owner}</span><span class="sum-val">${count} items</span></div>`;
-  });
+  Object.entries(ownerCount).sort((a,b)=>b[1]-a[1]).forEach(([owner,count])=>{const cls=OWNER_CLS[owner]||'ow-tbd';html+=`<div class="summary-row"><span class="tc-owner ${cls}">${owner}</span><span class="sum-val">${count} items</span></div>`;});
   html += '</div>';
 
   document.getElementById('summary-content').innerHTML = html;
@@ -1304,41 +1510,49 @@ function openSummary() {
 function closeSummary() { document.getElementById('summary-overlay').classList.remove('open'); }
 function closeSummaryOnBg(e) { if (e.target===document.getElementById('summary-overlay')) closeSummary(); }
 
-// ── Export CSV ─────────────────────────────────────────────────────────────
 function exportCSV() {
-  const headers = ['Stage','Task','Requirement','Owner','Status','From Log','Import status','Dependency type','Dependency detail','Deadline','Notes'];
+  const headers = ['Stage','Task','Requirement','Owner','Status','FR scope','FR mode','DE scope','DE mode','NL scope','NL mode','Deferred','Defer reason','Defer comment','From Log','Import status','Dependency type','Dependency detail','Deadline','Notes'];
   const rows = tasks.map(t => {
-    const depDetail = t.dep.type==='task' ? t.dep.taskRef : t.dep.type==='document' ? t.dep.docType : '';
-    const dl = t.deadline ? (t.deadline.direction==='on' ? `On ${t.deadline.milestone}` : `${t.deadline.offset}d ${t.deadline.direction} ${t.deadline.milestone}`) : '';
-    return [t.stage, t.name, t.req, t.owner, STATUS_META[t.status]?.label||t.status, t._importStatus?'Yes':'No', t._importStatus||'', t.dep.type, depDetail, dl, t.notes]
-      .map(v => `"${String(v||'').replace(/"/g,'""')}"`).join(',');
+    const depDetail = t.dep.type==='task'?t.dep.taskRef:t.dep.type==='document'?t.dep.docType:'';
+    const dl = t.deadline?(t.deadline.direction==='on'?`On ${t.deadline.milestone}`:`${t.deadline.offset}d ${t.deadline.direction} ${t.deadline.milestone}`):'';
+    const cs = t.countryScope || {};
+    const deferred = t.deferred?.active;
+    return [t.stage, t.name, t.req, t.owner, STATUS_META[t.status]?.label||t.status,
+      cs.FR?.inScope!==false?'Yes':'No', cs.FR?.inScope===false?(cs.FR.mode||''):'',
+      cs.DE?.inScope!==false?'Yes':'No', cs.DE?.inScope===false?(cs.DE.mode||''):'',
+      cs.NL?.inScope!==false?'Yes':'No', cs.NL?.inScope===false?(cs.NL.mode||''):'',
+      deferred?'Yes':'No', deferred?(DEFERRED_REASONS[t.deferred?.reason]||''):'',
+      deferred?(t.deferred?.comment||''):'',
+      t._importStatus?'Yes':'No', t._importStatus||'',
+      t.dep.type, depDetail, dl, t.notes
+    ].map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(',');
   });
   const csv = [headers.join(','), ...rows].join('\n');
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
-  a.download = 'gloforex_implementation_plan.csv';
-  a.click();
+  const a = document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='gloforex_implementation_plan.csv'; a.click();
 }
 
-// ── Theme ───────────────────────────────────────────────────────────────────
 function applyTheme(dark) {
   document.documentElement.classList.toggle('dark', dark);
   document.documentElement.classList.toggle('light', !dark);
   const btn = document.getElementById('theme-btn');
   if (btn) btn.textContent = dark ? '☀️ Light' : '🌙 Dark';
-  localStorage.setItem('gloforex-planner-theme', dark ? 'dark' : 'light');
+  localStorage.setItem('gloforex-planner-theme', dark?'dark':'light');
 }
-function toggleTheme() {
-  applyTheme(!document.documentElement.classList.contains('dark'));
-}
+function toggleTheme() { applyTheme(!document.documentElement.classList.contains('dark')); }
 (function initTheme() {
   const saved = localStorage.getItem('gloforex-planner-theme');
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  applyTheme(saved ? saved === 'dark' : prefersDark);
+  applyTheme(saved ? saved==='dark' : prefersDark);
 })();
 
-// ── Init ───────────────────────────────────────────────────────────────────
+function toggleToolSection(id) {
+  const toggle=document.getElementById('tool-toggle-'+id); const body=document.getElementById('tool-body-'+id);
+  if (!toggle||!body) return;
+  toggle.classList.toggle('open'); body.classList.toggle('open');
+}
+
 loadTasks();
+loadGoliveDates();
 renderCards();
 updateProgress();
 document.addEventListener('keydown', e => { if (e.key==='Escape') { closeAddModal(); closeSummary(); closeImportModal(); } });
