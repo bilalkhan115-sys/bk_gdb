@@ -84,10 +84,7 @@ body {
 }
 .theme-btn:hover { background: rgba(255,255,255,0.12); color: #e8e6de; }
 
-.page-body {
-  padding: 2rem 1rem;
-}
-
+.page-body { padding: 2rem 1rem; }
 .container { max-width: 1100px; margin: 0 auto; }
 
 .header {
@@ -103,7 +100,6 @@ body {
 .header-sub   { font-size: 14px; color: var(--text2); margin-top: 4px; }
 
 .legend {
-  /* Mirror table column widths: [badge 50] [stage 100] [task 170] [notes 1fr] [automation 160] [overdue 160] [team 150] */
   display: grid;
   grid-template-columns: 50px 100px 170px 1fr 160px 160px 150px;
   align-items: start;
@@ -111,18 +107,13 @@ body {
   padding: 0 14px;
   min-width: 820px;
 }
-
 .legend-col-right {
-  grid-column: 6; /* Overdue after column */
+  grid-column: 6;
   display: grid; grid-template-columns: auto 1fr; gap: 4px 7px;
   align-items: center;
 }
-.leg-item {
-  display: contents;
-}
-.leg-label {
-  font-size: 12px; color: var(--text2); white-space: nowrap;
-}
+.leg-item { display: contents; }
+.leg-label { font-size: 12px; color: var(--text2); white-space: nowrap; }
 .leg-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
 .leg-sep { display: none; }
 .review-dot {
@@ -138,29 +129,18 @@ body {
   cursor: pointer; transition: all .15s; font-family: inherit;
 }
 .filter-btn:hover { background: var(--bg2); }
-.filter-btn.active {
-  color: var(--text); border-color: var(--border2);
-  background: var(--bg2);
-}
+.filter-btn.active { color: var(--text); border-color: var(--border2); background: var(--bg2); }
 
-.table-wrap {
-  border: 0.5px solid var(--border2);
-  border-radius: 12px;
-  overflow: hidden;
-}
+.table-wrap { border: 0.5px solid var(--border2); border-radius: 12px; overflow: hidden; }
 
-table {
-  width: 100%; border-collapse: collapse;
-  font-size: 13px; min-width: 820px;
-}
+table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 820px; }
 
 thead th {
   font-size: 11px; font-weight: 600; letter-spacing: .05em;
   text-transform: uppercase; color: var(--text3);
   padding: 9px 14px; text-align: left;
   border-bottom: 0.5px solid var(--border2);
-  background: var(--bg2);
-  white-space: nowrap;
+  background: var(--bg2); white-space: nowrap;
 }
 
 tbody tr { border-bottom: 0.5px solid var(--border3); transition: background .1s; }
@@ -197,28 +177,16 @@ td { padding: 9px 14px; vertical-align: middle; line-height: 1.4; }
   border-radius: 8px; white-space: nowrap; display: inline-block;
 }
 
-/* ── Deadline pill ── */
 .deadline-pill {
   font-size: 11px; font-weight: 500; padding: 2px 8px;
   border-radius: 8px; white-space: nowrap; display: inline-block;
   background: var(--bg3); color: var(--text2);
   border: 0.5px solid var(--border2);
 }
-.deadline-pill.dl-before {
-  background: #EAF3DE; color: #27500A;
-  border-color: #B0D880;
-}
-.deadline-pill.dl-after {
-  background: #E6F1FB; color: #0C447C;
-  border-color: #85B7EB;
-}
-.deadline-pill.dl-on {
-  background: #FAEEDA; color: #633806;
-  border-color: #EF9F27;
-}
-.deadline-tbd {
-  font-size: 11px; color: var(--text3);
-}
+.deadline-pill.dl-before { background: #EAF3DE; color: #27500A; border-color: #B0D880; }
+.deadline-pill.dl-after  { background: #E6F1FB; color: #0C447C; border-color: #85B7EB; }
+.deadline-pill.dl-on     { background: #FAEEDA; color: #633806; border-color: #EF9F27; }
+.deadline-tbd { font-size: 11px; color: var(--text3); }
 
 html.dark .deadline-pill,
 html:not(.light):not(.dark) .deadline-pill { background: var(--bg3); border-color: var(--border2); }
@@ -241,7 +209,6 @@ html:not(.light):not(.dark) .deadline-pill.dl-on { background: #412402; color: #
   html:not(.light):not(.dark) .deadline-pill.dl-on { background: #412402; color: #FAC775; border-color: #854F0B; }
 }
 
-/* light mode colour tokens */
 .auto-full      { background: #EAF3DE; color: #27500A; }
 .auto-recurring { background: #E6F1FB; color: #0C447C; }
 .auto-manual    { background: var(--bg2); color: var(--text2); }
@@ -324,7 +291,6 @@ html:not(.light):not(.dark) .team-coral { background: #4A1B0C; color: #F0997B; }
       <span class="review-dot"></span>
       <span class="leg-label">Open item — needs confirmation</span>
     </div>
-
     <div class="legend-col-right">
       <span class="leg-dot" style="background:#639922"></span><span class="leg-label">Deadline: before milestone</span>
       <span class="leg-dot" style="background:#378ADD"></span><span class="leg-label">Deadline: after milestone</span>
@@ -348,7 +314,7 @@ html:not(.light):not(.dark) .team-coral { background: #4A1B0C; color: #F0997B; }
       <tbody id="tbody"></tbody>
     </table>
   </div>
-  </div><!-- /.scroll-wrap -->
+  </div>
 
 </div>
 
@@ -381,11 +347,6 @@ const TG_COLORS = {
   TG9: { bg: '#FAECE7', color: '#993C1D' },
   DEV: { bg: '#FAEEDA', color: '#854F0B' },
 };
-
-// deadline: { milestone, offset, direction }
-// milestone: 'ETD' | 'ATD' | 'ETA' | 'ATA' | 'Customs clearance' | 'Document receipt'
-// direction: 'before' | 'after' | 'on'
-// offset: number of working days (0 = on milestone)
 
 const rows = [
   { tg:'STG-1', tgLabel:'Booking intake & validation', task:'Validate booking',
@@ -493,7 +454,7 @@ const rows = [
     auto:'full', team:'documentation', review:true,
     deadline: { milestone:'ATA', offset:2, direction:'after' } },
 
-{ tg:'STG-7', tgLabel:'Delivery planning', task:'Pre-alert to customer',
+  { tg:'STG-7', tgLabel:'Delivery planning', task:'Pre-alert to customer',
     note:'Notify customer of imminent arrival and initiate delivery coordination. Placement STG-5 vs STG-7 TBD at workshop.',
     auto:'exception', team:'operations', review:true,
     deadline: null },
@@ -523,27 +484,29 @@ const rows = [
     auto:'manual', team:'operations', review:true,
     deadline: { milestone:'ATA', offset:3, direction:'after' } },
 
-  { tg:'STG-8', tgLabel:'Operational handling', task:'Operational follow-up',
+  // CHANGE 1: tgLabel updated from 'Operational handling' to 'Financial handling'
+  { tg:'STG-8', tgLabel:'Financial handling', task:'Operational follow-up',
     note:'Exception-based. Any outstanding operational action not covered by other STGs. Definition to be tightened.',
     auto:'exception', team:'operations', review:true,
     deadline: null },
 
-  { tg:'STG-9', tgLabel:'Financial handling', task:'Record accrual',
+  // CHANGE 2: tg changed from 'STG-9' to 'STG-8' for all four financial rows
+  { tg:'STG-8', tgLabel:'Financial handling', task:'Record accrual',
     note:'Ops logs expected costs: supplier, reference, charge code, expected amount, currency. Triggered on ATD or ATA.',
     auto:'manual', team:'financial',
     deadline: { milestone:'ATD', offset:2, direction:'after' } },
 
-  { tg:'STG-9', tgLabel:'Financial handling', task:'Invoice verification',
+  { tg:'STG-8', tgLabel:'Financial handling', task:'Invoice verification',
     note:'Finance verifies agent invoice against accrual. Option A: in Blue10. Option B: in MF. TBD.',
     auto:'manual', team:'financial', review:true,
     deadline: { milestone:'Document receipt', offset:3, direction:'after' } },
 
-  { tg:'STG-9', tgLabel:'Financial handling', task:'Invoice approved',
+  { tg:'STG-8', tgLabel:'Financial handling', task:'Invoice approved',
     note:'Confirmation that invoice matches accrual. Option A: implicit. Option B: explicit Finance step in MF. TBD.',
     auto:'manual', team:'financial', review:true,
     deadline: { milestone:'Document receipt', offset:5, direction:'after' } },
 
-  { tg:'STG-9', tgLabel:'Financial handling', task:'Dispute / credit note',
+  { tg:'STG-8', tgLabel:'Financial handling', task:'Dispute / credit note',
     note:'Exception-based. Raised when invoice does not match accrual.',
     auto:'exception', team:'financial',
     deadline: null },
@@ -551,6 +514,12 @@ const rows = [
   { tg:'DEV', tgLabel:'Dev Message Log', task:'Dev message log',
     note:'Persistent on every shipment. Completed = informational only. Pending = error or missing data requires Ops action.',
     auto:'recurring', team:'error',
+    deadline: null },
+
+  // CHANGE 3: added missing DEV task
+  { tg:'DEV', tgLabel:'Dev Message Log', task:'Configure shipment closure gate',
+    note:'Hard block or soft warning on shipment closure while accrual task is Pending. Hard block vs soft warning — decision pending.',
+    auto:'exception', team:'error', review:true,
     deadline: null },
 ];
 
@@ -616,7 +585,6 @@ function filterTeam(team, btn) {
   render();
 }
 
-// ── Theme ──────────────────────────────────────────────────────────────────
 function applyTheme(dark) {
   document.documentElement.classList.toggle('dark', dark);
   document.documentElement.classList.toggle('light', !dark);
