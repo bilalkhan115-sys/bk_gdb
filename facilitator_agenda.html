@@ -25,8 +25,7 @@
   --gray-l: #F1EFE8; --gray-d: #444441;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
+[data-theme="dark"] {
     --bg: #14140f;
     --bg2: #1c1c16;
     --bg3: #232319;
@@ -42,7 +41,6 @@
     --amber-l: #412402;  --amber-d: #FAC775;
     --blue-l: #042C53;   --blue-d: #B5D4F4;
     --gray-l: #2C2C2A;   --gray-d: #D3D1C7;
-  }
 }
 
 body {
@@ -123,35 +121,42 @@ body {
 .tag-plenary     { background: #E6F1FB; color: #0C447C; }
 .tag-admin       { background: var(--bg3); color: var(--text2); }
 
-@media (prefers-color-scheme: dark) {
-  .c-purple { background: #26215C; border-color: #534AB7; }
-  .c-purple .card-title { color: #CECBF6; }
-  .c-purple .card-sub   { color: #AFA9EC; }
-  .c-teal { background: #04342C; border-color: #1D9E75; }
-  .c-teal .card-title { color: #9FE1CB; }
-  .c-teal .card-sub   { color: #5DCAA5; }
-  .c-amber { background: #412402; border-color: #BA7517; }
-  .c-amber .card-title { color: #FAC775; }
-  .c-amber .card-sub   { color: #EF9F27; }
-  .c-blue { background: #042C53; border-color: #185FA5; }
-  .c-blue .card-title { color: #B5D4F4; }
-  .c-blue .card-sub   { color: #85B7EB; }
-  .c-gray { background: #2C2C2A; border-color: #5F5E5A; }
-  .c-gray .card-title { color: #D3D1C7; }
-  .c-gray .card-sub   { color: #888780; }
-  .tag-director { background: #3C3489; color: #CECBF6; }
-  .tag-working  { background: #085041; color: #9FE1CB; }
-  .tag-decision { background: #633806; color: #FAC775; }
-  .tag-plenary  { background: #0C447C; color: #B5D4F4; }
-  .tag-admin    { background: #232319; color: #5f5e5a; }
-}
+[data-theme="dark"] .c-purple { background: #26215C; border-color: #534AB7; }
+[data-theme="dark"] .c-purple .card-title { color: #CECBF6; }
+[data-theme="dark"] .c-purple .card-sub   { color: #AFA9EC; }
+[data-theme="dark"] .c-teal { background: #04342C; border-color: #1D9E75; }
+[data-theme="dark"] .c-teal .card-title { color: #9FE1CB; }
+[data-theme="dark"] .c-teal .card-sub   { color: #5DCAA5; }
+[data-theme="dark"] .c-amber { background: #412402; border-color: #BA7517; }
+[data-theme="dark"] .c-amber .card-title { color: #FAC775; }
+[data-theme="dark"] .c-amber .card-sub   { color: #EF9F27; }
+[data-theme="dark"] .c-blue { background: #042C53; border-color: #185FA5; }
+[data-theme="dark"] .c-blue .card-title { color: #B5D4F4; }
+[data-theme="dark"] .c-blue .card-sub   { color: #85B7EB; }
+[data-theme="dark"] .c-gray { background: #2C2C2A; border-color: #5F5E5A; }
+[data-theme="dark"] .c-gray .card-title { color: #D3D1C7; }
+[data-theme="dark"] .c-gray .card-sub   { color: #888780; }
+[data-theme="dark"] .tag-director { background: #3C3489; color: #CECBF6; }
+[data-theme="dark"] .tag-working  { background: #085041; color: #9FE1CB; }
+[data-theme="dark"] .tag-decision { background: #633806; color: #FAC775; }
+[data-theme="dark"] .tag-plenary  { background: #0C447C; color: #B5D4F4; }
+[data-theme="dark"] .tag-admin    { background: #232319; color: #5f5e5a; }
 
+.theme-toggle {
+  position: fixed; top: 14px; right: 16px;
+  background: var(--bg3); border: 0.5px solid var(--border2);
+  color: var(--text2); font-size: 12px; font-weight: 500;
+  padding: 5px 11px; border-radius: 20px; cursor: pointer;
+  z-index: 100; transition: background .15s, color .15s;
+}
+.theme-toggle:hover { color: var(--text); background: var(--bg2); }
 @media (max-width: 520px) {
   .time { min-width: 72px; font-size: 11px; }
 }
 </style>
 </head>
 <body>
+<button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">Light</button>
 <div class="container">
 
   <div class="header">
@@ -380,5 +385,22 @@ body {
 
   </div>
 </div>
+<script>
+  const btn = document.getElementById('themeBtn');
+  const html = document.documentElement;
+  const stored = localStorage.getItem('gloforex-agenda-theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  let dark = stored ? stored === 'dark' : prefersDark;
+  function applyTheme() {
+    html.setAttribute('data-theme', dark ? 'dark' : 'light');
+    btn.textContent = dark ? 'Light' : 'Dark';
+  }
+  function toggleTheme() {
+    dark = !dark;
+    localStorage.setItem('gloforex-agenda-theme', dark ? 'dark' : 'light');
+    applyTheme();
+  }
+  applyTheme();
+</script>
 </body>
 </html>
