@@ -247,6 +247,30 @@ html:not(.light):not(.dark) .team-coral { background: #4A1B0C; color: #F0997B; }
   html:not(.light):not(.dark) .team-amber  { background: #412402; color: #FAC775; }
   html:not(.light):not(.dark) .team-coral  { background: #4A1B0C; color: #F0997B; }
 }
+/* ── PDF / Print export ── */
+@media print {
+  .scroll-wrap { overflow: visible !important; }
+}
+@media print {
+  .topbar, .filter-row, .legend, .theme-btn { display: none !important; }
+  body { background: #fff !important; color: #000 !important; padding: 0; }
+  .page-body { padding: 0.5rem; }
+  .table-wrap { border: none; border-radius: 0; overflow: visible; }
+  table { font-size: 11px; }
+  thead { display: table-header-group; }
+  thead th { background: #f5f5f5 !important; color: #333 !important; }
+  /* STG header rows: break before each one, keep header glued to its first data row */
+  tr.tg-header { break-before: page; page-break-before: always; break-after: avoid; page-break-after: avoid; }
+  tr.tg-header:first-of-type { break-before: avoid; page-break-before: avoid; }
+  /* Allow data rows to break freely, but never split a single row */
+  tbody tr { break-inside: avoid; page-break-inside: avoid; }
+  /* Preserve pill/badge colours in print */
+  .deadline-pill, .auto-pill, .team-tag, .tg-badge {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    color-adjust: exact;
+  }
+}
 </style>
 </head>
 <body>
@@ -263,6 +287,7 @@ html:not(.light):not(.dark) .team-coral { background: #4A1B0C; color: #F0997B; }
     </div>
   </div>
   <div class="topbar-right">
+    <button class="theme-btn" id="export-btn" onclick="exportPDF()">⬇ Export PDF</button>
     <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">☀️ Light</button>
   </div>
 </div>
@@ -285,7 +310,7 @@ html:not(.light):not(.dark) .team-coral { background: #4A1B0C; color: #F0997B; }
     <button class="filter-btn" onclick="filterTeam('financial',this)">Financial handling</button>
   </div>
 
-  <div style="overflow-x:auto;">
+  <div style="overflow-x:auto;" class="scroll-wrap">
   <div class="legend">
     <div style="grid-column:3/5;display:flex;align-items:center;gap:6px;padding-top:40px">
       <span class="review-dot"></span>
@@ -329,7 +354,7 @@ const TEAMS = {
 };
 
 const AUTO = {
-  full:      { label: 'Fully automated',       cls: 'auto-full'      },
+  full:      { label: 'Automated',   		   cls: 'auto-full'      },
   recurring: { label: 'Automated / recurring', cls: 'auto-recurring' },
   manual:    { label: 'Manual',                cls: 'auto-manual'    },
   exception: { label: 'Manual / exception',    cls: 'auto-exception' },
@@ -350,7 +375,7 @@ const TG_COLORS = {
 
 const rows = [
   { tg:'STG-1', tgLabel:'Booking intake & validation', task:'Validate booking',
-    note:'Auto-completed for API bookings with all fields present. Pending for manual/exception bookings. All countries.',
+    note:'Auto-completed for API bookings with all fields present. Pending for manual/exception bookings.',
     auto:'full', team:'booking',
     deadline: { milestone:'ETD', offset:5, direction:'before' } },
 
@@ -360,7 +385,7 @@ const rows = [
     deadline: { milestone:'ETD', offset:5, direction:'before' } },
 
   { tg:'STG-1', tgLabel:'Booking intake & validation', task:'Agent booking communication',
-    note:'All countries. Action task when agent communication is needed.',
+    note:'Action task when agent communication is needed.',
     auto:'exception', team:'booking',
     deadline: null },
 
@@ -380,23 +405,23 @@ const rows = [
     deadline: null },
 
   { tg:'STG-3', tgLabel:'Document verification', task:'Verify commercial invoice',
-    note:'Cross-check consignee, shipper, cargo description, value, currency, incoterm against MF data. All countries.',
+    note:'Cross-check consignee, shipper, cargo description, value, currency, incoterm against MF data.',
     auto:'manual', team:'documentation',
     deadline: { milestone:'ETA', offset:5, direction:'before' } },
 
   { tg:'STG-3', tgLabel:'Document verification', task:'Verify packing list',
-    note:'Cross-check package count, weight, cargo description against MF data. All countries.',
+    note:'Cross-check package count, weight, cargo description against MF data.',
     auto:'manual', team:'documentation',
     deadline: { milestone:'ETA', offset:5, direction:'before' } },
 
   { tg:'STG-3', tgLabel:'Document verification', task:'Verify HBL / TLX / seaway bill',
-    note:'Confirm document type matches shipment. Cross-check parties, POL/POD, container, cargo. All countries.',
+    note:'Confirm document type matches shipment. Cross-check parties, POL/POD, container, cargo.',
     auto:'manual', team:'documentation',
     deadline: { milestone:'ETA', offset:5, direction:'before' } },
 
   { tg:'STG-3', tgLabel:'Document verification', task:'Seaway bill released',
-    note:'Auto-triggered when seaway bill is confirmed released. Gates downstream document handling. All countries.',
-    auto:'full', team:'documentation',
+    note:'Auto-triggered when seaway bill is confirmed released by agent. Manually adding/changing this does not auto-complete the task',
+    auto:'full', team:'documentation', review:true,
     deadline: { milestone:'ETA', offset:3, direction:'before' } },
 
   { tg:'STG-3', tgLabel:'Document verification', task:'Verify insurance certificate',
@@ -405,34 +430,34 @@ const rows = [
     deadline: { milestone:'ETA', offset:5, direction:'before' } },
 
   { tg:'STG-3', tgLabel:'Document verification', task:'Check customs declaration',
-    note:'Pre-arrival check that declaration is complete and accurate. All countries.',
+    note:'Pre-arrival check that declaration is complete and accurate.',
     auto:'manual', team:'documentation',
     deadline: { milestone:'ETA', offset:3, direction:'before' } },
 
   { tg:'STG-3', tgLabel:'Document verification', task:'Request missing documents',
-    note:'Action task when documents are absent or fail verification. All countries.',
+    note:'Action task when documents are absent or fail verification.',
     auto:'exception', team:'documentation',
     deadline: null },
 
-  { tg:'STG-4', tgLabel:'Customs processing', task:'Send customs documents to Maco',
-    note:'Ops executes task in MF, triggering webhook to Maco. Resets to Pending on customs rejection.',
+  { tg:'STG-4', tgLabel:'Customs processing', task:'Send customs documents to Customs',
+    note:'Ops executes task in MF, triggering webhook to Customs. Resets to Pending on customs rejection.',
     auto:'manual', team:'documentation',
     deadline: { milestone:'ETA', offset:2, direction:'before' } },
 
   { tg:'STG-4', tgLabel:'Customs processing', task:'Customs clearance received',
-    note:'Auto-created and set to Completed on clearance confirmation from Maco. Acts as prerequisite gate.',
+    note:'Auto-created and set to Completed on clearance confirmation from Customs. Acts as prerequisite gate.',
     auto:'full', team:'documentation',
     deadline: { milestone:'ATA', offset:0, direction:'on' } },
 
   { tg:'STG-4', tgLabel:'Customs processing', task:'Customs rejection handling',
-    note:'Triggered on API rejection from Maco. Surfaces in Error Handling team via Dev Message Log.',
+    note:'Triggered on API rejection from Customs. Surfaces in Error Handling team via Dev Message Log.',
     auto:'exception', team:'error',
     deadline: { milestone:'ATA', offset:1, direction:'before' } },
 
   { tg:'STG-5', tgLabel:'Arrival monitoring', task:'Monitor vessel ETA',
-    note:'MF native live tracking for deepsea vessels. Resets to Pending on each tracking update.',
-    auto:'recurring', team:'operations',
-    deadline: null },
+    note:'MF native live deepsea tracking for vessels.',
+    auto:'manual', team:'operations',
+    deadline: { milestone:'ETA', offset:3, direction:'before' } },
 
   { tg:'STG-5', tgLabel:'Arrival monitoring', task:'Manual ETA check',
     note:'Inland / feeder legs only where live tracking is unavailable. Cadence TBD at workshop.',
@@ -460,12 +485,12 @@ const rows = [
     deadline: null },
 
   { tg:'STG-7', tgLabel:'Delivery planning', task:'Plan delivery',
-    note:'Initial planning executed in the bulk data updater, which pushes planned date, time, and locations to MF. Planning can be done in bulk but TMS push is per shipment.',
+    note:'Initial planning executed in the bulk data updater, which pushes planned date, time, and locations to MF. Planning can be done in bulk but Transport Order is sent per shipment.',
     auto:'manual', team:'operations',
     deadline: { milestone:'ATA', offset:2, direction:'after' } },
 
   { tg:'STG-7', tgLabel:'Delivery planning', task:'Push delivery planning to Qargo',
-    note:'Ops executes task in MF, triggering API call that pushes planned delivery data to Qargo. Task turns green on successful push. Surfaces unplanned containers in the dashboard.',
+    note:'Ops executes task in MF, triggering API call that pushes planned delivery data to Qargo. Task turns green on successful push. Helps identify unplanned containers/shipments in the dashboard.',
     auto:'manual', team:'operations',
     deadline: { milestone:'ATA', offset:2, direction:'after' } },
 
@@ -480,7 +505,7 @@ const rows = [
     deadline: null },
 
   { tg:'STG-7', tgLabel:'Delivery planning', task:'Confirm delivery appointment',
-    note:'Manual confirmation once delivery slot is agreed with customer or consignee. Sequencing relative to Qargo push TBD at workshop.',
+    note:'Manual confirmation once delivery slot is agreed with customer or consignee. Task order compared before/after Qargo task TBD at workshop.',
     auto:'manual', team:'operations', review:true,
     deadline: { milestone:'ATA', offset:3, direction:'after' } },
 
@@ -576,6 +601,20 @@ function render() {
   });
 
   tbody.innerHTML = html;
+}
+function exportPDF() {
+  // Reset to "All teams" so nothing is hidden in the export
+  const wasTeam = activeTeam;
+  if (wasTeam !== 'all') {
+    activeTeam = 'all';
+    render();
+  }
+  window.print();
+  // Restore previous filter after print dialog closes
+  if (wasTeam !== 'all') {
+    activeTeam = wasTeam;
+    render();
+  }
 }
 
 function filterTeam(team, btn) {
