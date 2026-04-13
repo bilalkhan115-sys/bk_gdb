@@ -382,7 +382,7 @@ body {
       </div>
       <div class="field">
         <div class="field-label">Trigger source</div>
-        <input type="text" id="f-trigger-source" placeholder="e.g. SnapLogic, Maco API, Manual"/>
+        <input type="text" id="f-trigger-source" placeholder="e.g. Automation, Customs API, Manual"/>
       </div>
       <div class="field-row">
         <div class="field">
@@ -489,9 +489,9 @@ const STAGES = {
     name: 'STG-1 — Booking intake & validation', team: 'Import Booking',
     desc: 'Initial booking received, validated, and confirmed. Covers both API (agent) and manual bookings.',
     tasks: [
-      { id:'stg1-1', name:'Validate booking',             auto:'auto-full',      notes:'Auto-completed for API bookings with all fields present. Pending for manual/exception bookings. All countries.',    trigger:{ event:'Booking created in MF via agent API or manual entry', source:'API / Manual' }, deadline:{ milestone:'ETD', offset:5, direction:'before' } },
+      { id:'stg1-1', name:'Validate booking',             auto:'auto-full',      notes:'Auto-completed for API bookings with all fields present. Pending for manual/exception bookings.',    trigger:{ event:'Booking created in MF via agent API or manual entry', source:'API / Manual' }, deadline:{ milestone:'ETD', offset:5, direction:'before' } },
       { id:'stg1-2', name:'Request booking confirmation', auto:'manual',         notes:'DE and NL only. FR does not send booking confirmation (country delta #1).',                                          trigger:{ event:'Manually triggered by Ops after booking validation', source:'Manual' }, deadline:{ milestone:'ETD', offset:5, direction:'before' } },
-      { id:'stg1-3', name:'Agent booking communication',  auto:'auto-exception', notes:'All countries. Action task when agent communication is needed.',                                                      trigger:{ event:'Manually triggered by Ops on exception — missing data or query requiring agent contact', source:'Manual' }, deadline:null },
+      { id:'stg1-3', name:'Agent booking communication',  auto:'auto-exception', notes:'Action task when agent communication is needed.',                                                      trigger:{ event:'Manually triggered by Ops on exception — missing data or query requiring agent contact', source:'Manual' }, deadline:null },
     ]
   },
   'STG-2': {
@@ -501,35 +501,35 @@ const STAGES = {
       { id:'stg2-1', name:'Check agent update',          auto:'auto-recurring', notes:'API shipments only. Resets to Pending on each agent update.',                                                          trigger:{ event:'Inbound agent update received via API — resets to Pending automatically on each update', source:'API' }, deadline:{ milestone:'ETD', offset:3, direction:'before' } },
       { id:'stg2-2', name:'Complete shipment data',      auto:'manual',         notes:'Non-API shipments only. Full checklist: parties, transport, cargo, documents.',                                        trigger:{ event:'Booking created manually — task set to Pending on creation', source:'Manual' }, deadline:{ milestone:'ETD', offset:5, direction:'before' } },
       { id:'stg2-3', name:'Agent booking communication', auto:'auto-exception', notes:'Shared with STG-1. Triggered when data is missing after agent update.',                                                trigger:{ event:'Manually triggered by Ops after reviewing agent update — missing or incorrect data', source:'Manual' }, deadline:null },
-      { id:'stg2-4', name:'Seaway bill released',        auto:'auto-full',      notes:'OPEN ITEM: Placement in STG-2 or STG-3 TBC. Auto-triggered when seaway bill confirmed.',                              trigger:{ event:'Seaway bill release confirmed event', source:'SnapLogic', flag:'placement TBC' }, deadline:null },
+      { id:'stg2-4', name:'Seaway bill released',        auto:'auto-full',      notes:'OPEN ITEM: Placement in STG-2 or STG-3 TBC. Auto-triggered when seaway bill confirmed.',                              trigger:{ event:'Seaway bill release confirmed event', source:'Automation', flag:'placement TBC' }, deadline:null },
     ]
   },
   'STG-3': {
     name: 'STG-3 — Document verification', team: 'Import Documentation',
     desc: 'Verify all required shipping documents are received and correct before customs submission.',
     tasks: [
-      { id:'stg3-1', name:'Verify commercial invoice',       auto:'manual',         notes:'Cross-check consignee, shipper, cargo description, value, currency, incoterm against MF data. All countries. Expected document: [placeholder].',    trigger:{ event:'Agent update with document attachment (API) OR manual document upload in MF — task resets to Pending on either event', source:'API / Manual' }, deadline:{ milestone:'ETA', offset:5, direction:'before' } },
-      { id:'stg3-2', name:'Verify packing list',             auto:'manual',         notes:'Cross-check package count, weight, cargo description against MF data. Combined with invoice where applicable. All countries. Expected document: [placeholder].', trigger:{ event:'Agent update with document attachment (API) OR manual document upload in MF — task resets to Pending on either event', source:'API / Manual' }, deadline:{ milestone:'ETA', offset:5, direction:'before' } },
-      { id:'stg3-3', name:'Verify HBL / TLX / Seaway bill', auto:'manual',         notes:'OPEN ITEM: Document type depends on shipment. Cross-check parties, POL/POD, container, cargo. Expected document: [placeholder].',                  trigger:{ event:'Agent update with document attachment (API) OR manual document upload in MF — task resets to Pending on either event', source:'API / Manual' }, deadline:{ milestone:'ETA', offset:5, direction:'before' } },
+      { id:'stg3-1', name:'Verify commercial invoice',       auto:'manual',         notes:'Cross-check consignee, shipper, cargo description, value, currency, incoterm against MF data. Expected document: Commercial Invoice.',    trigger:{ event:'Agent update with document attachment (API) OR manual document upload in MF — task resets to Pending on either event', source:'API / Manual' }, deadline:{ milestone:'ETA', offset:5, direction:'before' } },
+      { id:'stg3-2', name:'Verify packing list',             auto:'manual',         notes:'Cross-check package count, weight, cargo description against MF data. Combined with invoice where applicable. Expected document: Packing List.', trigger:{ event:'Agent update with document attachment (API) OR manual document upload in MF — task resets to Pending on either event', source:'API / Manual' }, deadline:{ milestone:'ETA', offset:5, direction:'before' } },
+      { id:'stg3-3', name:'Verify HBL / TLX / Seaway bill', auto:'manual',         notes:'OPEN ITEM: Document type depends on shipment. Cross-check parties, POL/POD, container, cargo. Expected document: HBL/TLX Release.',                  trigger:{ event:'Agent update with document attachment (API) OR manual document upload in MF — task resets to Pending on either event', source:'API / Manual' }, deadline:{ milestone:'ETA', offset:5, direction:'before' } },
       { id:'stg3-4', name:'Verify insurance certificate',    auto:'auto-exception', notes:'OPEN ITEM: Conditional on incoterm and country rules. Country delta entries to be confirmed at workshop.',                                          trigger:{ event:'Manually triggered by Ops when insurance certificate required per incoterm or country rule', source:'Manual' }, deadline:{ milestone:'ETA', offset:5, direction:'before' } },
-      { id:'stg3-5', name:'Check customs declaration',       auto:'manual',         notes:'Pre-arrival check that declaration is complete and accurate. All countries.',                                                                         trigger:{ event:'Manually triggered by Ops — typically scheduled relative to ETD/ETA milestone', source:'Manual' }, deadline:{ milestone:'ETA', offset:3, direction:'before' } },
-      { id:'stg3-6', name:'Request missing documents',       auto:'auto-exception', notes:'Action task when documents are absent or fail verification. Triggers contact with agent or customer. All countries.',                                trigger:{ event:'Manually triggered by Ops on document verification failure — missing doc or content mismatch', source:'Manual' }, deadline:null },
+      { id:'stg3-5', name:'Check customs declaration',       auto:'manual',         notes:'Pre-arrival check that declaration is complete and accurate.',                                                                         trigger:{ event:'Manually triggered by Ops — typically scheduled relative to ETD/ETA milestone', source:'Manual' }, deadline:{ milestone:'ETA', offset:3, direction:'before' } },
+      { id:'stg3-6', name:'Request missing documents',       auto:'auto-exception', notes:'Action task when documents are absent or fail verification. Triggers contact with agent or customer.',                                trigger:{ event:'Manually triggered by Ops on document verification failure — missing doc or content mismatch', source:'Manual' }, deadline:null },
     ]
   },
   'STG-4': {
     name: 'STG-4 — Customs processing', team: 'Import Documentation',
-    desc: 'Submit customs declaration and handle confirmation or rejection from Maco.',
+    desc: 'Submit customs declaration and handle confirmation or rejection from Customs.',
     tasks: [
-      { id:'stg4-1', name:'Send customs documents to Maco', auto:'manual',         notes:'Ops executes task in MF triggering webhook to Maco. On rejection: task resets to Pending via Maco API — double-trigger alongside Dev Message Log.',   trigger:{ event:'Ops manually executes task → MF webhook fires to Maco. On rejection: Maco API resets task to Pending (double-trigger with Dev Message Log)', source:'Manual / Maco API' }, deadline:{ milestone:'ETA', offset:2, direction:'before' } },
-      { id:'stg4-2', name:'Customs clearance received',     auto:'auto-full',      notes:'Auto-created and immediately set to Completed on clearance confirmation from Maco. No Ops action required. Prerequisite gate for STG-6.',               trigger:{ event:'Customs clearance confirmation message received from Maco API', source:'Maco API' }, deadline:{ milestone:'ATA', offset:0, direction:'on' } },
-      { id:'stg4-3', name:'Customs rejection handling',     auto:'auto-exception', notes:'Triggered on API rejection from Maco. Surfaces in Error Handling team via Dev Message Log.',                                                            trigger:{ event:'Rejection message from Maco API — fires Dev Message Log to Pending and resets Send customs documents task', source:'Maco API' }, deadline:{ milestone:'ATA', offset:1, direction:'before' } },
+      { id:'stg4-1', name:'Send customs documents', auto:'manual',         notes:'Ops executes task in MF triggering webhook to Customs. On rejection: task resets to Pending via Customs API — double-trigger alongside Dev Message Log.',   trigger:{ event:'Ops manually executes task → MF webhook fires to Customs. On rejection: Customs API resets task to Pending (double-trigger with Dev Message Log)', source:'Manual / Customs API' }, deadline:{ milestone:'ETA', offset:2, direction:'before' } },
+      { id:'stg4-2', name:'Customs clearance received',     auto:'auto-full',      notes:'Auto-created and immediately set to Completed on clearance confirmation from Customs. No Ops action required. Prerequisite gate for STG-6.',               trigger:{ event:'Customs clearance confirmation message received from Customs API', source:'Customs API' }, deadline:{ milestone:'ATA', offset:0, direction:'on' } },
+      { id:'stg4-3', name:'Customs rejection handling',     auto:'auto-exception', notes:'Triggered on API rejection from Customs. Surfaces in Error Handling team via Dev Message Log.',                                                            trigger:{ event:'Rejection message from Customs API — fires Dev Message Log to Pending and resets Send customs documents task', source:'Customs API' }, deadline:{ milestone:'ATA', offset:1, direction:'before' } },
     ]
   },
   'STG-5': {
     name: 'STG-5 — Arrival monitoring', team: 'Import Operations',
     desc: 'Track vessel and confirm actual arrival at port of discharge.',
     tasks: [
-      { id:'stg5-1', name:'Monitor vessel ETA',    auto:'auto-recurring', notes:'MF native live tracking for deepsea vessels. Resets to Pending on each tracking update.',          trigger:{ event:'MF native live tracking update received for deepsea vessel — task resets to Pending on each update', source:'MF Live Tracking' }, deadline:null },
+      { id:'stg5-1', name:'Monitor vessel ETA',    auto:'manual', notes:'MF native live deepsea tracking for vessels.',          trigger:{ event:'', source:'MF Live Tracking' }, deadline:{ milestone:'ETA', offset:5, direction:'before' },
       { id:'stg5-2', name:'Manual ETA check',      auto:'manual',         notes:'OPEN ITEM: Inland / feeder legs only. Cadence TBD at workshop.',                                   trigger:{ event:'Manually triggered by Ops on recurring cadence — cadence TBD at workshop', source:'Manual', flag:'cadence TBD' }, deadline:null },
       { id:'stg5-3', name:'Confirm arrival at POD',auto:'auto-full',      notes:'Auto-completed on ATA event from MF live tracking. Gates downstream stages.',                       trigger:{ event:'ATA (Actual Time of Arrival) event received from MF live tracking', source:'MF Live Tracking' }, deadline:{ milestone:'ATA', offset:0, direction:'on' } },
     ]
@@ -547,11 +547,11 @@ const STAGES = {
     desc: 'Plan and confirm delivery of cargo to consignee. Gate: STG-6 Carrier release confirmed.',
     tasks: [
       { id:'stg7-0', name:'Pre-alert to customer',            auto:'auto-exception', notes:'Notify customer of imminent arrival and initiate delivery coordination. Placement STG-5 vs STG-7 TBD at workshop.', trigger:{ event:'Manually triggered by Ops on imminent arrival — placement in STG-5 or STG-7 TBD', source:'Manual', flag:'placement TBD' }, deadline:null },
-      { id:'stg7-1', name:'Plan delivery',                    auto:'manual',         notes:'Initial planning executed in the bulk data updater, which pushes planned date, time, and locations to MF. Planning can be done in bulk but TMS push is per shipment.', trigger:{ event:'Manually triggered by Ops after Carrier release confirmed (STG-6 gate). Bulk planning via OutSystems tool, per-shipment TMS push via MF task', source:'Manual / OutSystems' }, deadline:{ milestone:'ATA', offset:2, direction:'after' } },
+      { id:'stg7-1', name:'Plan delivery',                    auto:'manual',         notes:'Initial planning executed in the bulk data updater, which pushes planned date, time, and locations to MF. Planning can be done in bulk but Transport order is per shipment.', trigger:{ event:'Manually triggered by Ops after Carrier release confirmed (STG-6 gate). Bulk planning via OutSystems tool, per-shipment TMS push via MF task', source:'Manual / OutSystems' }, deadline:{ milestone:'ATA', offset:2, direction:'after' } },
       { id:'stg7-3', name:'Push delivery planning to Qargo',  auto:'manual',         notes:'Ops executes task in MF, triggering API call that pushes planned delivery data to Qargo. Task turns green on successful push. Surfaces unplanned containers in the dashboard.', trigger:{ event:'Ops executes task in MF → API call fires to Qargo. Turns green on successful push. Remains TODO/overdue until executed.', source:'MF → Qargo API' }, deadline:{ milestone:'ATA', offset:2, direction:'after' } },
       { id:'stg7-4', name:'Return empty container monitoring', auto:'manual',         notes:'Ops monitors and confirms empty container has been returned to carrier depot within the agreed timeframe. Linked to demurrage risk if delayed.', trigger:{ event:'Manually triggered by Ops after delivery confirmed — monitors return to carrier depot against agreed timeframe', source:'Manual' }, deadline:null },
       { id:'stg7-5', name:'Deconsolidation / devanning',      auto:'auto-exception', notes:'Applicable where cargo is delivered to a warehouse before final delivery. Task scope, trigger, and applicable shipment types TBD at workshop.', trigger:{ event:'Applicable on warehouse deliveries before final delivery — scope and shipment types TBD at workshop', source:'Manual', flag:'scope TBD' }, deadline:null },
-      { id:'stg7-2', name:'Confirm delivery appointment',     auto:'manual',         notes:'Manual confirmation once delivery slot is agreed with customer or consignee. Sequencing relative to Qargo push TBD at workshop.', trigger:{ event:'Manually triggered by Ops after delivery slot confirmed with customer and transport provider — sequencing vs Qargo push TBD', source:'Manual', flag:'sequencing TBD' }, deadline:{ milestone:'ATA', offset:3, direction:'after' } },
+      { id:'stg7-2', name:'Confirm delivery appointment',     auto:'manual',         notes:'Manual confirmation once delivery slot is agreed with customer or consignee. Task order compared before/after Qargo task - TBD at workshop.', trigger:{ event:'Manually triggered by Ops after delivery slot confirmed with customer and transport provider — Order before/after vs Qargo task TBD', source:'Manual', flag:'sequencing TBD' }, deadline:{ milestone:'ATA', offset:3, direction:'after' } },
     ]
   },
   'STG-8': {
@@ -569,7 +569,8 @@ const STAGES = {
     name: 'DEV — Dev message log', team: 'Error Handling',
     desc: 'Persistent task on every shipment. Green/completed = informational only. Yellow/pending = integration error or missing data requires Ops action.',
     tasks: [
-      { id:'dev-1', name:'Dev message log', auto:'auto-recurring', notes:'Persistent on every shipment. Completed = informational only. Pending = error or missing data requires Ops action.', trigger:{ event:'SnapLogic pipeline error, missing/invalid data in agent update, or Maco API rejection — any of these resets task to Pending', source:'SnapLogic / Maco API' }, deadline:null },
+      { id:'dev-1', name:'Dev message log', auto:'auto-recurring', notes:'Persistent on every shipment. Completed = informational only. Pending = error or missing data requires Ops action.', trigger:{ event:'API error, missing/invalid data in agent update, or Customs API rejection — any of these resets task to Pending', source:'Automation / Customs API' }, deadline:null },
+      { id:'dev-2', name:'Configure shipment closure gate', auto:'auto-exception', notes:'Hard block or soft warning on shipment closure while accrual task is Pending. Hard block vs soft warning — decision pending.', trigger:{ event:'Triggered on shipment closure attempt while Record accrual is Pending', source:'Manual', flag:'hard block vs soft warning TBD' }, deadline:null },
     ]
   },
   'GLOBAL': {
@@ -678,7 +679,7 @@ const TEAM_COLORS = {
 };
 const AUTO_LABELS = {
   'manual':         ['Manual',               'pill-auto-manual'],
-  'auto-full':      ['Fully automated',      'pill-auto-full'],
+  'auto-full':      ['Automated',      'pill-auto-full'],
   'auto-recurring': ['Automated / recurring','pill-auto-recurring'],
   'auto-exception': ['Manual / exception',   'pill-auto-exception'],
 };
