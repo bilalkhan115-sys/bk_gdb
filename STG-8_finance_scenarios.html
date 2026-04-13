@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>STG-9 Financial Handling — Scenario Options</title>
+<title>STG-8 Financial Handling — Scenario Options</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -106,25 +106,20 @@ body {
 .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
 .card { border-radius: 8px; padding: 12px 14px; }
-.card-gains { background: #F2F9EA; border: 0.5px solid #B8D98A; }
-.card-costs { background: #FEF3EE; border: 0.5px solid #F5B99A; }
+.card-gains { background: #EAF3DE; }
+.card-costs { background: #FAECE7; }
 
 @media (prefers-color-scheme: dark) {
-  .card-gains { background: #1A3D06; border-color: #4A7A20; }
-  .card-costs { background: #4A1B0C; border-color: #8A3010; }
+  .card-gains { background: #173404; }
+  .card-costs { background: #4A1B0C; }
 }
 
 .card-label {
-  font-size: 11px; font-weight: 700; color: var(--text);
-  text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px;
+  font-size: 11px; font-weight: 600; color: var(--text3);
+  text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px;
 }
 .card-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
-.card-body { font-size: 12px; color: var(--text); line-height: 1.7; }
-.card-body ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 5px; }
-.card-body ul li { display: flex; align-items: flex-start; gap: 7px; }
-.card-body ul li::before { content: ''; width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; margin-top: 8px; }
-.card-gains .card-body ul li::before { background: #4A8A18; }
-.card-costs .card-body ul li::before { background: #C04A20; }
+.card-body { font-size: 12px; color: var(--text2); line-height: 1.5; }
 
 .decision-list { display: flex; flex-direction: column; gap: 8px; }
 .decision-item {
@@ -146,23 +141,96 @@ body {
 @media (max-width: 520px) {
   .cards-grid { grid-template-columns: 1fr; }
 }
+
+/* ── Export button ── */
+.export-bar {
+  display: flex; justify-content: flex-end;
+  margin-bottom: 1.25rem;
+}
+.export-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 500; font-family: inherit;
+  padding: 6px 14px; border-radius: 20px;
+  border: 0.5px solid var(--border2);
+  background: var(--bg2); color: var(--text2);
+  cursor: pointer; transition: all .15s;
+}
+.export-btn:hover {
+  background: var(--text); color: var(--bg); border-color: var(--text);
+}
+.export-btn svg { flex-shrink: 0; }
+
+/* ── Print / PDF ── */
+@media print {
+  @page { size: A4; margin: 18mm 16mm; }
+
+  /* Reset screen-only visibility */
+  body { padding: 0; background: #fff; color: #1a1a18; }
+  .doc { max-width: 100%; }
+
+  /* Show both pages for print */
+  .page { display: block !important; }
+
+  /* Page break between Option A and Option B */
+  #page-a { page-break-after: always; break-after: page; }
+
+  /* Hide interactive controls */
+  .toggle-row, .export-bar { display: none !important; }
+
+  /* Force light-mode colours for print */
+  :root {
+    --bg: #ffffff;
+    --bg2: #f7f6f2;
+    --bg3: #f0efe9;
+    --border: rgba(0,0,0,0.1);
+    --border2: rgba(0,0,0,0.18);
+    --border3: rgba(0,0,0,0.06);
+    --text: #1a1a18;
+    --text2: #5f5e5a;
+    --text3: #8b8a85;
+  }
+
+  .badge-blue  { background: #E6F1FB !important; color: #0C447C !important; border: 0.5px solid #85B7EB !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .badge-teal  { background: #E1F5EE !important; color: #085041 !important; border: 0.5px solid #5DCAA5 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .badge-amber { background: #FAEEDA !important; color: #633806 !important; border: 0.5px solid #EF9F27 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .badge-coral { background: #FAECE7 !important; color: #712B13 !important; border: 0.5px solid #F0997B !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  .card-gains { background: #F2F9EA !important; border: 0.5px solid #B8D98A !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .card-costs { background: #FEF3EE !important; border: 0.5px solid #F5B99A !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  .decision-item { border: 0.5px solid rgba(0,0,0,0.18) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  /* Avoid breaks inside key elements */
+  .flow-step, .decision-item, .card { break-inside: avoid; page-break-inside: avoid; }
+  .section { break-inside: avoid; page-break-inside: avoid; }
+}
 </style>
 </head>
 <body>
 <div class="doc">
 
+  <div class="export-bar">
+    <button class="export-btn" onclick="window.print()">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 11H1.5A1.5 1.5 0 0 1 0 9.5v-4A1.5 1.5 0 0 1 1.5 4H3V1.5A1.5 1.5 0 0 1 4.5 0h7A1.5 1.5 0 0 1 13 1.5V4h1.5A1.5 1.5 0 0 1 16 5.5v4A1.5 1.5 0 0 1 14.5 11H13v3.5A1.5 1.5 0 0 1 11.5 16h-7A1.5 1.5 0 0 1 3 14.5V11zm1.5 0v3.5h7V11h-7zm0-9.5V4h7V1.5h-7zM2 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" fill="currentColor"/>
+      </svg>
+      Export PDF
+    </button>
+  </div>
+
+  <div class="toggle-row">
+    <button class="tog-btn active" onclick="show('a',this)">Option A — Ops-only model</button>
+    <button class="tog-btn" onclick="show('b',this)">Option B — Finance active model</button>
+  </div>
+
   <!-- ── Option A ── -->
   <div class="page active" id="page-a">
     <div class="doc-header">
-      <div class="kicker">GDB Logistics · STG-9 Financial Handling · April 14 workshop</div>
+      <div class="kicker">GDB Logistics · STG-8 Financial Handling · April 15 workshop</div>
       <div class="doc-title">Option A — Ops-only model</div>
       <span class="badge badge-blue">MF scope: limited</span>
       <span class="badge badge-teal" style="margin-left:6px">Finance: stays in Blue10</span>
-    <div class="toggle-row" style="margin-top:1rem;margin-bottom:0">
-        <button class="tog-btn active" onclick="show('a',this)">Option A — Ops-only model</button>
-        <button class="tog-btn" onclick="show('b',this)">Option B — Finance active model</button>
-      </div>
-	</div>
+    </div>
 
     <div class="section">
       <div class="section-label">What this option means</div>
@@ -176,7 +244,7 @@ body {
           <div class="flow-num">1</div>
           <div class="flow-content">
             <div class="flow-title">Milestone fires in MF</div>
-            <div class="flow-sub">ATD (for origin incoterms) or ATA (for destination incoterms) confirmed by MF live tracking. Accrual task automatically set to Pending on the shipment.</div>
+            <div class="flow-sub">ATD (origin incoterms) or ATA (destination incoterms) confirmed by MF live tracking. Accrual task automatically set to Pending on the shipment.</div>
           </div>
         </div>
         <div class="flow-arrow">↓</div>
@@ -219,20 +287,11 @@ body {
       <div class="cards-grid">
         <div class="card card-gains">
           <div class="card-label">What this gains</div>
-          <div class="card-body"><ul>
-			<li>Simpler scope and faster to implement.</li>
-			<li>No Finance user provisioning needed.</li>
-			<li>No new MF team logic.</li>
-			<li>Accrual data is structured and available to Finance for the first time — a significant improvement on today's state.</li>
-			</ul></div>
+          <div class="card-body">Simpler scope and faster to implement. No Finance user provisioning needed. No new MF team logic. Accrual data is structured and available to Finance for the first time — a significant improvement on today's state.</div>
         </div>
         <div class="card card-costs">
           <div class="card-label">What this costs</div>
-          <div class="card-body"><ul>
-  <li>Finance has no live visibility inside MF.</li>
-  <li>Disputes and discrepancies are handled manually outside the system with no audit trail in MF.</li>
-  <li>The loop between accrual and invoice resolution is not closed in one place.</li>
-</ul></div>
+          <div class="card-body">Finance has no live visibility inside MF. Disputes and discrepancies are handled manually outside the system with no audit trail in MF. The loop between accrual and invoice resolution is not closed in one place.</div>
         </div>
       </div>
     </div>
@@ -278,21 +337,17 @@ body {
       </div>
     </div>
 
-    <div class="doc-footer">GDB Logistics · IT / Application Management · For discussion April 14, 2026</div>
+    <div class="doc-footer">GDB Logistics · IT / Application Management · For discussion April 15, 2026</div>
   </div>
 
   <!-- ── Option B ── -->
   <div class="page" id="page-b">
     <div class="doc-header">
-      <div class="kicker">GDB Logistics · STG-9 Financial Handling · April 14 workshop</div>
+      <div class="kicker">GDB Logistics · STG-8 Financial Handling · April 15 workshop</div>
       <div class="doc-title">Option B — Finance active model</div>
       <span class="badge badge-coral">MF scope: extended</span>
       <span class="badge badge-amber" style="margin-left:6px">Finance: works in MF</span>
-    <div class="toggle-row" style="margin-top:1rem;margin-bottom:0">
-        <button class="tog-btn" onclick="show('a',this)">Option A — Ops-only model</button>
-        <button class="tog-btn active" onclick="show('b',this)">Option B — Finance active model</button>
-      </div>
-	</div>
+    </div>
 
     <div class="section">
       <div class="section-label">What this option means</div>
@@ -357,22 +412,11 @@ body {
       <div class="cards-grid">
         <div class="card card-gains">
           <div class="card-label">What this gains</div>
-          <div class="card-body"><ul>
-  <li>Full auditability end-to-end.</li>
-  <li>Disputes structured and traceable in MF.</li>
-  <li>No data leaving the system for financial steps.</li>
-  <li>Sets up BC integration (2027) cleanly.</li>
-  <li>Finance has live visibility of accrual status on every shipment.</li>
-</ul></div>
+          <div class="card-body">Full auditability end-to-end. Disputes structured and traceable in MF. No data leaving the system for financial steps. Sets up BC integration (2027) cleanly. Finance has live visibility of accrual status on every shipment.</div>
         </div>
         <div class="card card-costs">
           <div class="card-label">What this costs</div>
-          <div class="card-body"><ul>
-  <li>Finance user provisioning and training.</li>
-  <li>New Financial Handling team in MF with access controls.</li>
-  <li>Significant development effort — trigger logic, status transitions, task sequencing, dispute handling.</li>
-  <li>Error-sensitive; automations are required, not optional.</li>
-</ul></div>
+          <div class="card-body">Finance user provisioning and training. New Financial Handling team in MF with access controls. Significant development effort — trigger logic, status transitions, task sequencing, dispute handling. Error-sensitive; automations are required, not optional.</div>
         </div>
       </div>
     </div>
@@ -425,7 +469,7 @@ body {
       </div>
     </div>
 
-    <div class="doc-footer">GDB Logistics · IT / Application Management · For discussion April 14, 2026</div>
+    <div class="doc-footer">GDB Logistics · IT / Application Management · For discussion April 15, 2026</div>
   </div>
 
 </div>
@@ -435,11 +479,7 @@ function show(opt, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tog-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('page-' + opt).classList.add('active');
-  document.querySelectorAll('.tog-btn').forEach(b => {
-    if (b.textContent.toLowerCase().includes('option ' + opt)) {
-      b.classList.add('active');
-    }
-  });
+  btn.classList.add('active');
 }
 </script>
 </body>
