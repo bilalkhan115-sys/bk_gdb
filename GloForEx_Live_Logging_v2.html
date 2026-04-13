@@ -529,7 +529,7 @@ const STAGES = {
     name: 'STG-5 — Arrival monitoring', team: 'Import Operations',
     desc: 'Track vessel and confirm actual arrival at port of discharge.',
     tasks: [
-      { id:'stg5-1', name:'Monitor vessel ETA',    auto:'manual', notes:'MF native live deepsea tracking for vessels.',          trigger:{ event:'', source:'MF Live Tracking' }, deadline:{ milestone:'ETA', offset:5, direction:'before' },
+      { id:'stg5-1', name:'Monitor vessel ETA',    auto:'manual', notes:'MF native live deepsea tracking for vessels.',          trigger:{ event:'', source:'MF Live Tracking' }, deadline:{ milestone:'ETA', offset:5, direction:'before' } },
       { id:'stg5-2', name:'Manual ETA check',      auto:'manual',         notes:'OPEN ITEM: Inland / feeder legs only. Cadence TBD at workshop.',                                   trigger:{ event:'Manually triggered by Ops on recurring cadence — cadence TBD at workshop', source:'Manual', flag:'cadence TBD' }, deadline:null },
       { id:'stg5-3', name:'Confirm arrival at POD',auto:'auto-full',      notes:'Auto-completed on ATA event from MF live tracking. Gates downstream stages.',                       trigger:{ event:'ATA (Actual Time of Arrival) event received from MF live tracking', source:'MF Live Tracking' }, deadline:{ milestone:'ATA', offset:0, direction:'on' } },
     ]
