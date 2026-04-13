@@ -390,7 +390,7 @@ const rows = [
     deadline: null },
 
   { tg:'STG-2', tgLabel:'Shipment data completion', task:'Check agent update',
-    note:'API shipments only. Resets to Pending on each agent update from SnapLogic.',
+    note:'API shipments only. Resets to Pending on each agent update.',
     auto:'recurring', team:'booking',
     deadline: { milestone:'ETD', offset:3, direction:'before' } },
 
@@ -400,7 +400,7 @@ const rows = [
     deadline: { milestone:'ETD', offset:5, direction:'before' } },
 
   { tg:'STG-2', tgLabel:'Shipment data completion', task:'Agent booking communication',
-    note:'Shared with TG1. Triggered when data is missing after agent update.',
+    note:'Shared with STG1. Can be triggered when data is missing after agent update.',
     auto:'exception', team:'booking',
     deadline: null },
 
