@@ -481,6 +481,25 @@ body {
   </div>
 </div>
 
+  <!-- Decision edit modal -->
+<div class="modal-overlay" id="dec-edit-modal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-head">
+      <div class="modal-title">Edit decision</div>
+      <button class="modal-close" onclick="closeDecisionModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <div class="field-label">Decision text</div>
+        <textarea id="dec-edit-input" style="min-height:72px"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeDecisionModal()">Cancel</button>
+      <button class="btn-save" onclick="saveDecision()">Save</button>
+    </div>
+  </div>
+</div>
 <script>
 // ── Stage / task data ──────────────────────────────────────────────────────
 // trigger: { event, source, flag? } — added to all tasks
@@ -667,7 +686,29 @@ function deleteDecision(stageId, idx) {
   state.decisions[stageId].splice(idx, 1);
   saveState(); updateSidebarBadges(); renderStage(stageId);
 }
+let decisionEditContext = null;
 
+function openEditDecision(stageId, idx) {
+  decisionEditContext = { stageId, idx };
+  const d = state.decisions[stageId][idx];
+  document.getElementById('dec-edit-input').value = d.text;
+  document.getElementById('dec-edit-modal').classList.add('open');
+  setTimeout(() => document.getElementById('dec-edit-input').select(), 40);
+}
+
+function saveDecision() {
+  const text = document.getElementById('dec-edit-input').value.trim();
+  if (!text || !decisionEditContext) return;
+  const { stageId, idx } = decisionEditContext;
+  state.decisions[stageId][idx].text = text;
+  closeDecisionModal();
+  saveState(); updateSidebarBadges(); renderStage(stageId);
+}
+
+function closeDecisionModal() {
+  document.getElementById('dec-edit-modal').classList.remove('open');
+  decisionEditContext = null;
+}
 // ── Constants ──────────────────────────────────────────────────────────────
 const TEAM_COLORS = {
   'Import Booking':      'background:rgba(56,139,253,.15);color:var(--blue-d)',
@@ -734,6 +775,7 @@ function renderStage(id) {
       <div class="decision-card${id==='GLOBAL'?' global':''}">
         <div class="d-idx">${String(i+1).padStart(2,'0')}</div>
         <div style="flex:1"><div class="d-text">${escHtml(d.text)}</div><div class="d-time">Day ${d.day} · ${d.time}</div></div>
+        <button class="d-del" onclick="openEditDecision('${id}',${i})" style="margin-right:2px">Edit</button>
         <button class="d-del" onclick="deleteDecision('${id}',${i})">×</button>
       </div>`).join('')}</div>`
     : `<div class="empty-state">No decisions logged yet. Type a decision in the bar above and press Enter.</div>`}`;
@@ -1263,7 +1305,7 @@ function toggleTheme() { applyTheme(!document.documentElement.classList.contains
 
 // ── Keyboard ───────────────────────────────────────────────────────────────
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeModal(); closeSummary(); closeParkModal(); }
+  if (e.key === 'Escape') { closeModal(); closeSummary(); closeParkModal(); closeDecisionModal(); }
 });
 
 // ── Init ───────────────────────────────────────────────────────────────────
