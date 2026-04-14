@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GloForEx — Live Workshop Log</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:      #0e0e0e;
+  --bg2:     #161616;
+  --bg3:     #1e1e1e;
+  --bg4:     #252525;
+  --border:  rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --border3: rgba(255,255,255,0.04);
+  --text:    #e8e6de;
+  --text2:   #8a8880;
+  --text3:   #505050;
+
+  --green:  #3fb950; --green-l: #1a3a1a; --green-d: #a7f3bc;
+  --blue:   #388bfd; --blue-l:  #0d2244; --blue-d:  #b8d4ff;
+  --amber:  #d29922; --amber-l: #2a1f00; --amber-d: #fac775;
+  --red:    #f85149; --red-l:   #2a0d0d; --red-d:   #ffb3b0;
+  --purple: #a371f7; --purple-l:#1e1040; --purple-d:#d2b9ff;
+  --teal:   #39d3aa; --teal-l:  #0a2820; --teal-d:  #9fedd9;
+
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'IBM Plex Sans', sans-serif;
+}
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.shell {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  grid-template-rows: 48px 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ── Topbar ── */
+.topbar {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  padding: 0 16px;
+  justify-content: space-between;
+}
+.topbar-left { display: flex; align-items: center; gap: 12px; }
+.logo { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--text2); letter-spacing: .06em; }
+.logo span { color: var(--green); }
+.topbar-title { font-size: 13px; font-weight: 500; color: var(--text); padding-left: 12px; padding-right: 12px; border-left: 1px solid var(--border2); border-right: 1px solid var(--border2); }
+.topbar-right { display: flex; align-items: center; gap: 8px; }
+.day-switch { display: flex; gap: 4px; }
+.day-btn { font-family: var(--mono); font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 4px; border: 1px solid var(--border2); background: transparent; color: var(--text2); cursor: pointer; transition: all .15s; }
+.day-btn:hover { color: var(--text); background: var(--bg3); }
+.day-btn.active { background: var(--bg3); color: var(--text); }
+.btn-summary { font-family: var(--sans); font-size: 12px; font-weight: 500; padding: 4px 12px; border-radius: 4px; border: 1px solid var(--border2); background: var(--bg3); color: var(--text); cursor: pointer; transition: all .15s; margin-left: 8px; }
+.btn-summary:hover { background: var(--bg4); }
+.btn-export { font-family: var(--sans); font-size: 12px; font-weight: 500; padding: 4px 12px; border-radius: 4px; border: 1px solid var(--green); background: transparent; color: var(--green); cursor: pointer; transition: all .15s; }
+.btn-export:hover { background: var(--green-l); }
+
+/* ── Sidebar ── */
+.sidebar { border-right: 1px solid var(--border); background: var(--bg); overflow-y: auto; padding: 12px 0; }
+.sidebar-label { font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--text3); padding: 6px 14px 4px; }
+.stage-btn { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 14px; background: transparent; border: none; color: var(--text2); font-family: var(--sans); font-size: 13px; cursor: pointer; text-align: left; transition: all .1s; position: relative; }
+.stage-btn:hover { background: var(--bg2); color: var(--text); }
+.stage-btn.active { background: var(--bg3); color: var(--text); }
+.stage-btn.active::before { content: ''; position: absolute; left: 0; top: 4px; bottom: 4px; width: 2px; background: var(--blue); border-radius: 0 2px 2px 0; }
+.stage-code { font-family: var(--mono); font-size: 10px; font-weight: 600; padding: 1px 5px; border-radius: 3px; flex-shrink: 0; min-width: 34px; text-align: center; }
+.stage-badge { margin-left: auto; font-family: var(--mono); font-size: 10px; font-weight: 600; padding: 1px 5px; border-radius: 10px; display: none; }
+.stage-btn.has-changes .stage-badge  { display: block; background: var(--amber-l); color: var(--amber-d); }
+.stage-btn.has-decisions .stage-badge{ display: block; background: var(--blue-l);  color: var(--blue-d);  }
+.stage-btn.has-both .stage-badge     { display: block; background: var(--purple-l);color: var(--purple-d);}
+.s1 { background: rgba(56,139,253,.15); color: var(--blue-d); }
+.s2 { background: rgba(56,139,253,.15); color: var(--blue-d); }
+.s3 { background: rgba(57,211,170,.15); color: var(--teal-d); }
+.s4 { background: rgba(57,211,170,.15); color: var(--teal-d); }
+.s5 { background: rgba(56,139,253,.1);  color: var(--blue-d); }
+.s6 { background: rgba(57,211,170,.15); color: var(--teal-d); }
+.s7 { background: rgba(56,139,253,.1);  color: var(--blue-d); }
+.s8 { background: rgba(210,153,34,.15); color: var(--amber-d); }
+.sd { background: rgba(248,81,73,.15);  color: var(--red-d); }
+
+/* ── Main ── */
+.main { overflow-y: auto; background: var(--bg2); display: flex; flex-direction: column; }
+.decision-bar { border-bottom: 1px solid var(--border); background: var(--bg); padding: 10px 20px; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.decision-label { font-family: var(--mono); font-size: 11px; color: var(--text3); letter-spacing: .06em; white-space: nowrap; }
+.decision-input { flex: 1; background: var(--bg3); border: 1px solid var(--border2); border-radius: 4px; padding: 5px 10px; font-family: var(--sans); font-size: 13px; color: var(--text); outline: none; }
+.decision-input:focus { border-color: var(--blue); }
+.decision-input::placeholder { color: var(--text3); }
+.btn-log-decision { font-family: var(--sans); font-size: 12px; font-weight: 600; padding: 5px 14px; border-radius: 4px; border: 1px solid var(--blue); background: var(--blue-l); color: var(--blue-d); cursor: pointer; white-space: nowrap; transition: all .15s; }
+.btn-log-decision:hover { background: rgba(56,139,253,.2); }
+
+.stage-content { flex: 1; padding: 20px; }
+.stage-header { margin-bottom: 16px; }
+.stage-header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+.stage-name { font-size: 18px; font-weight: 500; color: var(--text); }
+.stage-team-tag { font-family: var(--mono); font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 3px; white-space: nowrap; flex-shrink: 0; }
+.stage-desc { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+.section-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; margin-top: 20px; }
+.section-hdr:first-of-type { margin-top: 0; }
+.section-hdr-label { font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); }
+.btn-add { font-family: var(--sans); font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: 4px; border: 1px solid var(--border2); background: transparent; color: var(--text2); cursor: pointer; transition: all .15s; display: flex; align-items: center; gap: 5px; }
+.btn-add:hover { background: var(--bg3); color: var(--text); }
+
+/* Task cards */
+.task-list { display: flex; flex-direction: column; gap: 6px; }
+.task-card { background: var(--bg); border: 1px solid var(--border2); border-radius: 6px; padding: 10px 12px; transition: border-color .15s; }
+.task-card:hover { border-color: rgba(255,255,255,.2); }
+.task-card.modified { border-color: var(--amber); border-left-width: 3px; }
+.task-card.added    { border-color: var(--green);  border-left-width: 3px; }
+.task-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
+.task-name-display { font-size: 13px; font-weight: 500; color: var(--text); }
+.task-actions { display: flex; gap: 4px; flex-shrink: 0; }
+.task-action-btn { font-family: var(--mono); font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 3px; border: 1px solid var(--border2); background: transparent; color: var(--text3); cursor: pointer; transition: all .15s; }
+.task-action-btn:hover { background: var(--bg3); color: var(--text2); }
+.task-action-btn.edit-btn:hover { border-color: var(--amber); color: var(--amber-d); }
+.task-action-btn.del-btn:hover  { border-color: var(--red);   color: var(--red-d);   }
+.task-meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.task-pill { font-family: var(--mono); font-size: 10px; font-weight: 500; padding: 1px 7px; border-radius: 10px; }
+.pill-auto-full      { background: #1a3a1a; color: #56d364; }
+.pill-auto-recurring { background: var(--blue-l); color: var(--blue-d); }
+.pill-auto-manual    { background: var(--bg3); color: var(--text3); }
+.pill-auto-exception { background: var(--amber-l); color: var(--amber-d); }
+
+/* Trigger row in task card */
+.task-trigger { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border3); display: flex; gap: 6px; align-items: flex-start; }
+.trigger-label { font-family: var(--mono); font-size: 10px; font-weight: 600; color: var(--text3); white-space: nowrap; padding-top: 1px; letter-spacing: .04em; min-width: 52px; }
+.trigger-value { font-size: 12px; color: var(--text2); line-height: 1.5; flex: 1; }
+.trigger-source-pill { font-family: var(--mono); font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 6px; background: var(--bg3); color: var(--text3); display: inline-block; margin-left: 6px; }
+.trigger-flag-pill   { font-family: var(--mono); font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 6px; background: var(--amber-l); color: var(--amber-d); display: inline-block; margin-left: 4px; }
+
+/* ── Deadline row in task card ── */
+.deadline-row { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border3); display: flex; gap: 6px; align-items: center; }
+.deadline-label { font-family: var(--mono); font-size: 10px; font-weight: 600; color: var(--text3); white-space: nowrap; letter-spacing: .04em; min-width: 52px; }
+.dl-pill { font-family: var(--mono); font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 8px; white-space: nowrap; display: inline-block; }
+.dl-before { background: #1a3a1a; color: #a7f3bc; }
+.dl-after  { background: var(--blue-l); color: var(--blue-d); }
+.dl-on     { background: var(--amber-l); color: var(--amber-d); }
+.dl-tbd    { font-family: var(--mono); font-size: 10px; color: var(--text3); }
+.light .dl-before { background: #EAF3DE; color: #27500A; }
+.light .dl-after  { background: #E6F1FB; color: #0C447C; }
+.light .dl-on     { background: #FAEEDA; color: #633806; }
+
+.task-change-note { font-size: 11px; color: var(--amber-d); font-style: italic; margin-top: 4px; padding-top: 4px; border-top: 1px solid var(--border3); }
+
+/* ── Modal (shared) ── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.65); display: none; align-items: center; justify-content: center; z-index: 100; padding: 16px; }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--bg); border: 1px solid var(--border2); border-radius: 8px; width: 100%; max-width: 580px; overflow: hidden; }
+.modal-head { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.modal-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.modal-close { font-size: 18px; background: none; border: none; color: var(--text3); cursor: pointer; line-height: 1; padding: 2px 6px; }
+.modal-close:hover { color: var(--text); }
+.modal-body { padding: 18px; display: flex; flex-direction: column; gap: 14px; max-height: 70vh; overflow-y: auto; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field-label { font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); }
+.field input, .field select, .field textarea { background: var(--bg2); border: 1px solid var(--border2); border-radius: 4px; padding: 7px 10px; font-family: var(--sans); font-size: 13px; color: var(--text); outline: none; width: 100%; }
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--blue); }
+.field select option { background: var(--bg2); }
+.field textarea { resize: vertical; min-height: 56px; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.change-type-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.change-btn { font-size: 12px; font-weight: 500; padding: 4px 12px; border-radius: 4px; border: 1px solid var(--border2); background: transparent; color: var(--text2); cursor: pointer; transition: all .15s; }
+.change-btn:hover { background: var(--bg3); }
+.change-btn.active.scope    { background: var(--amber-l); color: var(--amber-d); border-color: var(--amber); }
+.change-btn.active.trigger  { background: var(--blue-l);  color: var(--blue-d);  border-color: var(--blue); }
+.change-btn.active.deadline { background: var(--purple-l);color: var(--purple-d);border-color: var(--purple); }
+.change-btn.active.name     { background: var(--teal-l);  color: var(--teal-d);  border-color: var(--teal); }
+.change-btn.active.other    { background: var(--bg3);     color: var(--text2);   border-color: var(--border2); }
+.modal-foot { padding: 12px 18px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; }
+.btn-cancel { font-family: var(--sans); font-size: 13px; font-weight: 500; padding: 6px 14px; border-radius: 4px; border: 1px solid var(--border2); background: transparent; color: var(--text2); cursor: pointer; }
+.btn-save { font-family: var(--sans); font-size: 13px; font-weight: 600; padding: 6px 16px; border-radius: 4px; border: 1px solid var(--green); background: var(--green-l); color: var(--green-d); cursor: pointer; transition: all .15s; }
+.btn-save:hover { background: rgba(63,185,80,.15); }
+
+/* Decisions */
+.decision-cards { display: flex; flex-direction: column; gap: 6px; }
+.decision-card { background: var(--blue-l); border: 1px solid var(--blue); border-radius: 6px; padding: 8px 12px; display: flex; align-items: flex-start; gap: 10px; }
+.decision-card.global { background: var(--purple-l); border-color: var(--purple); }
+.d-idx  { font-family: var(--mono); font-size: 10px; font-weight: 600; color: var(--text3); min-width: 20px; margin-top: 1px; }
+.d-text { font-size: 13px; color: var(--text); flex: 1; }
+.d-time { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 3px; }
+.d-del  { font-family: var(--mono); font-size: 10px; padding: 1px 6px; border-radius: 3px; border: 1px solid var(--border2); background: transparent; color: var(--text3); cursor: pointer; flex-shrink: 0; }
+.d-del:hover { border-color: var(--red); color: var(--red-d); }
+
+/* Summary modal */
+.summary-modal { background: var(--bg); border: 1px solid var(--border2); border-radius: 8px; width: 100%; max-width: 760px; max-height: 85vh; overflow: hidden; display: flex; flex-direction: column; }
+.summary-body  { overflow-y: auto; padding: 20px; flex: 1; }
+.summary-section { margin-bottom: 24px; }
+.summary-section-title { font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.summary-row { padding: 8px 0; border-bottom: 1px solid var(--border3); font-size: 13px; color: var(--text); }
+.summary-row:last-child { border-bottom: none; }
+.summary-row .s-label { color: var(--text3); font-family: var(--mono); font-size: 11px; display: block; margin-bottom: 2px; }
+.summary-change-type { font-family: var(--mono); font-size: 10px; padding: 1px 6px; border-radius: 10px; display: inline-block; margin-right: 6px; }
+.empty-state { font-size: 13px; color: var(--text3); padding: 10px 0; font-style: italic; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ── Light theme ── */
+.light {
+  --bg:#ffffff; --bg2:#f7f6f2; --bg3:#f0efe9; --bg4:#e8e7e1;
+  --border:rgba(0,0,0,0.08); --border2:rgba(0,0,0,0.15); --border3:rgba(0,0,0,0.05);
+  --text:#1a1a18; --text2:#5f5e5a; --text3:#8b8a85;
+  --green-l:#EAF3DE; --green-d:#27500A;
+  --blue-l:#E6F1FB; --blue-d:#042C53;
+  --amber-l:#FAEEDA; --amber-d:#412402;
+  --red-l:#FCEBEB; --red-d:#6B1212;
+  --purple-l:#EEEDFE; --purple-d:#26215C;
+  --teal-l:#E1F5EE; --teal-d:#04342C;
+}
+.light .pill-auto-full   { background: #EAF3DE; color: #27500A; }
+.light .pill-auto-manual { background: var(--bg3); color: var(--text3); }
+.light .task-card:hover  { border-color: rgba(0,0,0,.25); }
+.light .topbar { background: linear-gradient(to right, #1e1e1e 600px, var(--bg) 860px); }
+.light .logo { color: #8a8880; }
+.light .logo span { color: #3fb950; }
+.light .topbar-title { color: #e8e6de; border-left-color: rgba(255,255,255,0.12); border-right-color: rgba(255,255,255,0.12); }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="logo">GDB <span>·</span> GloForEx</div>
+      <div class="topbar-title">Live Workshop Log</div>
+      <div style="display:flex;align-items:center;overflow:visible;">
+        <img src="https://gdblogistics.com/wp-content/uploads/2025/11/Logo-GDB-landscape.svg" alt="GDB Logistics"
+          style="height:28px;width:auto;flex-shrink:0;opacity:0.9;display:block;" onerror="this.style.display='none'"/>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="day-switch">
+        <button class="day-btn active" onclick="setDay(1,this)">Day 1</button>
+        <button class="day-btn" onclick="setDay(2,this)">Day 2</button>
+      </div>
+      <button class="btn-summary" onclick="openSummary()">Changes ↗</button>
+      <button class="btn-summary" onclick="switchToSummaryView()">Day summary</button>
+      <button class="btn-export" onclick="exportText()">Export .txt</button>
+      <button class="btn-export" onclick="exportJSON()" style="border-color:var(--teal);color:var(--teal);">Backup</button>
+      <button class="btn-export" onclick="importJSON()" style="border-color:var(--text3);color:var(--text3);">Restore</button>
+      <button id="theme-btn" onclick="toggleTheme()" style="font-family:var(--sans);font-size:12px;font-weight:500;padding:4px 10px;border-radius:4px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);cursor:pointer;margin-left:4px;transition:all .15s;">☀️ Light</button>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Stages</div>
+      <button class="stage-btn" data-stage="STG-1" onclick="selectStage('STG-1',this)">
+        <span class="stage-code s1">STG-1</span><span>Booking intake</span><span class="stage-badge">—</span>
+      </button>
+      <button class="stage-btn" data-stage="STG-2" onclick="selectStage('STG-2',this)">
+        <span class="stage-code s2">STG-2</span><span>Shipment data</span><span class="stage-badge">—</span>
+      </button>
+      <button class="stage-btn" data-stage="STG-3" onclick="selectStage('STG-3',this)">
+        <span class="stage-code s3">STG-3</span><span>Doc verification</span><span class="stage-badge">—</span>
+      </button>
+      <button class="stage-btn" data-stage="STG-4" onclick="selectStage('STG-4',this)">
+        <span class="stage-code s4">STG-4</span><span>Customs processing</span><span class="stage-badge">—</span>
+      </button>
+      <button class="stage-btn" data-stage="STG-5" onclick="selectStage('STG-5',this)">
+        <span class="stage-code s5">STG-5</span><span>Arrival monitoring</span><span class="stage-badge">—</span>
+      </button>
+      <button class="stage-btn" data-stage="STG-6" onclick="selectStage('STG-6',this)">
+        <span class="stage-code s6">STG-6</span><span>Carrier release</span><span class="stage-badge">—</span>
+      </button>
+      <button class="stage-btn" data-stage="STG-7" onclick="selectStage('STG-7',this)">
+        <span class="stage-code s7">STG-7</span><span>Delivery planning</span><span class="stage-badge">—</span>
+      </button>
+      <button class="stage-btn" data-stage="STG-8" onclick="selectStage('STG-8',this)">
+        <span class="stage-code s8">STG-8</span><span>Financial handling</span><span class="stage-badge">—</span>
+      </button>
+      <button class="stage-btn" data-stage="DEV" onclick="selectStage('DEV',this)">
+        <span class="stage-code sd">DEV</span><span>Dev message log</span><span class="stage-badge">—</span>
+      </button>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label" style="margin-top:8px">Global</div>
+      <button class="stage-btn" data-stage="GLOBAL" onclick="selectStage('GLOBAL',this)">
+        <span class="stage-code" style="background:rgba(163,113,247,.15);color:var(--purple-d)">ALL</span>
+        <span>Workshop-wide</span><span class="stage-badge">—</span>
+      </button>
+      <button class="stage-btn" data-stage="PARKING" onclick="selectStage('PARKING',this)">
+        <span class="stage-code" style="background:var(--amber-l);color:var(--amber-d)">PKG</span>
+        <span>Parking lot</span><span class="stage-badge">—</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="decision-bar">
+      <div class="decision-label">DECISION</div>
+      <input class="decision-input" id="decision-input" placeholder="Type decision and press Enter — will be logged to current stage…"/>
+      <button class="btn-log-decision" onclick="logDecision()">Log decision</button>
+      <button class="btn-log-decision" onclick="openParkModal()" style="border-color:var(--amber);background:var(--amber-l);color:var(--amber-d);">Park item</button>
+    </div>
+    <div class="stage-content" id="stage-content">
+      <div style="color:var(--text3);font-size:13px;padding:20px 0;">← Select a stage to begin</div>
+    </div>
+  </div>
+</div>
+
+<!-- Day summary full-screen view -->
+<div id="summary-view" style="display:none;position:fixed;inset:0;background:var(--bg2);z-index:200;overflow-y:auto">
+  <div style="position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--border2);padding:0 20px;height:48px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:10">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="font-family:var(--mono);font-size:12px;font-weight:600;color:var(--text2)">GDB <span style="color:var(--green)">·</span> GloForEx</div>
+      <div id="sv-title" style="font-size:13px;font-weight:500;padding-left:12px;border-left:1px solid var(--border2)">Day summary</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px">
+      <div style="display:flex;gap:3px" id="sv-day-tabs">
+        <button onclick="setSvDay(1,this)" style="font-family:var(--mono);font-size:11px;padding:3px 10px;border-radius:4px;border:1px solid var(--border2);background:var(--bg3);color:var(--text);cursor:pointer">Day 1</button>
+        <button onclick="setSvDay(2,this)" style="font-family:var(--mono);font-size:11px;padding:3px 10px;border-radius:4px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer">Day 2</button>
+        <button onclick="setSvDay(null,this)" style="font-family:var(--mono);font-size:11px;padding:3px 10px;border-radius:4px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer">All</button>
+      </div>
+      <button onclick="closeSummaryView()" style="font-family:var(--sans);font-size:12px;padding:4px 12px;border-radius:4px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;margin-left:8px">✕ Close</button>
+    </div>
+  </div>
+  <div id="sv-body" style="max-width:820px;margin:0 auto;padding:28px 24px 60px"></div>
+</div>
+
+<!-- Task edit / add modal -->
+<div class="modal-overlay" id="task-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="modal-title">Edit task</div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <div class="field-label">Task name</div>
+        <input type="text" id="f-name" placeholder="Task name"/>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <div class="field-label">Automation</div>
+          <select id="f-auto">
+            <option value="manual">Manual</option>
+            <option value="auto-full">Fully automated</option>
+            <option value="auto-recurring">Automated / recurring</option>
+            <option value="auto-exception">Manual / exception</option>
+          </select>
+        </div>
+        <div class="field">
+          <div class="field-label">Team</div>
+          <select id="f-team">
+            <option value="Import Booking">Import Booking</option>
+            <option value="Import Documentation">Import Documentation</option>
+            <option value="Import Operations">Import Operations</option>
+            <option value="Financial Handling">Financial Handling</option>
+            <option value="Error Handling">Error Handling</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">Notes / scope</div>
+        <textarea id="f-notes" placeholder="Any notes on scope, conditions, countries…"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label">Trigger — what fires this task?</div>
+        <textarea id="f-trigger" placeholder="e.g. Agent update with document attachment (API) OR manual upload in MF"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label">Trigger source</div>
+        <input type="text" id="f-trigger-source" placeholder="e.g. Automation, Customs API, Manual"/>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <div class="field-label">Overdue after — milestone</div>
+          <select id="f-dl-milestone">
+            <option value="">— None —</option>
+            <option value="ETD">ETD</option>
+            <option value="ATD">ATD</option>
+            <option value="ETA">ETA</option>
+            <option value="ATA">ATA</option>
+            <option value="Customs clearance">Customs clearance</option>
+            <option value="Document receipt">Document receipt</option>
+          </select>
+        </div>
+        <div class="field">
+          <div class="field-label">Direction</div>
+          <select id="f-dl-direction">
+            <option value="before">Before</option>
+            <option value="after">After</option>
+            <option value="on">On</option>
+          </select>
+        </div>
+      </div>
+      <div class="field" style="max-width:160px">
+        <div class="field-label">Offset (working days)</div>
+        <input type="number" id="f-dl-offset" min="0" max="30" placeholder="e.g. 3"/>
+      </div>
+      <div class="field" id="change-type-field">
+        <div class="field-label">Change type</div>
+        <div class="change-type-row" id="change-type-row">
+          <button class="change-btn scope"    onclick="toggleChangeType('scope',this)">Scope</button>
+          <button class="change-btn trigger"  onclick="toggleChangeType('trigger',this)">Trigger</button>
+          <button class="change-btn deadline" onclick="toggleChangeType('deadline',this)">Deadline</button>
+          <button class="change-btn name"     onclick="toggleChangeType('name',this)">Name</button>
+          <button class="change-btn other"    onclick="toggleChangeType('other',this)">Other</button>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">Change note (what changed / why)</div>
+        <textarea id="f-changenote" placeholder="Briefly describe what changed and the reason agreed in the room…" style="min-height:50px"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveTask()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Summary modal (Changes ↗) -->
+<div class="modal-overlay" id="summary-modal">
+  <div class="summary-modal">
+    <div class="modal-head">
+      <div class="modal-title">Workshop summary — all changes &amp; decisions</div>
+      <button class="modal-close" onclick="closeSummary()">×</button>
+    </div>
+    <div class="summary-body" id="summary-body"></div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeSummary()">Close</button>
+      <button class="btn-save" onclick="exportText()">Export as text</button>
+    </div>
+  </div>
+</div>
+
+<!-- Park item modal -->
+<div class="modal-overlay" id="park-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="park-modal-title">Park item</div>
+      <button class="modal-close" onclick="closeParkModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <div class="field-label">Item description</div>
+        <textarea id="p-text" placeholder="Describe the item to be resolved later…" style="min-height:60px"></textarea>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <div class="field-label">Owner</div>
+          <input type="text" id="p-owner" placeholder="Who owns this?"/>
+        </div>
+        <div class="field">
+          <div class="field-label">Resolve when</div>
+          <select id="p-when">
+            <option value="Day 2">Day 2</option>
+            <option value="Post-workshop">Post-workshop</option>
+            <option value="TBD">TBD</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeParkModal()">Cancel</button>
+      <button class="btn-save" onclick="saveParkItem()" style="border-color:var(--amber);background:var(--amber-l);color:var(--amber-d);">Park item</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Stage / task data ──────────────────────────────────────────────────────
+// trigger: { event, source, flag? } — added to all tasks
+const STAGES = {
+  'STG-1': {
+    name: 'STG-1 — Booking intake & validation', team: 'Import Booking',
+    desc: 'Initial booking received, validated, and confirmed. Covers both API (agent) and manual bookings.',
+    tasks: [
+      { id:'stg1-1', name:'Validate booking',             auto:'auto-full',      notes:'Auto-completed for API bookings with all fields present. Pending for manual/exception bookings.',    trigger:{ event:'Booking created in MF via agent API or manual entry', source:'API / Manual' }, deadline:{ milestone:'ETD', offset:5, direction:'before' } },
+      { id:'stg1-2', name:'Request booking confirmation', auto:'manual',         notes:'DE and NL only. FR does not send booking confirmation (country delta #1).',                                          trigger:{ event:'Manually triggered by Ops after booking validation', source:'Manual' }, deadline:{ milestone:'ETD', offset:5, direction:'before' } },
+      { id:'stg1-3', name:'Agent booking communication',  auto:'auto-exception', notes:'Action task when agent communication is needed.',                                                      trigger:{ event:'Manually triggered by Ops on exception — missing data or query requiring agent contact', source:'Manual' }, deadline:null },
+    ]
+  },
+  'STG-2': {
+    name: 'STG-2 — Shipment data completion', team: 'Import Booking',
+    desc: 'Ensure all mandatory shipment data fields are complete before operational processing begins.',
+    tasks: [
+      { id:'stg2-1', name:'Check agent update',          auto:'auto-recurring', notes:'API shipments only. Resets to Pending on each agent update.',                                                          trigger:{ event:'Inbound agent update received via API — resets to Pending automatically on each update', source:'API' }, deadline:{ milestone:'ETD', offset:3, direction:'before' } },
+      { id:'stg2-2', name:'Complete shipment data',      auto:'manual',         notes:'Non-API shipments only. Full checklist: parties, transport, cargo, documents.',                                        trigger:{ event:'Booking created manually — task set to Pending on creation', source:'Manual' }, deadline:{ milestone:'ETD', offset:5, direction:'before' } },
+      { id:'stg2-3', name:'Agent booking communication', auto:'auto-exception', notes:'Shared with STG-1. Triggered when data is missing after agent update.',                                                trigger:{ event:'Manually triggered by Ops after reviewing agent update — missing or incorrect data', source:'Manual' }, deadline:null },
+      { id:'stg2-4', name:'Seaway bill released',        auto:'auto-full',      notes:'OPEN ITEM: Placement in STG-2 or STG-3 TBC. Auto-triggered when seaway bill confirmed.',                              trigger:{ event:'Seaway bill release confirmed event', source:'Automation', flag:'placement TBC' }, deadline:null },
+    ]
+  },
+  'STG-3': {
+    name: 'STG-3 — Document verification', team: 'Import Documentation',
+    desc: 'Verify all required shipping documents are received and correct before customs submission.',
+    tasks: [
+      { id:'stg3-1', name:'Verify commercial invoice',       auto:'manual',         notes:'Cross-check consignee, shipper, cargo description, value, currency, incoterm against MF data. Expected document: Commercial Invoice.',    trigger:{ event:'Agent update with document attachment (API) OR manual document upload in MF — task resets to Pending on either event', source:'API / Manual' }, deadline:{ milestone:'ETA', offset:5, direction:'before' } },
+      { id:'stg3-2', name:'Verify packing list',             auto:'manual',         notes:'Cross-check package count, weight, cargo description against MF data. Combined with invoice where applicable. Expected document: Packing List.', trigger:{ event:'Agent update with document attachment (API) OR manual document upload in MF — task resets to Pending on either event', source:'API / Manual' }, deadline:{ milestone:'ETA', offset:5, direction:'before' } },
+      { id:'stg3-3', name:'Verify HBL / TLX / Seaway bill', auto:'manual',         notes:'OPEN ITEM: Document type depends on shipment. Cross-check parties, POL/POD, container, cargo. Expected document: HBL/TLX Release.',                  trigger:{ event:'Agent update with document attachment (API) OR manual document upload in MF — task resets to Pending on either event', source:'API / Manual' }, deadline:{ milestone:'ETA', offset:5, direction:'before' } },
+      { id:'stg3-4', name:'Verify insurance certificate',    auto:'auto-exception', notes:'OPEN ITEM: Conditional on incoterm and country rules. Country delta entries to be confirmed at workshop.',                                          trigger:{ event:'Manually triggered by Ops when insurance certificate required per incoterm or country rule', source:'Manual' }, deadline:{ milestone:'ETA', offset:5, direction:'before' } },
+      { id:'stg3-5', name:'Check customs declaration',       auto:'manual',         notes:'Pre-arrival check that declaration is complete and accurate.',                                                                         trigger:{ event:'Manually triggered by Ops — typically scheduled relative to ETD/ETA milestone', source:'Manual' }, deadline:{ milestone:'ETA', offset:3, direction:'before' } },
+      { id:'stg3-6', name:'Request missing documents',       auto:'auto-exception', notes:'Action task when documents are absent or fail verification. Triggers contact with agent or customer.',                                trigger:{ event:'Manually triggered by Ops on document verification failure — missing doc or content mismatch', source:'Manual' }, deadline:null },
+    ]
+  },
+  'STG-4': {
+    name: 'STG-4 — Customs processing', team: 'Import Documentation',
+    desc: 'Submit customs declaration and handle confirmation or rejection from Customs.',
+    tasks: [
+      { id:'stg4-1', name:'Send customs documents', auto:'manual',         notes:'Ops executes task in MF triggering webhook to Customs. On rejection: task resets to Pending via Customs API — double-trigger alongside Dev Message Log.',   trigger:{ event:'Ops manually executes task → MF webhook fires to Customs. On rejection: Customs API resets task to Pending (double-trigger with Dev Message Log)', source:'Manual / Customs API' }, deadline:{ milestone:'ETA', offset:2, direction:'before' } },
+      { id:'stg4-2', name:'Customs clearance received',     auto:'auto-full',      notes:'Auto-created and immediately set to Completed on clearance confirmation from Customs. No Ops action required. Prerequisite gate for STG-6.',               trigger:{ event:'Customs clearance confirmation message received from Customs API', source:'Customs API' }, deadline:{ milestone:'ATA', offset:0, direction:'on' } },
+      { id:'stg4-3', name:'Customs rejection handling',     auto:'auto-exception', notes:'Triggered on API rejection from Customs. Surfaces in Error Handling team via Dev Message Log.',                                                            trigger:{ event:'Rejection message from Customs API — fires Dev Message Log to Pending and resets Send customs documents task', source:'Customs API' }, deadline:{ milestone:'ATA', offset:1, direction:'before' } },
+    ]
+  },
+  'STG-5': {
+    name: 'STG-5 — Arrival monitoring', team: 'Import Operations',
+    desc: 'Track vessel and confirm actual arrival at port of discharge.',
+    tasks: [
+      { id:'stg5-1', name:'Monitor vessel ETA',    auto:'manual', notes:'MF native live deepsea tracking for vessels.',          trigger:{ event:'', source:'MF Live Tracking' }, deadline:{ milestone:'ETA', offset:5, direction:'before' } },
+      { id:'stg5-2', name:'Manual ETA check',      auto:'manual',         notes:'OPEN ITEM: Inland / feeder legs only. Cadence TBD at workshop.',                                   trigger:{ event:'Manually triggered by Ops on recurring cadence — cadence TBD at workshop', source:'Manual', flag:'cadence TBD' }, deadline:null },
+      { id:'stg5-3', name:'Confirm arrival at POD',auto:'auto-full',      notes:'Auto-completed on ATA event from MF live tracking. Gates downstream stages.',                       trigger:{ event:'ATA (Actual Time of Arrival) event received from MF live tracking', source:'MF Live Tracking' }, deadline:{ milestone:'ATA', offset:0, direction:'on' } },
+    ]
+  },
+  'STG-6': {
+    name: 'STG-6 — Carrier release', team: 'Import Documentation',
+    desc: 'Request and confirm release of cargo from the carrier after customs clearance.',
+    tasks: [
+      { id:'stg6-1', name:'Request carrier release',   auto:'manual',    notes:'Manual trigger after customs clearance confirmed. STG-4 Customs clearance received is prerequisite gate.',                                               trigger:{ event:'Manually triggered by Ops after Customs clearance received task is Completed (STG-4 gate)', source:'Manual' }, deadline:{ milestone:'ATA', offset:1, direction:'after' } },
+      { id:'stg6-2', name:'Carrier release confirmed', auto:'auto-full', notes:'OPEN ITEM: Intended as auto-completed on release confirmation from carrier system. Integration source not yet confirmed.',                                trigger:{ event:'Carrier release confirmation event — integration source not yet confirmed', source:'TBC', flag:'integration TBC' }, deadline:{ milestone:'ATA', offset:2, direction:'after' } },
+    ]
+  },
+'STG-7': {
+    name: 'STG-7 — Delivery planning', team: 'Import Operations',
+    desc: 'Plan and confirm delivery of cargo to consignee. Gate: STG-6 Carrier release confirmed.',
+    tasks: [
+      { id:'stg7-0', name:'Pre-alert to customer',            auto:'auto-exception', notes:'Notify customer of imminent arrival and initiate delivery coordination. Placement STG-5 vs STG-7 TBD at workshop.', trigger:{ event:'Manually triggered by Ops on imminent arrival — placement in STG-5 or STG-7 TBD', source:'Manual', flag:'placement TBD' }, deadline:null },
+      { id:'stg7-1', name:'Plan delivery',                    auto:'manual',         notes:'Initial planning executed in the bulk data updater, which pushes planned date, time, and locations to MF. Planning can be done in bulk but Transport order is per shipment.', trigger:{ event:'Manually triggered by Ops after Carrier release confirmed (STG-6 gate). Bulk planning via OutSystems tool, per-shipment TMS push via MF task', source:'Manual / OutSystems' }, deadline:{ milestone:'ATA', offset:2, direction:'after' } },
+      { id:'stg7-3', name:'Push delivery planning to Qargo',  auto:'manual',         notes:'Ops executes task in MF, triggering API call that pushes planned delivery data to Qargo. Task turns green on successful push. Surfaces unplanned containers in the dashboard.', trigger:{ event:'Ops executes task in MF → API call fires to Qargo. Turns green on successful push. Remains TODO/overdue until executed.', source:'MF → Qargo API' }, deadline:{ milestone:'ATA', offset:2, direction:'after' } },
+      { id:'stg7-4', name:'Return empty container monitoring', auto:'manual',         notes:'Ops monitors and confirms empty container has been returned to carrier depot within the agreed timeframe. Linked to demurrage risk if delayed.', trigger:{ event:'Manually triggered by Ops after delivery confirmed — monitors return to carrier depot against agreed timeframe', source:'Manual' }, deadline:null },
+      { id:'stg7-5', name:'Deconsolidation / devanning',      auto:'auto-exception', notes:'Applicable where cargo is delivered to a warehouse before final delivery. Task scope, trigger, and applicable shipment types TBD at workshop.', trigger:{ event:'Applicable on warehouse deliveries before final delivery — scope and shipment types TBD at workshop', source:'Manual', flag:'scope TBD' }, deadline:null },
+      { id:'stg7-2', name:'Confirm delivery appointment',     auto:'manual',         notes:'Manual confirmation once delivery slot is agreed with customer or consignee. Task order compared before/after Qargo task - TBD at workshop.', trigger:{ event:'Manually triggered by Ops after delivery slot confirmed with customer and transport provider — Order before/after vs Qargo task TBD', source:'Manual', flag:'sequencing TBD' }, deadline:{ milestone:'ATA', offset:3, direction:'after' } },
+    ]
+  },
+  'STG-8': {
+    name: 'STG-8 — Financial handling', team: 'Financial Handling',
+    desc: 'Accrual recording, invoice verification, and financial closure. Finance-owned; see Option A / B one-pager.',
+    tasks: [
+      { id:'stg8-1', name:'Record accrual',        auto:'manual',         notes:'Ops records: supplier, shipment ref, charge code, expected amount, currency.',                                                                          trigger:{ event:'ATD confirmed (origin incoterms) or ATA confirmed (destination incoterms) via MF live tracking. Trigger per incoterm TBD at workshop.', source:'MF Live Tracking', flag:'trigger per incoterm TBD' }, deadline:{ milestone:'ATD', offset:2, direction:'after' } },
+      { id:'stg8-2', name:'Debit note received',   auto:'auto-full',      notes:'Auto-completed when agent invoice received and forwarded to Blue10.',                                                                                   trigger:{ event:'Agent invoice received by MF and forwarded to Blue10', source:'Agent API / Blue10' }, deadline:null },
+      { id:'stg8-3', name:'Invoice verification',  auto:'manual',         notes:'OPTION B ONLY: Finance verifies invoice vs accrual inside MF.',                                                                                        trigger:{ event:'Option B: Invoice Verification task set to Pending in MF — held until Record accrual is Completed', source:'MF (Option B)', flag:'Option A/B pending' }, deadline:{ milestone:'Document receipt', offset:3, direction:'after' } },
+      { id:'stg8-4', name:'Invoice approved',      auto:'manual',         notes:'OPTION B ONLY: Finance approves matched invoice.',                                                                                                      trigger:{ event:'Option A: Finance approves in Blue10. Option B: Invoice Verification Completed with no dispute → Finance approval task Pending in MF.', source:'Blue10 / MF (Option B)', flag:'Option A/B pending' }, deadline:{ milestone:'Document receipt', offset:5, direction:'after' } },
+      { id:'stg8-5', name:'Dispute / credit note', auto:'auto-exception', notes:'OPTION B ONLY: Raised when invoice does not match accrual.',                                                                                           trigger:{ event:'Manually triggered by Finance on invoice mismatch during Invoice verification', source:'Manual' }, deadline:null },
+    ]
+  },
+  'DEV': {
+    name: 'DEV — Dev message log', team: 'Error Handling',
+    desc: 'Persistent task on every shipment. Green/completed = informational only. Yellow/pending = integration error or missing data requires Ops action.',
+    tasks: [
+      { id:'dev-1', name:'Dev message log', auto:'auto-recurring', notes:'Persistent on every shipment. Completed = informational only. Pending = error or missing data requires Ops action.', trigger:{ event:'API error, missing/invalid data in agent update, or Customs API rejection — any of these resets task to Pending', source:'Automation / Customs API' }, deadline:null },
+      { id:'dev-2', name:'Configure shipment closure gate', auto:'auto-exception', notes:'Hard block or soft warning on shipment closure while accrual task is Pending. Hard block vs soft warning — decision pending.', trigger:{ event:'Triggered on shipment closure attempt while Record accrual is Pending', source:'Manual', flag:'hard block vs soft warning TBD' }, deadline:null },
+    ]
+  },
+  'GLOBAL': {
+    name: 'Workshop-wide decisions', team: 'All',
+    desc: 'Decisions and notes not tied to a specific stage — cross-cutting, process-wide, or administrative.',
+    tasks: []
+  },
+  'PARKING': {
+    name: 'Parking lot', team: 'All',
+    desc: 'All items parked across the workshop — unresolved, with owner and target resolution moment.',
+    tasks: []
+  }
+};
+
+// ── State ──────────────────────────────────────────────────────────────────
+let state = { currentStage: null, currentDay: 1, decisions: {}, taskChanges: {}, addedTasks: {}, parkedItems: {} };
+let editContext = null;
+let activeChangeTypes = new Set();
+let svDay = 1;
+let parkContext = null;
+
+const STORAGE_KEY = 'gloforex-workshop-log-v2';
+
+function loadState() {
+  try { const r = localStorage.getItem(STORAGE_KEY); if (r) state = { ...state, ...JSON.parse(r) }; } catch(e) {}
+  updateSidebarBadges();
+}
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+}
+function ts() { return new Date().toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'}); }
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ── Day ────────────────────────────────────────────────────────────────────
+function setDay(d, btn) {
+  state.currentDay = d;
+  document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (state.currentStage) renderStage(state.currentStage);
+}
+
+// ── Sidebar ────────────────────────────────────────────────────────────────
+function selectStage(id, btn) {
+  state.currentStage = id;
+  document.querySelectorAll('.stage-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('decision-input').placeholder = `Log a decision for ${id} — type and press Enter…`;
+  renderStage(id);
+}
+
+function updateSidebarBadges() {
+  document.querySelectorAll('.stage-btn').forEach(btn => {
+    const id = btn.dataset.stage;
+    const hasChanges   = hasStageChanges(id);
+    const hasDecisions = hasStageDecisions(id);
+    const hasParked    = hasStageParkedBadge(id);
+    const badge = btn.querySelector('.stage-badge');
+    btn.classList.remove('has-changes','has-decisions','has-both');
+    badge.style.display = 'none';
+    if (hasChanges && hasDecisions) btn.classList.add('has-both');
+    else if (hasChanges || hasParked) btn.classList.add('has-changes');
+    else if (hasDecisions) btn.classList.add('has-decisions');
+    if (hasChanges || hasDecisions || hasParked) { badge.style.display = 'block'; badge.textContent = '✦'; }
+  });
+}
+
+function hasStageChanges(id) {
+  const stage = STAGES[id]; if (!stage) return false;
+  return (state.addedTasks[id] && state.addedTasks[id].length > 0) || stage.tasks.some(t => state.taskChanges[t.id]);
+}
+function hasStageDecisions(id) { return !!(state.decisions[id] && state.decisions[id].length); }
+function hasStageParkedBadge(id) {
+  if (id === 'PARKING') return Object.values(state.parkedItems||{}).some(a => a.length > 0);
+  return !!(state.parkedItems[id] && state.parkedItems[id].length);
+}
+
+// ── Decision ───────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('decision-input').addEventListener('keydown', e => { if (e.key === 'Enter') logDecision(); });
+});
+
+function logDecision() {
+  const inp = document.getElementById('decision-input');
+  const text = inp.value.trim();
+  if (!text || !state.currentStage) return;
+  const sid = state.currentStage;
+  if (!state.decisions[sid]) state.decisions[sid] = [];
+  state.decisions[sid].push({ text, time: ts(), day: state.currentDay });
+  inp.value = '';
+  saveState(); updateSidebarBadges(); renderStage(sid);
+}
+
+function deleteDecision(stageId, idx) {
+  state.decisions[stageId].splice(idx, 1);
+  saveState(); updateSidebarBadges(); renderStage(stageId);
+}
+
+// ── Constants ──────────────────────────────────────────────────────────────
+const TEAM_COLORS = {
+  'Import Booking':      'background:rgba(56,139,253,.15);color:var(--blue-d)',
+  'Import Documentation':'background:rgba(57,211,170,.15);color:var(--teal-d)',
+  'Import Operations':   'background:rgba(56,139,253,.1);color:var(--blue-d)',
+  'Financial Handling':  'background:rgba(210,153,34,.15);color:var(--amber-d)',
+  'Error Handling':      'background:rgba(248,81,73,.15);color:var(--red-d)',
+  'All':                 'background:rgba(163,113,247,.15);color:var(--purple-d)',
+};
+const AUTO_LABELS = {
+  'manual':         ['Manual',               'pill-auto-manual'],
+  'auto-full':      ['Automated',      'pill-auto-full'],
+  'auto-recurring': ['Automated / recurring','pill-auto-recurring'],
+  'auto-exception': ['Manual / exception',   'pill-auto-exception'],
+};
+const CHANGE_TYPE_COLORS = {
+  scope:   'background:var(--amber-l);color:var(--amber-d)',
+  trigger: 'background:var(--blue-l);color:var(--blue-d)',
+  deadline:'background:var(--purple-l);color:var(--purple-d)',
+  name:    'background:var(--teal-l);color:var(--teal-d)',
+  other:   'background:var(--bg3);color:var(--text2)',
+};
+const STG_CODE_COLORS = {
+  'STG-1':{ bg:'rgba(56,139,253,.15)',  c:'var(--blue-d)' },
+  'STG-2':{ bg:'rgba(56,139,253,.15)',  c:'var(--blue-d)' },
+  'STG-3':{ bg:'rgba(57,211,170,.15)',  c:'var(--teal-d)' },
+  'STG-4':{ bg:'rgba(57,211,170,.15)',  c:'var(--teal-d)' },
+  'STG-5':{ bg:'rgba(56,139,253,.1)',   c:'var(--blue-d)' },
+  'STG-6':{ bg:'rgba(57,211,170,.15)',  c:'var(--teal-d)' },
+  'STG-7':{ bg:'rgba(56,139,253,.1)',   c:'var(--blue-d)' },
+  'STG-8':{ bg:'rgba(210,153,34,.15)',  c:'var(--amber-d)'},
+  'DEV':  { bg:'rgba(248,81,73,.15)',   c:'var(--red-d)'  },
+  'GLOBAL':{ bg:'rgba(163,113,247,.15)',c:'var(--purple-d)'},
+};
+
+// ── Render stage ───────────────────────────────────────────────────────────
+function renderStage(id) {
+  const stage = STAGES[id]; if (!stage) return;
+  const teamStyle = TEAM_COLORS[stage.team] || '';
+  const decisions = state.decisions[id] || [];
+  const addedTasks = state.addedTasks[id] || [];
+
+  let tasksHtml = '';
+  if (id !== 'PARKING') {
+    tasksHtml = `
+    <div class="section-hdr">
+      <div class="section-hdr-label">Tasks${(stage.tasks.length || addedTasks.length) ? ` (${stage.tasks.length + addedTasks.length})` : ''}</div>
+      <button class="btn-add" onclick="openAddTask('${id}')">+ Add task</button>
+    </div>
+    <div class="task-list">
+      ${stage.tasks.map(t => renderTask(t, id)).join('')}
+      ${addedTasks.map((t,i) => renderAddedTask(t, id, i)).join('')}
+      ${(!stage.tasks.length && !addedTasks.length) ? `<div style="color:var(--text3);font-size:13px;font-style:italic;padding:8px 0">No pre-defined tasks. Use "Add task" to capture new tasks agreed in the room.</div>` : ''}
+    </div>`;
+  }
+
+  let decisionsHtml = '';
+  if (id !== 'PARKING') {
+    decisionsHtml = `
+    <div class="section-hdr" style="margin-top:24px">
+      <div class="section-hdr-label">Decisions (${decisions.length})</div>
+    </div>
+    ${decisions.length ? `<div class="decision-cards">${decisions.map((d,i) => `
+      <div class="decision-card${id==='GLOBAL'?' global':''}">
+        <div class="d-idx">${String(i+1).padStart(2,'0')}</div>
+        <div style="flex:1"><div class="d-text">${escHtml(d.text)}</div><div class="d-time">Day ${d.day} · ${d.time}</div></div>
+        <button class="d-del" onclick="deleteDecision('${id}',${i})">×</button>
+      </div>`).join('')}</div>`
+    : `<div class="empty-state">No decisions logged yet. Type a decision in the bar above and press Enter.</div>`}`;
+  }
+
+  const parkHtml = id === 'PARKING' ? renderAllParkedItems() : renderParkedItems(id);
+
+  document.getElementById('stage-content').innerHTML = `
+    <div class="stage-header">
+      <div class="stage-header-top">
+        <div class="stage-name">${stage.name}</div>
+        <div class="stage-team-tag" style="${teamStyle}">${stage.team}</div>
+      </div>
+      <div class="stage-desc">${stage.desc}</div>
+    </div>
+    ${tasksHtml}
+    ${decisionsHtml}
+    ${parkHtml}`;
+}
+
+function deadlineHtml(deadline) {
+  if (!deadline) return `<div class="deadline-row"><span class="deadline-label">OVERDUE</span><span class="dl-tbd">—</span></div>`;
+  const { milestone, offset, direction } = deadline;
+  let cls = 'dl-pill ';
+  let label = '';
+  if (direction === 'before')     { cls += 'dl-before'; label = `${offset}d before ${milestone}`; }
+  else if (direction === 'after') { cls += 'dl-after';  label = `${offset}d after ${milestone}`; }
+  else                            { cls += 'dl-on';     label = `On ${milestone}`; }
+  return `<div class="deadline-row"><span class="deadline-label">OVERDUE</span><span class="${cls}">${label}</span></div>`;
+}
+
+function triggerHtml(trigger) {
+  if (!trigger || !trigger.event) return '';
+  return `<div class="task-trigger">
+    <span class="trigger-label">TRIGGER</span>
+    <span class="trigger-value">${escHtml(trigger.event)}
+      <span class="trigger-source-pill">${escHtml(trigger.source||'')}</span>
+      ${trigger.flag ? `<span class="trigger-flag-pill">${escHtml(trigger.flag)}</span>` : ''}
+    </span>
+  </div>`;
+}
+
+function renderTask(t, stageId) {
+  const change = state.taskChanges[t.id];
+  const name   = change?.name  ?? t.name;
+  const auto   = change?.auto  ?? t.auto;
+  const notes  = change?.notes ?? t.notes;
+  const trig   = change?.trigger !== undefined ? change.trigger : t.trigger;
+  const [autoLabel, autoCls] = AUTO_LABELS[auto] || AUTO_LABELS['manual'];
+  const isModified = !!change;
+  const isDeleted  = change?.status === 'deleted';
+
+  if (isDeleted) return `
+    <div class="task-card" style="opacity:.4;border-left:3px solid var(--red);border-color:var(--red)">
+      <div class="task-top">
+        <div class="task-name-display" style="text-decoration:line-through">${escHtml(name)}</div>
+        <div class="task-actions"><button class="task-action-btn" onclick="undeleteTask('${t.id}','${stageId}')">Restore</button></div>
+      </div>
+      <div class="task-meta"><span class="task-pill ${autoCls}">${autoLabel}</span></div>
+      <div class="task-change-note" style="color:var(--red-d)">Removed in session</div>
+    </div>`;
+
+  const ctags = (change?.changeTypes||[]).map(ct => `<span class="summary-change-type" style="${CHANGE_TYPE_COLORS[ct]}">${ct}</span>`).join('');
+
+  return `
+  <div class="task-card${isModified?' modified':''}">
+    <div class="task-top">
+      <div class="task-name-display">${escHtml(name)}</div>
+      <div class="task-actions">
+        <button class="task-action-btn edit-btn" onclick="openEditTask('${t.id}','${stageId}')">Edit</button>
+        <button class="task-action-btn del-btn" onclick="deleteTask('${t.id}','${stageId}')">Remove</button>
+      </div>
+    </div>
+    <div class="task-meta">
+      <span class="task-pill ${autoCls}">${autoLabel}</span>
+      ${notes ? `<span style="font-size:12px;color:var(--text2)">${escHtml(notes)}</span>` : ''}
+    </div>
+    ${triggerHtml(trig)}
+    ${deadlineHtml(change?.deadline !== undefined ? change.deadline : t.deadline)}
+    ${isModified ? `<div class="task-change-note">${ctags}${change.changeNote ? escHtml(change.changeNote) : ''}</div>` : ''}
+  </div>`;
+}
+
+function renderAddedTask(t, stageId, idx) {
+  const [autoLabel, autoCls] = AUTO_LABELS[t.auto] || AUTO_LABELS['manual'];
+  return `
+  <div class="task-card added">
+    <div class="task-top">
+      <div class="task-name-display">${escHtml(t.name)}</div>
+      <div class="task-actions">
+  <button class="task-action-btn edit-btn" onclick="openEditAddedTask('${stageId}',${idx})">Edit</button>
+  <button class="task-action-btn del-btn" onclick="deleteAddedTask('${stageId}',${idx})">Remove</button>
+</div>
+    </div>
+    <div class="task-meta">
+      <span class="task-pill ${autoCls}">${autoLabel}</span>
+      ${t.notes ? `<span style="font-size:12px;color:var(--text2)">${escHtml(t.notes)}</span>` : ''}
+    </div>
+    ${triggerHtml(t.trigger)}
+    ${deadlineHtml(t.deadline)}
+    <div class="task-change-note" style="color:var(--green-d)">New task added in session${t.changeNote ? ' — ' + escHtml(t.changeNote) : ''}</div>
+  </div>`;
+}
+
+// ── Task CRUD ──────────────────────────────────────────────────────────────
+function openEditTask(taskId, stageId) {
+  const task = STAGES[stageId]?.tasks.find(t => t.id === taskId); if (!task) return;
+  const existing = state.taskChanges[taskId] || {};
+  editContext = { mode:'edit', stageId, taskId };
+  activeChangeTypes = new Set(existing.changeTypes || []);
+
+  document.getElementById('modal-title').textContent = 'Edit task';
+  document.getElementById('f-name').value   = existing.name  ?? task.name;
+  document.getElementById('f-auto').value   = existing.auto  ?? task.auto;
+  document.getElementById('f-team').value   = STAGES[stageId]?.team || 'Import Booking';
+  document.getElementById('f-notes').value  = existing.notes ?? task.notes ?? '';
+  const trig = existing.trigger !== undefined ? existing.trigger : (task.trigger || {});
+  document.getElementById('f-trigger').value        = trig.event  || '';
+  document.getElementById('f-trigger-source').value = trig.source || '';
+  document.getElementById('f-changenote').value = existing.changeNote || '';
+  const dlSrc = existing.deadline !== undefined ? existing.deadline : (task.deadline || null);
+  document.getElementById('f-dl-milestone').value = dlSrc?.milestone || '';
+  document.getElementById('f-dl-direction').value = dlSrc?.direction || 'before';
+  document.getElementById('f-dl-offset').value    = dlSrc?.offset != null ? dlSrc.offset : '';
+  document.getElementById('change-type-field').style.display = '';
+  renderChangeTypeBtns();
+  document.getElementById('task-modal').classList.add('open');
+}
+
+function openAddTask(stageId) {
+  editContext = { mode:'add', stageId };
+  activeChangeTypes = new Set();
+  document.getElementById('modal-title').textContent = 'Add new task';
+  document.getElementById('f-name').value   = '';
+  document.getElementById('f-auto').value   = 'manual';
+  document.getElementById('f-team').value   = STAGES[stageId]?.team || 'Import Booking';
+  document.getElementById('f-notes').value  = '';
+  document.getElementById('f-trigger').value        = '';
+  document.getElementById('f-trigger-source').value = '';
+  document.getElementById('f-changenote').value = '';
+  document.getElementById('f-dl-milestone').value = '';
+  document.getElementById('f-dl-direction').value = 'before';
+  document.getElementById('f-dl-offset').value    = '';
+  document.getElementById('change-type-field').style.display = 'none';
+  document.getElementById('task-modal').classList.add('open');
+}
+function openEditAddedTask(stageId, idx) {
+  const t = (state.addedTasks[stageId] || [])[idx];
+  if (!t) return;
+  editContext = { mode: 'edit-added', stageId, idx };
+  activeChangeTypes = new Set();
+  document.getElementById('modal-title').textContent = 'Edit task';
+  document.getElementById('f-name').value   = t.name  || '';
+  document.getElementById('f-auto').value   = t.auto  || 'manual';
+  document.getElementById('f-team').value   = t.team  || STAGES[stageId]?.team || 'Import Booking';
+  document.getElementById('f-notes').value  = t.notes || '';
+  document.getElementById('f-trigger').value        = t.trigger?.event  || '';
+  document.getElementById('f-trigger-source').value = t.trigger?.source || '';
+  document.getElementById('f-changenote').value = t.changeNote || '';
+  document.getElementById('f-dl-milestone').value = t.deadline?.milestone || '';
+  document.getElementById('f-dl-direction').value = t.deadline?.direction || 'before';
+  document.getElementById('f-dl-offset').value    = t.deadline?.offset != null ? t.deadline.offset : '';
+  document.getElementById('change-type-field').style.display = 'none';
+  document.getElementById('task-modal').classList.add('open');
+}
+function closeModal() { document.getElementById('task-modal').classList.remove('open'); editContext = null; }
+
+function toggleChangeType(type, btn) {
+  if (activeChangeTypes.has(type)) { activeChangeTypes.delete(type); btn.classList.remove('active', type); }
+  else { activeChangeTypes.add(type); btn.classList.add('active', type); }
+}
+function renderChangeTypeBtns() {
+  document.querySelectorAll('#change-type-row .change-btn').forEach(btn => {
+    const type = [...btn.classList].find(c => ['scope','trigger','deadline','name','other'].includes(c));
+    btn.classList.remove('active');
+    if (type && activeChangeTypes.has(type)) btn.classList.add('active', type);
+  });
+}
+
+function saveTask() {
+  if (!editContext) return;
+  const name = document.getElementById('f-name').value.trim(); if (!name) { document.getElementById('f-name').focus(); return; }
+  const auto    = document.getElementById('f-auto').value;
+  const team    = document.getElementById('f-team').value;
+  const notes   = document.getElementById('f-notes').value.trim();
+  const tEvent  = document.getElementById('f-trigger').value.trim();
+  const tSource = document.getElementById('f-trigger-source').value.trim();
+  const trigger = tEvent ? { event: tEvent, source: tSource || 'Manual' } : undefined;
+  const changenote = document.getElementById('f-changenote').value.trim();
+  const dlMilestone = document.getElementById('f-dl-milestone').value;
+  const dlDirection = document.getElementById('f-dl-direction').value;
+  const dlOffset    = document.getElementById('f-dl-offset').value;
+  const deadline = dlMilestone
+    ? { milestone: dlMilestone, direction: dlDirection, offset: dlOffset !== '' ? Number(dlOffset) : 0 }
+    : null;
+  const stageId = editContext.stageId;
+
+if (editContext.mode === 'edit') {
+    state.taskChanges[editContext.taskId] = {
+      name, auto, notes, trigger, deadline,
+      changeTypes: [...activeChangeTypes],
+      changeNote: changenote,
+      day: state.currentDay,
+      status: 'modified'
+    };
+  } else if (editContext.mode === 'edit-added') {
+    const items = state.addedTasks[stageId] || [];
+    const existing = items[editContext.idx] || {};
+    items[editContext.idx] = { ...existing, name, auto, team, notes, trigger, deadline, changeNote: changenote };
+    state.addedTasks[stageId] = items;
+  } else {
+    if (!state.addedTasks[stageId]) state.addedTasks[stageId] = [];
+    state.addedTasks[stageId].push({ id:'add-'+Date.now(), name, auto, team, notes, trigger, deadline, changeNote: changenote, day: state.currentDay });
+  }
+  closeModal(); saveState(); updateSidebarBadges(); renderStage(stageId);
+}
+
+function deleteTask(taskId, stageId) {
+  const task = STAGES[stageId]?.tasks.find(t => t.id === taskId); if (!task) return;
+  const ex = state.taskChanges[taskId] || {};
+  state.taskChanges[taskId] = { ...ex, name:ex.name||task.name, auto:ex.auto||task.auto, notes:ex.notes||task.notes, changeTypes:ex.changeTypes||[], changeNote:ex.changeNote||'', status:'deleted', day:state.currentDay };
+  saveState(); updateSidebarBadges(); renderStage(stageId);
+}
+function undeleteTask(taskId, stageId) {
+  if (state.taskChanges[taskId]) { state.taskChanges[taskId].status = 'modified'; if (!state.taskChanges[taskId].changeNote) delete state.taskChanges[taskId]; }
+  saveState(); updateSidebarBadges(); renderStage(stageId);
+}
+function deleteAddedTask(stageId, idx) { state.addedTasks[stageId].splice(idx,1); saveState(); updateSidebarBadges(); renderStage(stageId); }
+
+// ── Parking lot ────────────────────────────────────────────────────────────
+function openParkModal(stageId, editIdx) {
+  parkContext = (stageId !== undefined && editIdx !== undefined)
+    ? { stageId, editIdx }
+    : { stageId: state.currentStage, editIdx: null };
+  if (!parkContext.stageId) { showToast('Select a stage first', true); return; }
+
+  const existing = (parkContext.editIdx !== null && parkContext.editIdx !== undefined)
+    ? (state.parkedItems[parkContext.stageId]||[])[parkContext.editIdx]
+    : null;
+
+  document.getElementById('park-modal-title').textContent = existing ? 'Edit parked item' : 'Park item';
+  document.getElementById('p-text').value  = existing?.text  || '';
+  document.getElementById('p-owner').value = existing?.owner || '';
+  document.getElementById('p-when').value  = existing?.when  || 'Day 2';
+  document.getElementById('park-modal').classList.add('open');
+}
+function closeParkModal() { document.getElementById('park-modal').classList.remove('open'); parkContext = null; }
+function saveParkItem() {
+  const text  = document.getElementById('p-text').value.trim(); if (!text) { document.getElementById('p-text').focus(); return; }
+  const owner = document.getElementById('p-owner').value.trim();
+  const when  = document.getElementById('p-when').value;
+  const sid   = parkContext.stageId;
+  if (!state.parkedItems[sid]) state.parkedItems[sid] = [];
+  if (parkContext.editIdx !== null && parkContext.editIdx !== undefined) {
+    state.parkedItems[sid][parkContext.editIdx] = { ...state.parkedItems[sid][parkContext.editIdx], text, owner, when };
+  } else {
+    state.parkedItems[sid].push({ id:'p-'+Date.now(), text, owner, when, time:ts(), day:state.currentDay });
+  }
+  closeParkModal(); saveState(); updateSidebarBadges(); renderStage(sid);
+}
+function deleteParkItem(stageId, idx) { state.parkedItems[stageId].splice(idx,1); saveState(); updateSidebarBadges(); renderStage(stageId); }
+
+function renderParkedItems(stageId) {
+  const items = state.parkedItems[stageId] || [];
+  return `
+  <div class="section-hdr" style="margin-top:24px">
+    <div class="section-hdr-label">Parked items (${items.length})</div>
+    <button class="btn-add" onclick="openParkModal('${stageId}')">+ Park item</button>
+  </div>
+  ${items.length ? `<div class="task-list">${items.map((p,i) => parkCard(p, stageId, i)).join('')}</div>`
+  : `<div class="empty-state">No items parked for this stage.</div>`}`;
+}
+
+function renderAllParkedItems() {
+  let html = '';
+  for (const [sid, items] of Object.entries(state.parkedItems||{})) {
+    if (!items.length) continue;
+    const cc = STG_CODE_COLORS[sid] || { bg:'var(--bg4)', c:'var(--text2)' };
+    const st = STAGES[sid] || { name: sid };
+    html += `<div style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px">
+        <span style="font-family:var(--mono);font-size:10px;font-weight:600;padding:1px 6px;border-radius:3px;background:${cc.bg};color:${cc.c}">${sid}</span>
+        <span style="font-size:12px;color:var(--text2)">${escHtml(st.name)}</span>
+      </div>
+      <div class="task-list">${items.map((p,i) => parkCard(p, sid, i)).join('')}</div>
+    </div>`;
+  }
+  if (!html) return `<div class="empty-state">No items parked yet across any stage.</div>`;
+  return html;
+}
+
+function parkCard(p, sid, i) {
+  return `<div class="task-card" style="border-left:3px solid var(--amber);border-color:var(--amber)">
+    <div class="task-top">
+      <div class="task-name-display" style="color:var(--amber-d)">${escHtml(p.text)}</div>
+      <div class="task-actions">
+        <button class="task-action-btn edit-btn" onclick="openParkModal('${sid}',${i})">Edit</button>
+        <button class="task-action-btn del-btn" onclick="deleteParkItem('${sid}',${i})">×</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+      <span style="font-family:var(--mono);font-size:10px;padding:1px 7px;border-radius:8px;background:var(--amber-l);color:var(--amber-d)">${escHtml(p.when)}</span>
+      ${p.owner ? `<span style="font-size:11px;color:var(--text2)">Owner: ${escHtml(p.owner)}</span>` : `<span style="font-size:11px;color:var(--text3);font-style:italic">No owner assigned</span>`}
+      <span style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-left:auto">Day ${p.day} · ${p.time}</span>
+    </div>
+  </div>`;
+}
+
+// ── Summary (Changes ↗ modal) ───────────────────────────────────────────────
+function openSummary() {
+  const body = document.getElementById('summary-body');
+  let html = '';
+
+  let anyDec = false;
+  for (const [sid, decs] of Object.entries(state.decisions)) {
+    if (!decs?.length) continue; anyDec = true;
+    html += `<div class="summary-section"><div class="summary-section-title">Decisions — ${escHtml(STAGES[sid]?.name||sid)}</div>`;
+    decs.forEach((d,i) => { html += `<div class="summary-row"><span class="s-label">Day ${d.day} · ${d.time}</span>${escHtml(d.text)}</div>`; });
+    html += '</div>';
+  }
+  if (!anyDec) html += `<div class="summary-section"><div class="summary-section-title">Decisions</div><div class="empty-state">No decisions logged yet.</div></div>`;
+
+  let anyChg = false;
+  for (const [sid, stage] of Object.entries(STAGES)) {
+    const changes = stage.tasks.filter(t => state.taskChanges[t.id]);
+    const added = state.addedTasks[sid] || [];
+    if (!changes.length && !added.length) continue; anyChg = true;
+    html += `<div class="summary-section"><div class="summary-section-title">Task changes — ${escHtml(stage.name)}</div>`;
+    changes.forEach(t => {
+      const c = state.taskChanges[t.id]; const del = c.status === 'deleted';
+      const ctags = (c.changeTypes||[]).map(ct => `<span class="summary-change-type" style="${CHANGE_TYPE_COLORS[ct]}">${ct}</span>`).join('');
+      html += `<div class="summary-row"><span class="s-label">${del?'REMOVED':'MODIFIED'} · Day ${c.day}</span><strong style="${del?'text-decoration:line-through':''}">${escHtml(c.name)}</strong> ${ctags}${c.changeNote?`<br><span style="color:var(--text2);font-size:12px">${escHtml(c.changeNote)}</span>`:''}${c.trigger?`<br><span style="font-size:11px;color:var(--text3)">Trigger: ${escHtml(c.trigger.event)} [${escHtml(c.trigger.source)}]</span>`:''}</div>`;
+    });
+    added.forEach(t => {
+      html += `<div class="summary-row"><span class="s-label">NEW · Day ${t.day}</span><strong>${escHtml(t.name)}</strong> <span class="summary-change-type" style="background:var(--green-l);color:var(--green-d)">new</span>${t.changeNote?`<br><span style="color:var(--text2);font-size:12px">${escHtml(t.changeNote)}</span>`:''}${t.trigger?`<br><span style="font-size:11px;color:var(--text3)">Trigger: ${escHtml(t.trigger.event)} [${escHtml(t.trigger.source)}]</span>`:''}</div>`;
+    });
+    html += '</div>';
+  }
+  if (!anyChg) html += `<div class="summary-section"><div class="summary-section-title">Task changes</div><div class="empty-state">No task changes logged yet.</div></div>`;
+
+  body.innerHTML = html;
+  document.getElementById('summary-modal').classList.add('open');
+}
+function closeSummary() { document.getElementById('summary-modal').classList.remove('open'); }
+
+// ── Day summary (full-screen) ──────────────────────────────────────────────
+function switchToSummaryView() { svDay = state.currentDay; document.getElementById('summary-view').style.display = 'block'; renderSummaryView(); }
+function closeSummaryView() { document.getElementById('summary-view').style.display = 'none'; }
+
+function setSvDay(day, btn) {
+  svDay = day;
+  document.querySelectorAll('#sv-day-tabs button').forEach(b => { b.style.background='transparent'; b.style.color='var(--text2)'; });
+  btn.style.background = 'var(--bg3)'; btn.style.color = 'var(--text)';
+  document.getElementById('sv-title').textContent = day ? `Day ${day} summary` : 'Workshop summary';
+  renderSummaryView();
+}
+
+function renderSummaryView() {
+  const fd = svDay;
+  let dec=0, chg=0, add=0, rem=0;
+  for (const decs of Object.values(state.decisions||{})) dec += (fd ? decs.filter(d=>d.day===fd) : decs).length;
+  for (const c of Object.values(state.taskChanges||{})) { if (!fd||c.day===fd) { if(c.status==='deleted') rem++; else chg++; } }
+  for (const tasks of Object.values(state.addedTasks||{})) add += (fd ? tasks.filter(t=>t.day===fd) : tasks).length;
+
+  let html = `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px">
+    ${[[dec,'Decisions'],[chg,'Modified'],[add,'Added'],[rem,'Removed']].map(([n,l])=>`
+    <div style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:12px 14px">
+      <div style="font-family:var(--mono);font-size:22px;font-weight:500;line-height:1;margin-bottom:4px">${n}</div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.06em;text-transform:uppercase">${l}</div>
+    </div>`).join('')}
+  </div>`;
+
+  html += svSecHdr('Decisions');
+  let anyDec = false;
+  for (const [sid, decs] of Object.entries(state.decisions||{})) {
+    const f = fd ? decs.filter(d=>d.day===fd) : decs; if (!f.length) continue; anyDec = true;
+    html += svBlock(sid, f.map((d,i)=>`
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:7px 10px;border-radius:5px;background:${sid==='GLOBAL'?'var(--purple-l)':'var(--blue-l)'};border:1px solid ${sid==='GLOBAL'?'rgba(163,113,247,.3)':'rgba(56,139,253,.25)'}">
+        <span style="font-family:var(--mono);font-size:10px;font-weight:600;color:var(--text3);min-width:18px;margin-top:1px">${String(i+1).padStart(2,'0')}</span>
+        <div><div style="font-size:13px;color:var(--text)">${escHtml(d.text)}</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:2px">Day ${d.day} · ${d.time}</div></div>
+      </div>`).join(''));
+  }
+  if (!anyDec) html += `<div style="font-size:13px;color:var(--text3);font-style:italic;padding:8px 0">No decisions logged${fd?' for Day '+fd:''}.</div>`;
+
+  html += svSecHdr('Task changes');
+  let anyChg = false;
+  for (const [sid, stage] of Object.entries(STAGES)) {
+    const changes = stage.tasks.map(t => state.taskChanges[t.id] ? {...state.taskChanges[t.id], _tid:t.id} : null).filter(Boolean).filter(c=>!fd||c.day===fd);
+    const added = (state.addedTasks[sid]||[]).filter(t=>!fd||t.day===fd);
+    if (!changes.length && !added.length) continue; anyChg = true;
+    const items = [
+      ...changes.map(c => {
+        const del = c.status==='deleted';
+        const ctags = (c.changeTypes||[]).map(ct=>`<span style="font-family:var(--mono);font-size:10px;padding:1px 5px;border-radius:8px;${CHANGE_TYPE_COLORS[ct]||''}">${ct}</span>`).join(' ');
+        return `<div style="padding:8px 10px;border-radius:5px;border-left:3px solid ${del?'var(--red)':'var(--amber)'};background:var(--bg3)">
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:2px">
+            <span style="font-family:var(--mono);font-size:9px;font-weight:600;padding:1px 5px;border-radius:8px;background:${del?'var(--red-l)':'var(--amber-l)'};color:${del?'var(--red-d)':'var(--amber-d)'};text-transform:uppercase">${del?'removed':'modified'}</span>
+            <span style="font-size:13px;font-weight:500;${del?'text-decoration:line-through;opacity:.6':''}">${escHtml(c.name)}</span>
+          </div>
+          ${ctags?`<div style="margin-top:3px;display:flex;gap:4px;flex-wrap:wrap">${ctags}</div>`:''}
+          ${c.changeNote?`<div style="font-size:12px;color:var(--text2);margin-top:3px;font-style:italic">${escHtml(c.changeNote)}</div>`:''}
+          ${c.trigger?`<div style="font-size:11px;color:var(--text3);margin-top:2px">Trigger: ${escHtml(c.trigger.event)} <em>[${escHtml(c.trigger.source)}]</em></div>`:''}
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:2px">Day ${c.day}</div>
+        </div>`;
+      }),
+      ...added.map(t=>`<div style="padding:8px 10px;border-radius:5px;border-left:3px solid var(--green);background:var(--bg3)">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:2px">
+          <span style="font-family:var(--mono);font-size:9px;font-weight:600;padding:1px 5px;border-radius:8px;background:var(--green-l);color:var(--green-d);text-transform:uppercase">new</span>
+          <span style="font-size:13px;font-weight:500">${escHtml(t.name)}</span>
+        </div>
+        ${t.notes?`<div style="font-size:12px;color:var(--text2);margin-top:3px">${escHtml(t.notes)}</div>`:''}
+        ${t.trigger?`<div style="font-size:11px;color:var(--text3);margin-top:2px">Trigger: ${escHtml(t.trigger.event)} <em>[${escHtml(t.trigger.source)}]</em></div>`:''}
+        ${t.changeNote?`<div style="font-size:12px;color:var(--text2);margin-top:2px;font-style:italic">${escHtml(t.changeNote)}</div>`:''}
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:2px">Day ${t.day}</div>
+      </div>`)
+    ];
+    html += svBlock(sid, items.join(''));
+  }
+  if (!anyChg) html += `<div style="font-size:13px;color:var(--text3);font-style:italic;padding:8px 0">No task changes logged${fd?' for Day '+fd:''}.</div>`;
+
+  document.getElementById('sv-body').innerHTML = html;
+}
+
+function svSecHdr(title) { return `<div style="font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)">${title}</div>`; }
+function svBlock(sid, inner) {
+  const cc = STG_CODE_COLORS[sid] || { bg:'var(--bg4)', c:'var(--text2)' };
+  const st = STAGES[sid]||{name:sid}; const code = sid==='GLOBAL'?'ALL':sid;
+  return `<div style="margin-bottom:12px;border:1px solid var(--border2);border-radius:6px;overflow:hidden">
+    <div style="padding:8px 14px;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px">
+      <span style="font-family:var(--mono);font-size:10px;font-weight:600;padding:1px 6px;border-radius:3px;background:${cc.bg};color:${cc.c}">${code}</span>
+      <span style="font-size:13px;font-weight:500;color:var(--text)">${escHtml(st.name)}</span>
+    </div>
+    <div style="padding:10px 14px;display:flex;flex-direction:column;gap:7px">${inner}</div>
+  </div>`;
+}
+
+// ── Export / backup ────────────────────────────────────────────────────────
+function exportText() {
+  let lines = ['GDB LOGISTICS · GLOFOREX WORKSHOP LOG','Generated: '+new Date().toLocaleString('nl-NL'),''];
+  lines.push('═'.repeat(42),'DECISIONS','═'.repeat(42));
+  let anyDec = false;
+  for (const [sid,decs] of Object.entries(state.decisions||{})) {
+    if (!decs?.length) continue; anyDec=true;
+    lines.push('','[ '+(STAGES[sid]?.name||sid)+' ]');
+    decs.forEach((d,i) => lines.push(`  ${i+1}. [Day ${d.day} · ${d.time}] ${d.text}`));
+  }
+  if (!anyDec) lines.push('  — None logged —');
+  lines.push('','═'.repeat(42),'TASK CHANGES','═'.repeat(42));
+  let anyChg = false;
+  for (const [sid,stage] of Object.entries(STAGES)) {
+    const changes = stage.tasks.filter(t=>state.taskChanges[t.id]);
+    const added = state.addedTasks[sid]||[];
+    if (!changes.length&&!added.length) continue; anyChg=true;
+    lines.push('','[ '+stage.name+' ]');
+    changes.forEach(t => {
+      const c = state.taskChanges[t.id]; const status = c.status==='deleted'?'REMOVED':'MODIFIED';
+      lines.push(`  [${status}] ${c.name}`);
+      if (c.changeTypes?.length) lines.push(`    Change type: ${c.changeTypes.join(', ')}`);
+      if (c.changeNote) lines.push(`    Note: ${c.changeNote}`);
+      if (c.trigger) lines.push(`    Trigger: ${c.trigger.event} [${c.trigger.source}]`);
+      if (c.deadline) { const d=c.deadline; lines.push(`    Overdue: ${d.direction==='on'?'On '+d.milestone:d.offset+'d '+d.direction+' '+d.milestone}`); }
+    });
+    added.forEach(t => {
+      lines.push(`  [NEW] ${t.name}`);
+      if (t.notes) lines.push(`    Notes: ${t.notes}`);
+      if (t.trigger) lines.push(`    Trigger: ${t.trigger.event} [${t.trigger.source}]`);
+      if (t.deadline) { const d=t.deadline; lines.push(`    Overdue: ${d.direction==='on'?'On '+d.milestone:d.offset+'d '+d.direction+' '+d.milestone}`); }
+      if (t.changeNote) lines.push(`    Reason: ${t.changeNote}`);
+    });
+  }
+  if (!anyChg) lines.push('  — None logged —');
+  lines.push('','═'.repeat(42),'PARKING LOT','═'.repeat(42));
+  let anyPark = false;
+  for (const [sid,items] of Object.entries(state.parkedItems||{})) {
+    if (!items.length) continue; anyPark=true;
+    lines.push('','[ '+(STAGES[sid]?.name||sid)+' ]');
+    items.forEach((p,i) => { lines.push(`  ${i+1}. ${p.text}`); if (p.owner) lines.push(`     Owner: ${p.owner}`); lines.push(`     Resolve: ${p.when} · Day ${p.day} · ${p.time}`); });
+  }
+  if (!anyPark) lines.push('  — None —');
+
+  const blob = new Blob([lines.join('\n')],{type:'text/plain'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='gloforex_workshop_log.txt'; a.click();
+}
+
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='gloforex_backup_'+new Date().toISOString().slice(0,16).replace('T','_').replace(':','h')+'.json'; a.click();
+}
+
+function importJSON() {
+  const inp = document.createElement('input'); inp.type='file'; inp.accept='.json';
+  inp.onchange = e => {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try { const r = JSON.parse(ev.target.result); state={...state,...r}; saveState(); updateSidebarBadges(); if(state.currentStage) renderStage(state.currentStage); showToast('Backup restored successfully'); }
+      catch { showToast('Could not read file — invalid backup', true); }
+    };
+    reader.readAsText(file);
+  };
+  inp.click();
+}
+
+function showToast(msg, isError=false) {
+  const t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = `position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:${isError?'var(--red-l)':'var(--green-l)'};color:${isError?'var(--red-d)':'var(--green-d)'};border:1px solid ${isError?'var(--red)':'var(--green)'};font-family:var(--mono);font-size:12px;font-weight:500;padding:8px 18px;border-radius:6px;z-index:999;transition:opacity .4s`;
+  document.body.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),400);},2500);
+}
+
+// ── Theme ──────────────────────────────────────────────────────────────────
+function applyTheme(light) {
+  document.documentElement.classList.toggle('light', light);
+  const btn = document.getElementById('theme-btn');
+  if (btn) btn.textContent = light ? '🌙 Dark' : '☀️ Light';
+  localStorage.setItem('gloforex-theme', light ? 'light' : 'dark');
+}
+function toggleTheme() { applyTheme(!document.documentElement.classList.contains('light')); }
+(function initTheme() {
+  const saved = localStorage.getItem('gloforex-theme');
+  applyTheme(saved ? saved==='light' : !window.matchMedia('(prefers-color-scheme: dark)').matches);
+})();
+
+// ── Keyboard ───────────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal(); closeSummary(); closeParkModal(); }
+});
+
+// ── Init ───────────────────────────────────────────────────────────────────
+loadState();
+// Bind decision input enter key (fallback if DOMContentLoaded already fired)
+const di = document.getElementById('decision-input');
+if (di) di.addEventListener('keydown', e => { if (e.key==='Enter') logDecision(); });
+
+const firstBtn = document.querySelector('[data-stage="STG-1"]');
+if (firstBtn) selectStage('STG-1', firstBtn);
+</script>
+</body>
+</html>
