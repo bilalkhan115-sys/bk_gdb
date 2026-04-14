@@ -33,6 +33,30 @@
   }
 }
 
+[data-theme="dark"] {
+  --bg: #14140f;
+  --bg2: #1c1c16;
+  --bg3: #232319;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --border3: rgba(255,255,255,0.04);
+  --text: #e8e6de;
+  --text2: #9c9a92;
+  --text3: #5f5e5a;
+}
+
+[data-theme="light"] {
+  --bg: #ffffff;
+  --bg2: #f7f6f2;
+  --bg3: #f0efe9;
+  --border: rgba(0,0,0,0.1);
+  --border2: rgba(0,0,0,0.18);
+  --border3: rgba(0,0,0,0.06);
+  --text: #1a1a18;
+  --text2: #5f5e5a;
+  --text3: #8b8a85;
+}
+
 body {
   font-family: -apple-system, "Segoe UI", sans-serif;
   background: var(--bg);
@@ -84,6 +108,11 @@ body {
   .badge-coral { background: #4A1B0C; color: #F0997B; border-color: #993C1D; }
 }
 
+[data-theme="dark"] .badge-blue  { background: #042C53; color: #B5D4F4; border-color: #185FA5; }
+[data-theme="dark"] .badge-teal  { background: #04342C; color: #9FE1CB; border-color: #0F6E56; }
+[data-theme="dark"] .badge-amber { background: #412402; color: #FAC775; border-color: #854F0B; }
+[data-theme="dark"] .badge-coral { background: #4A1B0C; color: #F0997B; border-color: #993C1D; }
+
 .section { margin-bottom: 1.75rem; }
 
 .section-label {
@@ -113,6 +142,33 @@ body {
   .card-gains { background: #173404; }
   .card-costs { background: #4A1B0C; }
 }
+
+[data-theme="dark"] .card-gains { background: #173404; }
+[data-theme="dark"] .card-costs { background: #4A1B0C; }
+
+/* Light mode — strong, saturated text against the pastel card bg */
+.card-gains .card-body { color: #2d4a10; }
+.card-gains .card-label { color: #4a6b1f; }
+.card-costs .card-body { color: #5a1a08; }
+.card-costs .card-label { color: #7a2a14; }
+
+/* Dark mode — bright text against the deep card bg */
+@media (prefers-color-scheme: dark) {
+  .card-gains .card-body { color: #e8f5d6; }
+  .card-gains .card-label { color: #b8d49a; }
+  .card-costs .card-body { color: #fbe4d6; }
+  .card-costs .card-label { color: #e8b8a0; }
+}
+
+[data-theme="dark"] .card-gains .card-body { color: #e8f5d6; }
+[data-theme="dark"] .card-gains .card-label { color: #b8d49a; }
+[data-theme="dark"] .card-costs .card-body { color: #fbe4d6; }
+[data-theme="dark"] .card-costs .card-label { color: #e8b8a0; }
+
+[data-theme="light"] .card-gains .card-body { color: #BFD69F; }
+[data-theme="light"] .card-gains .card-label { color: #7E9E4F; }
+[data-theme="light"] .card-costs .card-body { color: #E0B0AB; }
+[data-theme="light"] .card-costs .card-label { color: #DB988F; }
 
 .card-label {
   font-size: 11px; font-weight: 600; color: var(--text3);
@@ -210,6 +266,12 @@ body {
 <div class="doc">
 
   <div class="export-bar">
+    <button class="export-btn" id="theme-toggle" onclick="toggleTheme()" style="margin-right:auto">
+      <svg id="theme-icon" width="13" height="13" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 1a5 5 0 1 1 0-10A5 5 0 0 1 8 13zM8 0a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1 0-1h1a.5.5 0 0 1 .5.5zM2 8a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1 0-1h1A.5.5 0 0 1 2 8zm10.95-4.95a.5.5 0 0 1 0 .707l-.707.707a.5.5 0 0 1-.707-.707l.707-.707a.5.5 0 0 1 .707 0zm-9.9 9.9a.5.5 0 0 1 0 .707l-.707.707a.5.5 0 0 1-.707-.707l.707-.707a.5.5 0 0 1 .707 0zm9.9.707a.5.5 0 0 1-.707 0l-.707-.707a.5.5 0 0 1 .707-.707l.707.707a.5.5 0 0 1 0 .707zM3.05 3.05a.5.5 0 0 1 .707 0l.707.707a.5.5 0 0 1-.707.707L3.05 3.757a.5.5 0 0 1 0-.707z" fill="currentColor"/>
+      </svg>
+      <span id="theme-label">Light mode</span>
+    </button>
     <button class="export-btn" onclick="window.print()">
       <svg width="13" height="13" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M3 11H1.5A1.5 1.5 0 0 1 0 9.5v-4A1.5 1.5 0 0 1 1.5 4H3V1.5A1.5 1.5 0 0 1 4.5 0h7A1.5 1.5 0 0 1 13 1.5V4h1.5A1.5 1.5 0 0 1 16 5.5v4A1.5 1.5 0 0 1 14.5 11H13v3.5A1.5 1.5 0 0 1 11.5 16h-7A1.5 1.5 0 0 1 3 14.5V11zm1.5 0v3.5h7V11h-7zm0-9.5V4h7V1.5h-7zM2 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" fill="currentColor"/>
@@ -480,6 +542,33 @@ function show(opt, btn) {
   document.querySelectorAll('.tog-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('page-' + opt).classList.add('active');
   btn.classList.add('active');
+}
+
+(function() {
+  const saved = localStorage.getItem('tg9-theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyTheme(saved || (prefersDark ? 'dark' : 'light'), false);
+})();
+
+function applyTheme(theme, save) {
+  document.documentElement.setAttribute('data-theme', theme);
+  const isDark = theme === 'dark';
+  const icon = document.getElementById('theme-icon');
+  const label = document.getElementById('theme-label');
+  if (icon && label) {
+    label.textContent = isDark ? 'Light mode' : 'Dark mode';
+    icon.innerHTML = isDark
+      ? '<path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z" fill="currentColor"/>'
+      : '<path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 1a5 5 0 1 1 0-10A5 5 0 0 1 8 13zM8 0a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1 0-1h1a.5.5 0 0 1 .5.5zM2 8a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1 0-1h1A.5.5 0 0 1 2 8zm10.95-4.95a.5.5 0 0 1 0 .707l-.707.707a.5.5 0 0 1-.707-.707l.707-.707a.5.5 0 0 1 .707 0zm-9.9 9.9a.5.5 0 0 1 0 .707l-.707.707a.5.5 0 0 1-.707-.707l.707-.707a.5.5 0 0 1 .707 0zm9.9.707a.5.5 0 0 1-.707 0l-.707-.707a.5.5 0 0 1 .707-.707l.707.707a.5.5 0 0 1 0 .707zM3.05 3.05a.5.5 0 0 1 .707 0l.707.707a.5.5 0 0 1-.707.707L3.05 3.757a.5.5 0 0 1 0-.707z" fill="currentColor"/>';
+  }
+  if (save) localStorage.setItem('tg9-theme', theme);
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const effectiveCurrent = current || (prefersDark ? 'dark' : 'light');
+  applyTheme(effectiveCurrent === 'dark' ? 'light' : 'dark', true);
 }
 </script>
 </body>
